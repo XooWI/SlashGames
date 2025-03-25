@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="slotim">shrimpThvg.png</file>
+        <file>shrimpThvgJaqal.png</file>
+        <file alias="roulim">jacalroulette.png</file>
+    </qresource>
+</RCC>
