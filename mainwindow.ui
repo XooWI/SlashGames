@@ -6,26 +6,260 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1188</width>
+    <height>688</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>100</height>
+   </size>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>SlashGames</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/SlashGames.png</normaloff>:/resources/SlashGames.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow { background-color: #ffffff; color: #000000; }
+QMenuBar { background-color: #ffffff; color: #000000; }
+QMenuBar::item { background-color: #ffffff; color: #000000; }
+QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }
+QLabel { color: #000000; }
+QPushButton#FaQButton, QPushButton#ThemeButton { background-color: transparent; border: none; }
+QPushButton#FaQButton:hover { background-color: rgba(0, 0, 0, 0.1); }
+QPushButton#FaQButton:pressed { background-color: rgba(0, 0, 0, 0.2); }
+QMessageBox { background-color: #ffffff; }
+QMessageBox QLabel { color: #000000; }
+QMessageBox QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }
+QScrollArea { background-color: #ffffff; border: none; }
+QScrollArea &gt; QWidget &gt; QWidget { background-color: #ffffff; }
+QScrollBar:vertical { background-color: #f0f0f0; width: 12px; margin: 0px; }
+QScrollBar::handle:vertical { background-color: #cccccc; min-height: 20px; border-radius: 6px; }
+QScrollBar::handle:vertical:hover { background-color: #bbbbbb; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="balance">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>24</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Баланс:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" alignment="Qt::AlignLeft">
+       <widget class="QLabel" name="balanceChangeLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>16</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="balanceLabel">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>24</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string> 0💲</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="getBonusButton">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>250</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>-1</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; padding: 15px; font-size: 14px; font-weight: bold; }
+QPushButton:hover { background-color: #45a049; }
+QPushButton:pressed { background-color: #3d8b40; }
+QPushButton:disabled { background-color: #808080; border-color: #666666; }
+</string>
+        </property>
+        <property name="text">
+         <string>Получить Бонус!</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <widget class="QScrollArea" name="gamesScrollArea">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="gamesContainer">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1166</width>
+         <height>472</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gamesGridLayout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="addGameButton">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>48</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 5px; }
+QPushButton:hover { background-color: #45a049; }
+QPushButton:pressed { background-color: #3d8b40; }</string>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="4" column="0" alignment="Qt::AlignHCenter|Qt::AlignBottom">
+     <widget class="QLabel" name="supportLabel">
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>false</underline>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Нет нужной игры? Напишите нам!</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>22</height>
+     <width>1188</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
