@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -14,13 +15,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
-
     // Загрузка сохраненных данных
     loadBalance();
     checkBonusAvailability();
 
-
+    connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
     connect(ui->getBonusButton, &QPushButton::clicked, this, &MainWindow::claimBonus);
 
     ui->supportLabel->setText("Нет нужной игры? "
@@ -29,16 +28,92 @@ MainWindow::MainWindow(QWidget *parent)
     ui->supportLabel->setOpenExternalLinks(true);
 }
 
+
 void MainWindow::loadBalance()
 {
     balance = settings->value("balance", 0).toInt();
-    ui->balanceLabel->setText(QString("%1💲").arg(balance));
+    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", "'") + "💲");
 }
+
+
+void MainWindow::on_FaQButton_clicked()
+{
+    QMessageBox::information(this, "В разработке...", "Кнопка FaQ находится в разработке\n\n(GitHub: MrAnonim114).");
+}
+
+
+void MainWindow::on_themeButton_clicked()
+{
+    QString themeIconPath;
+    QString faqIconPath;
+
+    // Инвертируем текущее состояние темы
+    isDarkTheme = !isDarkTheme;
+
+    if (isDarkTheme) {
+        setStyleSheet(getDarkThemeStyle());
+        themeIconPath = ":/resources/dark_theme.png";
+        faqIconPath = ":/resources/faq_light.png";
+    } else {
+        setStyleSheet(getLightThemeStyle());
+        themeIconPath = ":/resources/light_theme.png";
+        faqIconPath = ":/resources/faq_dark.png";
+    }
+
+    ui->themeButton->setIcon(QIcon(themeIconPath));
+    ui->FaQButton->setIcon(QIcon(faqIconPath));
+
+}
+
+
+QString MainWindow::getDarkThemeStyle() {
+    return "QMainWindow { background-color: #1e1e1e; color: #ffffff; }"
+           "QMenuBar { background-color: #2d2d2d; color: #ffffff; }"
+           "QMenuBar::item { background-color: #2d2d2d; color: #ffffff; }"
+           "QPushButton { background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d; }"
+           "QLabel { color: #ffffff; }"
+           "QPushButton#FaQButton { background-color: transparent; border: none; }"
+           "QPushButton#FaQButton:hover { background-color: rgba(255, 255, 255, 0.1); }"
+           "QPushButton#FaQButton:pressed { background-color: rgba(255, 255, 255, 0.2); }"
+           "QPushButton#ThemeButton { background-color: transparent; border: none; }"
+           "QMessageBox { background-color: #1e1e1e; }"
+           "QMessageBox QLabel { color: #ffffff; }"
+           "QMessageBox QPushButton { background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d; }"
+           "QScrollArea { background-color: #1e1e1e; border: none; }"
+           "QScrollArea QWidget { background-color: #1e1e1e; }"
+           "QScrollArea QScrollBar:vertical { background-color: #2d2d2d; width: 12px; margin: 0px; }"
+           "QScrollArea QScrollBar::handle:vertical { background-color: #4d4d4d; min-height: 20px; border-radius: 6px; }"
+           "QScrollArea QScrollBar::handle:vertical:hover { background-color: #5d5d5d; }"
+           "QScrollArea QScrollBar::add-line:vertical, QScrollArea QScrollBar::sub-line:vertical { height: 0px; }";
+}
+
+
+QString MainWindow::getLightThemeStyle() {
+    return "QMainWindow { background-color: #ffffff; color: #000000; }"
+           "QMenuBar { background-color: #ffffff; color: #000000; }"
+           "QMenuBar::item { background-color: #ffffff; color: #000000; }"
+           "QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }"
+           "QLabel { color: #000000; }"
+           "QPushButton#FaQButton { background-color: transparent; border: none; }"
+           "QPushButton#FaQButton:hover { background-color: rgba(0, 0, 0, 0.1); }"
+           "QPushButton#FaQButton:pressed { background-color: rgba(0, 0, 0, 0.2); }"
+           "QPushButton#ThemeButton { background-color: transparent; border: none; }"
+           "QMessageBox { background-color: #ffffff; }"
+           "QMessageBox QLabel { color: #000000; }"
+           "QMessageBox QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }"
+           "QScrollArea { background-color: #ffffff; border: none; }"
+           "QScrollArea QWidget { background-color: #ffffff; }"
+           "QScrollArea QScrollBar:vertical { background-color: #f0f0f0; width: 12px; margin: 0px; }"
+           "QScrollArea QScrollBar::handle:vertical { background-color: #cccccc; min-height: 20px; border-radius: 6px; }"
+           "QScrollArea QScrollBar::handle:vertical:hover { background-color: #bbbbbb; }"
+           "QScrollArea QScrollBar::add-line:vertical, QScrollArea QScrollBar::sub-line:vertical { height: 0px; }";
+}
+
 
 void MainWindow::saveBalance()
 {
     settings->setValue("balance", balance);
-    ui->balanceLabel->setText(QString("%1💲").arg(balance));
+    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", "'") + "💲");
 }
 
 
@@ -67,6 +142,7 @@ void MainWindow::showBalanceChange(int amount)
         });
 }
 
+
 void MainWindow::checkBonusAvailability()
 {
     QDateTime lastBonusTime = settings->value("lastBonusTime").toDateTime();
@@ -87,6 +163,7 @@ void MainWindow::checkBonusAvailability()
     enableBonusButton();
 }
 
+
 void MainWindow::claimBonus()
 {
     const int BONUS_AMOUNT = 3000;
@@ -105,6 +182,7 @@ void MainWindow::startBonusReload(int seconds)
     bonusTimer->start(1000);
     updateBonusButtonAppearance();
 }
+
 
 void MainWindow::updateBonusTimer()
 {
@@ -173,8 +251,9 @@ void MainWindow::enableBonusButton()
 
 void MainWindow::on_addGameButton_clicked()
 {
-    QMessageBox::information(this, "В разработке...", "Это окно находится в разработке (GitHub: MrAnonim114).");
+    QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
 }
+
 
 MainWindow::~MainWindow()
 {

@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QSettings>
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,9 @@ private slots:
     void updateBonusTimer();
     void showBalanceChange(int amount);
     void on_addGameButton_clicked();
+    void on_FaQButton_clicked();
+    void on_themeButton_clicked();
+
 
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
@@ -47,5 +51,9 @@ private:
     void enableBonusButton();
     void updateBonusButtonAppearance();
 
+    // Смена темы
+    QString getDarkThemeStyle();
+    QString getLightThemeStyle();
+    bool isDarkTheme = false;
 };
 #endif // MAINWINDOW_H
