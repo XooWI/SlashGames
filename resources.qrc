@@ -6,5 +6,7 @@
         <file>resources/faq_light.png</file>
         <file>resources/dark_theme.png</file>
         <file>resources/light_theme.png</file>
+        <file>resources/github.png</file>
+        <file>resources/telegram.png</file>
     </qresource>
 </RCC> 

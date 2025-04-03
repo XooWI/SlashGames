@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QSettings>
 
+#include "faqwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

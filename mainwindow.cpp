@@ -5,6 +5,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+#include "faqwindow.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -26,19 +28,22 @@ MainWindow::MainWindow(QWidget *parent)
                               "<a href='https://t.me/SlashGames_support_bot' style='color: #2a7ae9; text-decoration: none;'>"
                               "Напишите нам!");
     ui->supportLabel->setOpenExternalLinks(true);
+
 }
 
 
 void MainWindow::loadBalance()
 {
     balance = settings->value("balance", 0).toInt();
-    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", "'") + "💲");
+    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
 
 void MainWindow::on_FaQButton_clicked()
 {
-    QMessageBox::information(this, "В разработке...", "Кнопка FaQ находится в разработке\n\n(GitHub: MrAnonim114).");
+    FAQWindow faqWindow(this);
+//faqWindow.setTheme(isDarkTheme);
+    faqWindow.exec();
 }
 
 
@@ -64,56 +69,43 @@ void MainWindow::on_themeButton_clicked()
     ui->FaQButton->setIcon(QIcon(faqIconPath));
 
 }
-
-
 QString MainWindow::getDarkThemeStyle() {
     return "QMainWindow { background-color: #1e1e1e; color: #ffffff; }"
-           "QMenuBar { background-color: #2d2d2d; color: #ffffff; }"
-           "QMenuBar::item { background-color: #2d2d2d; color: #ffffff; }"
-           "QPushButton { background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d; }"
-           "QLabel { color: #ffffff; }"
-           "QPushButton#FaQButton { background-color: transparent; border: none; }"
-           "QPushButton#FaQButton:hover { background-color: rgba(255, 255, 255, 0.1); }"
-           "QPushButton#FaQButton:pressed { background-color: rgba(255, 255, 255, 0.2); }"
-           "QPushButton#ThemeButton { background-color: transparent; border: none; }"
-           "QMessageBox { background-color: #1e1e1e; }"
-           "QMessageBox QLabel { color: #ffffff; }"
-           "QMessageBox QPushButton { background-color: #3d3d3d; color: #ffffff; border: 1px solid #4d4d4d; }"
-           "QScrollArea { background-color: #1e1e1e; border: none; }"
-           "QScrollArea QWidget { background-color: #1e1e1e; }"
-           "QScrollArea QScrollBar:vertical { background-color: #2d2d2d; width: 12px; margin: 0px; }"
-           "QScrollArea QScrollBar::handle:vertical { background-color: #4d4d4d; min-height: 20px; border-radius: 6px; }"
-           "QScrollArea QScrollBar::handle:vertical:hover { background-color: #5d5d5d; }"
-           "QScrollArea QScrollBar::add-line:vertical, QScrollArea QScrollBar::sub-line:vertical { height: 0px; }";
+            "QDialog { background-color: #1e1e1e; color: #ffffff; }"
+
+            "QLabel { color: #ffffff; }"
+              "QPushButton { background-color: #1e1e1e; color: #ffffff; }"
+              "QTextEdit { background-color: #1e1e1e; color: #ffffff; }"
+
+              "QTabWidgets { background-color: #2d2d2d; color: #ffffff; }"
+              "QTabWidgets { background-color: #2d2d2d; color: #ffffff; }"
+
+              "QScrollArea { background-color: #1e1e1e; border: none; }"
+              "QScrollArea QWidget { background-color: #1e1e1e; }";
+
 }
 
 
 QString MainWindow::getLightThemeStyle() {
     return "QMainWindow { background-color: #ffffff; color: #000000; }"
-           "QMenuBar { background-color: #ffffff; color: #000000; }"
-           "QMenuBar::item { background-color: #ffffff; color: #000000; }"
-           "QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }"
-           "QLabel { color: #000000; }"
-           "QPushButton#FaQButton { background-color: transparent; border: none; }"
-           "QPushButton#FaQButton:hover { background-color: rgba(0, 0, 0, 0.1); }"
-           "QPushButton#FaQButton:pressed { background-color: rgba(0, 0, 0, 0.2); }"
-           "QPushButton#ThemeButton { background-color: transparent; border: none; }"
-           "QMessageBox { background-color: #ffffff; }"
-           "QMessageBox QLabel { color: #000000; }"
-           "QMessageBox QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }"
-           "QScrollArea { background-color: #ffffff; border: none; }"
-           "QScrollArea QWidget { background-color: #ffffff; }"
-           "QScrollArea QScrollBar:vertical { background-color: #f0f0f0; width: 12px; margin: 0px; }"
-           "QScrollArea QScrollBar::handle:vertical { background-color: #cccccc; min-height: 20px; border-radius: 6px; }"
-           "QScrollArea QScrollBar::handle:vertical:hover { background-color: #bbbbbb; }"
-           "QScrollArea QScrollBar::add-line:vertical, QScrollArea QScrollBar::sub-line:vertical { height: 0px; }";
-}
+            "QDialog { background-color: #ffffff; color: #000000; }"
 
+              "QLabel { color: #000000; }"
+              "QPushButton { background-color: #ffffff; color: #000000; }"
+              "QTextEdit { background-color: #ffffff; color: #000000; }"
+
+              "QTabWidgets { background-color: #ffffff; color: #000000; }"
+              "QTabWidgets QTextEdit{ background-color: #ffffff; color: #000000; }"
+
+              "QScrollArea { background-color: #ffffff; border: none; }"
+              "QScrollArea QWidget { background-color: #ffffff; }";
+
+}
 
 void MainWindow::saveBalance()
 {
     settings->setValue("balance", balance);
-    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", "'") + "💲");
+    ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
 
@@ -123,10 +115,10 @@ void MainWindow::showBalanceChange(int amount)
     QString color;
 
         if (amount > 0) {
-            text = QString("+%1").arg(amount);
+            text = QString("+%1").arg(QLocale(QLocale::English).toString(amount).replace(",", " "));
             color = "#4CAF50";
         } else {
-            text = QString("%1").arg(amount);
+            text = QString("%1").arg(QLocale(QLocale::English).toString(amount).replace(",", " "));
             color = "#f44336";
         }
 

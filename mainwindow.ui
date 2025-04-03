@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1188</width>
-    <height>688</height>
+    <width>911</width>
+    <height>767</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>100</height>
+    <width>700</width>
+    <height>500</height>
    </size>
   </property>
   <property name="cursor">
@@ -44,6 +50,12 @@ QScrollBar:vertical { background-color: #f0f0f0; width: 12px; margin: 0px; }
 QScrollBar::handle:vertical { background-color: #cccccc; min-height: 20px; border-radius: 6px; }
 QScrollBar::handle:vertical:hover { background-color: #bbbbbb; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }</string>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>20</width>
+    <height>20</height>
+   </size>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -180,8 +192,8 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1166</width>
-         <height>433</height>
+         <width>889</width>
+         <height>512</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gamesGridLayout">
@@ -225,7 +237,7 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
            <string>In development...</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 5px; }
+           <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; }
 QPushButton:hover { background-color: #45a049; }
 QPushButton:pressed { background-color: #3d8b40; }</string>
           </property>
@@ -387,7 +399,7 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1188</width>
+     <width>911</width>
      <height>26</height>
     </rect>
    </property>
