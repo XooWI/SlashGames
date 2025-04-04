@@ -6,6 +6,7 @@
 #include <QSettings>
 
 #include "faqwindow.h"
+#include "customstyle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

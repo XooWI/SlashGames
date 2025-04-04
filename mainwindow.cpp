@@ -6,7 +6,7 @@
 #include <QMessageBox>
 
 #include "faqwindow.h"
-
+#include "customstyle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
                               "Напишите нам!");
     ui->supportLabel->setOpenExternalLinks(true);
 
+    setStyleSheet(CustomStyle::getLightThemeStyle());
 }
 
 
@@ -56,49 +57,17 @@ void MainWindow::on_themeButton_clicked()
     isDarkTheme = !isDarkTheme;
 
     if (isDarkTheme) {
-        setStyleSheet(getDarkThemeStyle());
+        setStyleSheet(CustomStyle::getDarkThemeStyle());
         themeIconPath = ":/resources/dark_theme.png";
         faqIconPath = ":/resources/faq_light.png";
     } else {
-        setStyleSheet(getLightThemeStyle());
+        setStyleSheet(CustomStyle::getLightThemeStyle());
         themeIconPath = ":/resources/light_theme.png";
         faqIconPath = ":/resources/faq_dark.png";
     }
 
     ui->themeButton->setIcon(QIcon(themeIconPath));
     ui->FaQButton->setIcon(QIcon(faqIconPath));
-
-}
-QString MainWindow::getDarkThemeStyle() {
-    return "QMainWindow { background-color: #1e1e1e; color: #ffffff; }"
-            "QDialog { background-color: #1e1e1e; color: #ffffff; }"
-
-            "QLabel { color: #ffffff; }"
-              "QPushButton { background-color: #1e1e1e; color: #ffffff; }"
-              "QTextEdit { background-color: #1e1e1e; color: #ffffff; }"
-
-              "QTabWidgets { background-color: #2d2d2d; color: #ffffff; }"
-              "QTabWidgets { background-color: #2d2d2d; color: #ffffff; }"
-
-              "QScrollArea { background-color: #1e1e1e; border: none; }"
-              "QScrollArea QWidget { background-color: #1e1e1e; }";
-
-}
-
-
-QString MainWindow::getLightThemeStyle() {
-    return "QMainWindow { background-color: #ffffff; color: #000000; }"
-            "QDialog { background-color: #ffffff; color: #000000; }"
-
-              "QLabel { color: #000000; }"
-              "QPushButton { background-color: #ffffff; color: #000000; }"
-              "QTextEdit { background-color: #ffffff; color: #000000; }"
-
-              "QTabWidgets { background-color: #ffffff; color: #000000; }"
-              "QTabWidgets QTextEdit{ background-color: #ffffff; color: #000000; }"
-
-              "QScrollArea { background-color: #ffffff; border: none; }"
-              "QScrollArea QWidget { background-color: #ffffff; }";
 
 }
 
@@ -194,20 +163,7 @@ void MainWindow::updateBonusButtonAppearance()
     double progress = qBound(0.0, (double)(BONUS_RELOAD - remainingSeconds) / BONUS_RELOAD, 1.0);
 
     QString timeText = QString("00:%1").arg(remainingSeconds, 2, 10, QChar('0'));
-    QString style = QString(
-        "QPushButton#getBonusButton {"
-        "    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
-        "                              stop:0 #4CAF50,"
-        "                              stop:%1 #4CAF50,"
-        "                              stop:%2 #808080);"
-        "    color: #ffffff;"
-        "    border: 2px solid #45a049;"
-        "    border-radius: 25px;"
-        "    padding: 15px;"
-        "    font-size: 14px;"
-        "    font-weight: bold;"
-        "}"
-    ).arg(progress).arg(progress + 0.01);
+    QString style = QString(CustomStyle::getActionBonusButtonStyle()).arg(progress).arg(progress + 0.01);
 
     ui->getBonusButton->setText(timeText);
     ui->getBonusButton->setStyleSheet(style);
@@ -221,23 +177,7 @@ void MainWindow::enableBonusButton()
     ui->getBonusButton->setText("Получить Бонус!");
     ui->getBonusButton->setEnabled(true);
 
-    QString style = "QPushButton#getBonusButton {"
-                   "    background-color: #4CAF50;"
-                   "    color: #ffffff;"
-                   "    border: 2px solid #45a049;"
-                   "    border-radius: 25px;"
-                   "    padding: 15px;"
-                   "    font-size: 14px;"
-                   "    font-weight: bold;"
-                   "}"
-                   "QPushButton#getBonusButton:hover {"
-                   "    background-color: #45a049;"
-                   "}"
-                   "QPushButton#getBonusButton:pressed {"
-                   "    background-color: #3d8b40;"
-                   "}";
-
-    ui->getBonusButton->setStyleSheet(style);
+    ui->getBonusButton->setStyleSheet(CustomStyle::getEnableBonusButtonStyle());
 }
 
 

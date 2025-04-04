@@ -178,6 +178,12 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
       <property name="toolTip">
        <string/>
       </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
@@ -185,7 +191,7 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
       <property name="widgetResizable">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="gamesContainer">
        <property name="geometry">
