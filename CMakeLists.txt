@@ -17,6 +17,12 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        faqwindow.cpp
+        faqwindow.h
+        faqwindow.ui
+        customstyle.h
+        customstyle.cpp
+	resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
