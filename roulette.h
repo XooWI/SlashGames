@@ -1,22 +1,50 @@
 #ifndef ROULETTE_H
 #define ROULETTE_H
 
-#include <QWidget>
+#include <QtWidgets>
+#include <QPropertyAnimation>
+#include <QRandomGenerator>
 
-namespace Ui {
-class roulette;
-}
+class RouletteWidget : public QWidget {
+    Q_OBJECT
+    Q_PROPERTY(qreal angle READ angle WRITE setAngle)
+public:
+    RouletteWidget(QWidget *parent = nullptr);
+    qreal angle() const;
+    void setAngle(qreal angle);
 
-class roulette : public QWidget
-{
+protected:
+    void paintEvent(QPaintEvent *) override;
+
+private:
+    qreal m_angle;
+};
+
+class Roulette : public QWidget {
     Q_OBJECT
 
 public:
-    explicit roulette(QWidget *parent = nullptr);
-    ~roulette();
+    Roulette(QWidget *parent = nullptr);
+
+private slots:
+    void placeBet();
+    void spin();
+    void animationFinished();
+    void clearBets();
 
 private:
-    Ui::roulette *ui;
+    void setupUI();
+    void setupConnections();
+    void updateDisplay();
+
+    RouletteWidget *roulette;
+    QSpinBox *betAmount;
+    QLabel *balanceLabel, *resultLabel;
+    QPropertyAnimation *animation;
+
+    int balance;
+    int totalBet;
+    QMap<QString, int> bets;
 };
 
 #endif // ROULETTE_H
