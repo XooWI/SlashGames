@@ -1,17 +1,22 @@
 #ifndef SLOTWINDOW_H
 #define SLOTWINDOW_H
 
-#include <QObject>
 #include <QWidget>
+
+namespace Ui {
+class SlotWindow;
+}
 
 class SlotWindow : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit SlotWindow(QWidget *parent = nullptr);
+    ~SlotWindow();
 
-signals:
-
+private:
+    Ui::SlotWindow *ui;
 };
 
 #endif // SLOTWINDOW_H
