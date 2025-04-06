@@ -12,3 +12,9 @@ SlotWindow::~SlotWindow()
 {
     delete ui;
 }
+
+void SlotWindow::on_pushButton_clicked()
+{
+
+}
+

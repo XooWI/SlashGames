@@ -15,6 +15,9 @@ public:
     explicit SlotWindow(QWidget *parent = nullptr);
     ~SlotWindow();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::SlotWindow *ui;
 };

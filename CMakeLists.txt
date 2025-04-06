@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
         customstyle.cpp
         slotwindow.h
         slotwindow.cpp
+        slotwindow.ui
 	resources.qrc
 )
 
