@@ -31,6 +31,8 @@ private slots:
     void on_themeButton_clicked();
 
 
+    void on_slotButton_clicked();
+
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
     static constexpr int BONUS_AMOUNT = 3000;  // Количество получаемых монет

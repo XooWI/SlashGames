@@ -15,6 +15,6 @@ SlotWindow::~SlotWindow()
 
 void SlotWindow::on_pushButton_clicked()
 {
-
+    ui->label->setText("NIGGGGGGGERS");
 }
 

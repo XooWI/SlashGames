@@ -7,6 +7,7 @@
 
 #include "faqwindow.h"
 #include "customstyle.h"
+#include "slotwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -190,5 +191,13 @@ void MainWindow::on_addGameButton_clicked()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::on_slotButton_clicked()
+{
+    SlotWindow *slotWindow = new SlotWindow();
+    slotWindow->setAttribute(Qt::WA_DeleteOnClose);
+    slotWindow->show();
 }
 
