@@ -22,6 +22,8 @@ set(PROJECT_SOURCES
         faqwindow.ui
         customstyle.h
         customstyle.cpp
+        slotwindow.h
+        slotwindow.cpp
 	resources.qrc
 )
 
