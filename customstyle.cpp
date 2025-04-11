@@ -74,7 +74,13 @@ QString CustomStyle::getLightThemeStyle() {
            "QScrollArea QScrollBar::add-line:vertical,"
            "QScrollArea QScrollBar::sub-line:vertical {"
            "    height: 0px;"               
-           "}";
+           "}"
+
+           "QLineEdit {"
+            "border: 1px solid dark-gray;"
+            "background: white;"
+            "color: dark-gray"
+            "}";
 }
 
 
@@ -152,7 +158,13 @@ QString CustomStyle::getDarkThemeStyle() {
            "QScrollArea QScrollBar::add-line:vertical,"
            "QScrollArea QScrollBar::sub-line:vertical {"
            "    height: 0px;"              
-           "}";
+           "}"
+
+           "QLineEdit {"
+            "border: 1px solid white;"
+            "background: #5d5d5d;"
+            "color: white;"
+            "}";
 }
 
 

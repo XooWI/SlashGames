@@ -7,6 +7,7 @@
 
 #include "faqwindow.h"
 #include "customstyle.h"
+#include "authorizationwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,6 +31,8 @@ private slots:
     void on_FaQButton_clicked();
     void on_themeButton_clicked();
 
+
+    void on_accountButton_clicked();
 
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах

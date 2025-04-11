@@ -14,8 +14,6 @@ class FAQWindow : public QDialog
 public:
     explicit FAQWindow(QWidget *parent = nullptr);
     ~FAQWindow();
-    
-    void setTheme(bool isDark);
 
 private:
     Ui::FAQWindow *ui;

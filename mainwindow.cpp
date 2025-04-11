@@ -5,9 +5,6 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-#include "faqwindow.h"
-#include "customstyle.h"
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -30,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->supportLabel->setOpenExternalLinks(true);
 
     setStyleSheet(CustomStyle::getLightThemeStyle());
+
+
 }
 
 
@@ -43,7 +42,6 @@ void MainWindow::loadBalance()
 void MainWindow::on_FaQButton_clicked()
 {
     FAQWindow faqWindow(this);
-//faqWindow.setTheme(isDarkTheme);
     faqWindow.exec();
 }
 
@@ -52,22 +50,26 @@ void MainWindow::on_themeButton_clicked()
 {
     QString themeIconPath;
     QString faqIconPath;
+    QString accountIconPath;
 
     // Инвертируем текущее состояние темы
     isDarkTheme = !isDarkTheme;
 
     if (isDarkTheme) {
         setStyleSheet(CustomStyle::getDarkThemeStyle());
-        themeIconPath = ":/resources/dark_theme.png";
-        faqIconPath = ":/resources/faq_light.png";
+        themeIconPath = ":/resources/theme_for_dark.png";
+        faqIconPath = ":/resources/faq_for_dark.png";
+        accountIconPath = ":/resources/user_for_dark.png";
     } else {
         setStyleSheet(CustomStyle::getLightThemeStyle());
-        themeIconPath = ":/resources/light_theme.png";
-        faqIconPath = ":/resources/faq_dark.png";
+        themeIconPath = ":/resources/theme_for_light.png";
+        faqIconPath = ":/resources/faq_for_light.png";
+        accountIconPath = ":/resources/user_for_light.png";
     }
 
     ui->themeButton->setIcon(QIcon(themeIconPath));
     ui->FaQButton->setIcon(QIcon(faqIconPath));
+    ui->accountButton->setIcon(QIcon(accountIconPath));
 
 }
 
@@ -186,9 +188,17 @@ void MainWindow::on_addGameButton_clicked()
     QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
 }
 
+void MainWindow::on_accountButton_clicked()
+{
+    AuthorizationWindow authWindow(this);
+    authWindow.exec();
+}
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
 

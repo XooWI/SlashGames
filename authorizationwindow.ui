@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AuthWindow</class>
+ <widget class="QDialog" name="AuthWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>522</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>522</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Авторизация</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLineEdit, QPushButton {
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+QTabWidget::pane {
+border: none;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    min-height: 40px;
+}
+QPushButton:hover {
+    background-color: #45a049;
+}
+QPushButton:pressed {
+    background-color: #3d8b40;
+}
+
+#logoLabel {
+    font-size: 35px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+#switchToRegister {
+    background: transparent;
+    color: #4CAF50;
+    text-decoration: underline;
+    border: none;
+    padding: 0;
+}
+#switchToLogin {
+    background: transparent;
+    color: #4CAF50;
+    text-decoration: underline;
+    border: none;
+    padding: 0;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>10</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="logoLabel">
+     <property name="text">
+      <string>SlashGames</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_10">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Preferred</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>50</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>450</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="login">
+      <attribute name="title">
+       <string>Login</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="loginLabel">
+         <property name="styleSheet">
+          <string notr="true">#loginLabel {
+    font-size: 25px;
+    font-weight: bold;
+    color: #4CAF50;
+}</string>
+         </property>
+         <property name="text">
+          <string>Вход</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_11">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="loginEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="placeholderText">
+            <string>Логин/email</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Maximum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="passwordEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Пароль</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="errorLabel">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">#errorLabel{color: red;}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Maximum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="loginButton">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Войти</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="switchToRegister">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Нет аккаунта? Зарегистрироваться</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Preferred</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="registration">
+      <attribute name="title">
+       <string>Registration</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="regLabel">
+           <property name="styleSheet">
+            <string notr="true">#regLabel {
+    font-size: 25px;
+    font-weight: bold;
+    color: #4CAF50;
+}</string>
+           </property>
+           <property name="text">
+            <string>Регистрация</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="regUsernameEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="sizeIncrement">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="placeholderText">
+            <string>Имя</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="regLoginEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="placeholderText">
+            <string>Логин</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="regPasswordEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Пароль</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="confirmPasswordEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Повторите пароль</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="regErrorLabel">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">#regErrorLabel{color: red;}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Maximum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="registerButton">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Зарегистрироваться</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="switchToLogin">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Уже есть аккаунт? Войти</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

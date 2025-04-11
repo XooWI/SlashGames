@@ -14,14 +14,22 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
+
         mainwindow.h
+        mainwindow.cpp
         mainwindow.ui
-        faqwindow.cpp
+
         faqwindow.h
+        faqwindow.cpp
         faqwindow.ui
+
         customstyle.h
         customstyle.cpp
+
+        authorizationwindow.h
+        authorizationwindow.cpp
+        authorizationwindow.ui
+
 	resources.qrc
 )
 
