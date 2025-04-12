@@ -1,20 +1,19 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <QSettings>
-#include <QTimer>
+
 #include <QDateTime>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
-      balance(0),
       bonusTimer(new QTimer(this)),
       settings(new QSettings("SlashGames", "Menu", this))
 {
     ui->setupUi(this);
 
     // Загрузка сохраненных данных
+    loadTheme();
     loadBalance();
     checkBonusAvailability();
 
@@ -26,9 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
                               "Напишите нам!");
     ui->supportLabel->setOpenExternalLinks(true);
 
-    setStyleSheet(CustomStyle::getLightThemeStyle());
-
-
 }
 
 
@@ -36,6 +32,13 @@ void MainWindow::loadBalance()
 {
     balance = settings->value("balance", 0).toInt();
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
+}
+
+
+void MainWindow::loadTheme()
+{
+    isDarkTheme = settings->value("darkTheme", false).toBool();
+    apply_theme(isDarkTheme);
 }
 
 
@@ -48,20 +51,49 @@ void MainWindow::on_FaQButton_clicked()
 
 void MainWindow::on_themeButton_clicked()
 {
-    QString themeIconPath;
-    QString faqIconPath;
-    QString accountIconPath;
+    apply_theme(!isDarkTheme);
+}
 
-    // Инвертируем текущее состояние темы
-    isDarkTheme = !isDarkTheme;
+
+void MainWindow::on_addGameButton_clicked()
+{
+   QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
+}
+
+
+void MainWindow::on_accountButton_clicked()
+{
+    AuthorizationWindow authWindow(this);
+    authWindow.exec();
+}
+
+
+void MainWindow::on_rouletteButton_clicked()
+{
+    QMessageBox::information(this, "В разработке...", "Кнопка запуска рулетки");
+}
+
+
+void MainWindow::on_slotsButton_clicked()
+{
+    QMessageBox::information(this, "В разработке...", "Кнопка запуска слотов");
+}
+
+
+void MainWindow::apply_theme(bool darkTheme)
+{
+    isDarkTheme = darkTheme;
+    QString themeIconPath, faqIconPath, accountIconPath;
 
     if (isDarkTheme) {
         setStyleSheet(CustomStyle::getDarkThemeStyle());
+
         themeIconPath = ":/resources/theme_for_dark.png";
         faqIconPath = ":/resources/faq_for_dark.png";
         accountIconPath = ":/resources/user_for_dark.png";
     } else {
         setStyleSheet(CustomStyle::getLightThemeStyle());
+
         themeIconPath = ":/resources/theme_for_light.png";
         faqIconPath = ":/resources/faq_for_light.png";
         accountIconPath = ":/resources/user_for_light.png";
@@ -71,7 +103,9 @@ void MainWindow::on_themeButton_clicked()
     ui->FaQButton->setIcon(QIcon(faqIconPath));
     ui->accountButton->setIcon(QIcon(accountIconPath));
 
+    settings->setValue("darkTheme", isDarkTheme);
 }
+
 
 void MainWindow::saveBalance()
 {
@@ -82,8 +116,7 @@ void MainWindow::saveBalance()
 
 void MainWindow::showBalanceChange(int amount)
 {
-    QString text;
-    QString color;
+    QString text, color;
 
         if (amount > 0) {
             text = QString("+%1").arg(QLocale(QLocale::English).toString(amount).replace(",", " "));
@@ -96,7 +129,7 @@ void MainWindow::showBalanceChange(int amount)
         ui->balanceChangeLabel->setText(text);
         ui->balanceChangeLabel->setStyleSheet(QString("color: %1;").arg(color));
 
-        // Очистка текста
+        // Очистка текста через 2 секунды
         QTimer::singleShot(2000, this, [this]() {
                 if (ui && ui->balanceChangeLabel) {
                     ui->balanceChangeLabel->setText("");
@@ -129,7 +162,6 @@ void MainWindow::checkBonusAvailability()
 
 void MainWindow::claimBonus()
 {
-    const int BONUS_AMOUNT = 3000;
     balance += BONUS_AMOUNT;
     saveBalance();
     showBalanceChange(BONUS_AMOUNT);
@@ -161,10 +193,16 @@ void MainWindow::updateBonusTimer()
 // Обновление внешнего вида кнопки с прогрессом
 void MainWindow::updateBonusButtonAppearance()
 {
-
     double progress = qBound(0.0, (double)(BONUS_RELOAD - remainingSeconds) / BONUS_RELOAD, 1.0);
 
-    QString timeText = QString("00:%1").arg(remainingSeconds, 2, 10, QChar('0'));
+    int hours = remainingSeconds / 3600;
+    int minutes = (remainingSeconds % 3600) / 60;
+    int seconds = remainingSeconds % 60;
+    QString timeText = QString("%1:%2:%3")
+        .arg(hours, 2, 10, QChar('0'))
+        .arg(minutes, 2, 10, QChar('0'))
+        .arg(seconds, 2, 10, QChar('0'));
+
     QString style = QString(CustomStyle::getActionBonusButtonStyle()).arg(progress).arg(progress + 0.01);
 
     ui->getBonusButton->setText(timeText);
@@ -183,22 +221,11 @@ void MainWindow::enableBonusButton()
 }
 
 
-void MainWindow::on_addGameButton_clicked()
-{
-    QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
-}
-
-void MainWindow::on_accountButton_clicked()
-{
-    AuthorizationWindow authWindow(this);
-    authWindow.exec();
-}
-
-
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 
 

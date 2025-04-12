@@ -49,11 +49,6 @@ QPushButton:pressed {
     background-color: #3d8b40;
 }
 
-#logoLabel {
-    font-size: 35px;
-    font-weight: bold;
-    color: #4CAF50;
-}
 #switchToRegister {
     background: transparent;
     color: #4CAF50;
@@ -87,6 +82,13 @@ QPushButton:pressed {
    </property>
    <item>
     <widget class="QLabel" name="logoLabel">
+     <property name="styleSheet">
+      <string notr="true">#logoLabel {
+    font-size: 40px;
+    font-weight: bold;
+    color: #4CAF50;
+}</string>
+     </property>
      <property name="text">
       <string>SlashGames</string>
      </property>
@@ -182,6 +184,11 @@ QPushButton:pressed {
              <height>50</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
+           </property>
            <property name="placeholderText">
             <string>Логин/email</string>
            </property>
@@ -216,6 +223,11 @@ QPushButton:pressed {
              <width>400</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
            </property>
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
@@ -392,6 +404,11 @@ QPushButton:pressed {
              <height>0</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
+           </property>
            <property name="placeholderText">
             <string>Имя</string>
            </property>
@@ -424,6 +441,11 @@ QPushButton:pressed {
              <height>50</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
+           </property>
            <property name="placeholderText">
             <string>Логин</string>
            </property>
@@ -455,6 +477,11 @@ QPushButton:pressed {
              <width>400</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
            </property>
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
@@ -490,6 +517,11 @@ QPushButton:pressed {
              <width>400</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
            </property>
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>

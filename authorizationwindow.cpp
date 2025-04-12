@@ -20,13 +20,6 @@ AuthorizationWindow::AuthorizationWindow(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // Убираем знак вопроса
 }
 
-// Переключаем на вкладку регистрации
-void AuthorizationWindow::on_switchToRegister_clicked()
-{
-    this->setMinimumSize(400, 550);
-    this->setMaximumSize(400, 550);
-    ui->tabWidget->setCurrentIndex(1);
-}
 
 // Переключаем на вкладку входа
 void AuthorizationWindow::on_switchToLogin_clicked()
@@ -35,6 +28,16 @@ void AuthorizationWindow::on_switchToLogin_clicked()
     this->setMaximumSize(400, 380);
     ui->tabWidget->setCurrentIndex(0);
 }
+
+
+// Переключаем на вкладку регистрации
+void AuthorizationWindow::on_switchToRegister_clicked()
+{
+    this->setMinimumSize(400, 550);
+    this->setMaximumSize(400, 550);
+    ui->tabWidget->setCurrentIndex(1);
+}
+
 
 void AuthorizationWindow::on_loginButton_clicked()
 {
@@ -49,10 +52,12 @@ void AuthorizationWindow::on_loginButton_clicked()
     qDebug() << "Попытка входа. Логин:" << login << "Пароль:" << password;
 
     ui->errorLabel->setText("");
-
+    ui->loginEdit->clear();
+    ui->passwordEdit->clear();
     QMessageBox::information(this, "Успех", "Вход выполнен успешно!");
 
 }
+
 
 void AuthorizationWindow::on_registerButton_clicked()
 {

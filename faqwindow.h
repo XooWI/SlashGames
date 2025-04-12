@@ -15,6 +15,10 @@ public:
     explicit FAQWindow(QWidget *parent = nullptr);
     ~FAQWindow();
 
+private slots:
+    void on_telegramSocial_clicked();
+    void on_githubSocial_clicked();
+
 private:
     Ui::FAQWindow *ui;
 };

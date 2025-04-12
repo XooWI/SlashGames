@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>911</width>
-    <height>767</height>
+    <width>900</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>700</width>
-    <height>500</height>
+    <width>900</width>
+    <height>550</height>
    </size>
   </property>
   <property name="cursor">
@@ -33,23 +33,7 @@
     <normaloff>:/resources/SlashGames.png</normaloff>:/resources/SlashGames.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow { background-color: #ffffff; color: #000000; }
-QMenuBar { background-color: #ffffff; color: #000000; }
-QMenuBar::item { background-color: #ffffff; color: #000000; }
-QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }
-QLabel { color: #000000; }
-QPushButton#FaQButton, QPushButton#ThemeButton { background-color: transparent; border: none; }
-QPushButton#FaQButton:hover { background-color: rgba(0, 0, 0, 0.1); }
-QPushButton#FaQButton:pressed { background-color: rgba(0, 0, 0, 0.2); }
-QMessageBox { background-color: #ffffff; }
-QMessageBox QLabel { color: #000000; }
-QMessageBox QPushButton { background-color: #f0f0f0; color: #000000; border: 1px solid #cccccc; }
-QScrollArea { background-color: #ffffff; border: none; }
-QScrollArea &gt; QWidget &gt; QWidget { background-color: #ffffff; }
-QScrollBar:vertical { background-color: #f0f0f0; width: 12px; margin: 0px; }
-QScrollBar::handle:vertical { background-color: #cccccc; min-height: 20px; border-radius: 6px; }
-QScrollBar::handle:vertical:hover { background-color: #bbbbbb; }
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }</string>
+   <string notr="true"/>
   </property>
   <property name="iconSize">
    <size>
@@ -198,8 +182,8 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>889</width>
-         <height>509</height>
+         <width>860</width>
+         <height>660</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gamesGridLayout">
@@ -219,22 +203,60 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
          <number>20</number>
         </property>
         <item row="0" column="0">
-         <widget class="QPushButton" name="addGameButton">
+         <widget class="QPushButton" name="rouletteButton">
           <property name="minimumSize">
            <size>
-            <width>200</width>
-            <height>200</height>
+            <width>400</width>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>200</width>
-            <height>200</height>
+            <width>800</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-image: url(:/resources/roulette.png);
+    background-position: center;     
+    border-radius: 25px;
+color: white; 
+font-size: 50px; 
+font-weight: bold; 
+padding-top: 240px
+}
+
+QPushButton:hover { 
+    background-image: url(:/resources/roulette_hover.png);   
+}
+
+QPushButton:pressed { 
+    background-image: url(:/resources/roulette_hover.png);  
+ }</string>
+          </property>
+          <property name="text">
+           <string>Roulette</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="addGameButton">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>800</width>
+            <height>300</height>
            </size>
           </property>
           <property name="font">
            <font>
-            <pointsize>48</pointsize>
+            <pointsize>-1</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -243,12 +265,51 @@ QPushButton:disabled { background-color: #808080; border-color: #666666; }
            <string>In development...</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; }
+           <string notr="true">QPushButton { background-color: #4CAF50; font-size: 150px; 
+font-weight: bold; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; }
 QPushButton:hover { background-color: #45a049; }
 QPushButton:pressed { background-color: #3d8b40; }</string>
           </property>
           <property name="text">
            <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="slotsButton">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>800</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-image: url(:/resources/slots.png);
+    background-position: center;     
+    border-radius: 25px;
+color: white; 
+font-size: 50px; 
+font-weight: bold; 
+padding-top: 240px
+}
+
+QPushButton:hover { 
+    background-image: url(:/resources/slots_hover.png);   
+}
+
+QPushButton:pressed { 
+    background-image: url(:/resources/slots_hover.png);  
+ }</string>
+          </property>
+          <property name="text">
+           <string>Slots</string>
           </property>
          </widget>
         </item>
@@ -353,6 +414,9 @@ QPushButton:pressed {
           <height>50</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Аккаунт</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QToolButton {
     background: transparent;
@@ -410,8 +474,7 @@ QToolButton:pressed {
          </size>
         </property>
         <property name="toolTip">
-         <string>FaQ and guide
-In development...</string>
+         <string>FaQ and guide</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
@@ -449,7 +512,7 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>911</width>
+     <width>900</width>
      <height>26</height>
     </rect>
    </property>

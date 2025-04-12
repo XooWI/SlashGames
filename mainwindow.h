@@ -9,6 +9,7 @@
 #include "customstyle.h"
 #include "authorizationwindow.h"
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -30,9 +31,12 @@ private slots:
     void on_addGameButton_clicked();
     void on_FaQButton_clicked();
     void on_themeButton_clicked();
-
-
     void on_accountButton_clicked();
+
+
+    void on_rouletteButton_clicked();
+
+    void on_slotsButton_clicked();
 
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
@@ -44,6 +48,7 @@ private:
 
     int balance;
     int remainingSeconds;
+    bool isDarkTheme;
 
     // Управление балансом
     void loadBalance();
@@ -57,8 +62,8 @@ private:
     void updateBonusButtonAppearance();
 
     // Смена темы
-    QString getDarkThemeStyle();
-    QString getLightThemeStyle();
-    bool isDarkTheme = false;
+    void apply_theme(bool darkTheme);
+    void loadTheme();
+
 };
 #endif // MAINWINDOW_H

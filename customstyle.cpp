@@ -161,7 +161,7 @@ QString CustomStyle::getDarkThemeStyle() {
            "}"
 
            "QLineEdit {"
-            "border: 1px solid white;"
+            "border: 1px solid dark-gray;"
             "background: #5d5d5d;"
             "color: white;"
             "}";

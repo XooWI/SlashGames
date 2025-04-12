@@ -12,14 +12,6 @@ FAQWindow::FAQWindow(QWidget *parent) :
     // Отключаем знак вопроса
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    connect(ui->telegramSocial, &QPushButton::clicked, []() {
-        QDesktopServices::openUrl(QUrl("https://t.me/SlashGames_support_bot"));
-    });
-
-    connect(ui->githubSocial, &QPushButton::clicked, []() {
-        QDesktopServices::openUrl(QUrl("https://github.com/XooWI/SlashGames"));
-    });
-
     // Установка текста
         ui->rulesLabel->setText(
             "<h2>📋 Основные правила</h2>"
@@ -46,6 +38,18 @@ FAQWindow::FAQWindow(QWidget *parent) :
             "<p style='margin-left: 10px;'>A: Все выигрыши автоматически зачисляются на ваш баланс. Вы можете увидеть изменение суммы в верхней части экрана.</p>"
         );
 }
+
+void FAQWindow::on_telegramSocial_clicked()
+{
+    QDesktopServices::openUrl(QUrl("https://t.me/SlashGames_support_bot"));
+}
+
+
+void FAQWindow::on_githubSocial_clicked()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/XooWI/SlashGames"));
+}
+
 
 FAQWindow::~FAQWindow()
 {
