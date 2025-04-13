@@ -80,6 +80,30 @@ QString CustomStyle::getLightThemeStyle() {
             "border: 1px solid dark-gray;"
             "background: white;"
             "color: dark-gray"
+            "}"
+
+            // Стиль для меню
+            "QMenu {"
+            "    background-color: #ffffff;"
+            "    border: 1px solid #e0e0e0;"
+            "    border-radius: 8px;"
+            "}"
+
+            "QMenu::item {"
+            "    padding: 8px 16px 8px 16px;"
+            "    color: #000000;"
+            "    background-color: transparent;"
+            "}"
+
+            "QMenu::item:selected {"
+            "    background-color: #f0f0f0;"
+            "    border-radius: 4px;"
+            "}"
+
+            "QMenu::icon {"
+            "    margin-left: 8px;"
+            "    position: absolute;"
+            "    left: 8px;"
             "}";
 }
 
@@ -164,6 +188,30 @@ QString CustomStyle::getDarkThemeStyle() {
             "border: 1px solid dark-gray;"
             "background: #5d5d5d;"
             "color: white;"
+            "}"
+
+            // Стиль для меню
+            "QMenu {"
+            "    background-color: #3d3d3d;"
+            "    border: 1px solid #4d4d4d;"
+            "    border-radius: 8px;"
+            "}"
+
+            "QMenu::item {"
+            "    padding: 8px 16px 8px 16px;"
+            "    color: #ffffff;"
+            "    background-color: transparent;"
+            "}"
+
+            "QMenu::item:selected {"
+            "    background-color: #5d5d5d;"
+            "    border-radius: 4px;"
+            "}"
+
+            "QMenu::icon {"
+            "    margin-left: 8px;"
+            "    position: absolute;"
+            "    left: 8px;"
             "}";
 }
 

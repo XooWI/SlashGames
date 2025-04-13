@@ -4,15 +4,23 @@
         <file>resources/SlashGames.png</file>
         <file>resources/github.png</file>
         <file>resources/telegram.png</file>
+
         <file>resources/faq_for_light.png</file>
         <file>resources/faq_for_dark.png</file>
         <file>resources/theme_for_light.png</file>
         <file>resources/theme_for_dark.png</file>
         <file>resources/user_for_light.png</file>
         <file>resources/user_for_dark.png</file>
+        
         <file>resources/roulette.png</file>
         <file>resources/roulette_hover.png</file>
         <file>resources/slots.png</file>
         <file>resources/slots_hover.png</file>
+
+        <file>resources/my_profile_for_light.png</file>
+        <file>resources/my_profile_for_dark.png</file>
+        <file>resources/edit_for_light.png</file>
+        <file>resources/edit_for_dark.png</file>
+        <file>resources/exit.png</file>
     </qresource>
 </RCC> 

@@ -31,12 +31,15 @@ private slots:
     void on_addGameButton_clicked();
     void on_FaQButton_clicked();
     void on_themeButton_clicked();
-    void on_accountButton_clicked();
+    //void on_accountButton_clicked();
 
 
     void on_rouletteButton_clicked();
-
     void on_slotsButton_clicked();
+
+    void onProfileClicked();
+    void onEditClicked();
+    void onExitClicked();
 
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
@@ -45,6 +48,7 @@ private:
     Ui::MainWindow *ui;
     QTimer *bonusTimer;
     QSettings *settings;
+    QMenu *toolMenu;
 
     int balance;
     int remainingSeconds;

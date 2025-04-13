@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
       settings(new QSettings("SlashGames", "Menu", this))
 {
     ui->setupUi(this);
+    toolMenu = new QMenu(this);
 
     // Загрузка сохраненных данных
     loadTheme();
@@ -24,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
                               "<a href='https://t.me/SlashGames_support_bot' style='color: #2a7ae9; text-decoration: none;'>"
                               "Напишите нам!");
     ui->supportLabel->setOpenExternalLinks(true);
-
 }
 
 
@@ -60,13 +60,28 @@ void MainWindow::on_addGameButton_clicked()
    QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
 }
 
-
-void MainWindow::on_accountButton_clicked()
+void MainWindow::onProfileClicked()
 {
-    AuthorizationWindow authWindow(this);
-    authWindow.exec();
+       AuthorizationWindow authWindow(this);
+       authWindow.exec();
 }
 
+void MainWindow::onEditClicked()
+{
+}
+
+void MainWindow::onExitClicked()
+{
+    // Подтверждение выхода
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Подтверждение",
+                                "Вы действительно хотите выйти?",
+                                QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        qApp->quit(); // Закрытие приложения
+    }
+}
 
 void MainWindow::on_rouletteButton_clicked()
 {
@@ -83,7 +98,8 @@ void MainWindow::on_slotsButton_clicked()
 void MainWindow::apply_theme(bool darkTheme)
 {
     isDarkTheme = darkTheme;
-    QString themeIconPath, faqIconPath, accountIconPath;
+    QString themeIconPath, faqIconPath, accountIconPath, myProfileIconPath, editProfileIconPath;
+    toolMenu->clear();
 
     if (isDarkTheme) {
         setStyleSheet(CustomStyle::getDarkThemeStyle());
@@ -91,17 +107,30 @@ void MainWindow::apply_theme(bool darkTheme)
         themeIconPath = ":/resources/theme_for_dark.png";
         faqIconPath = ":/resources/faq_for_dark.png";
         accountIconPath = ":/resources/user_for_dark.png";
+        myProfileIconPath = ":/resources/my_profile_for_dark.png";
+        editProfileIconPath = ":/resources/edit_for_dark.png";
     } else {
         setStyleSheet(CustomStyle::getLightThemeStyle());
 
         themeIconPath = ":/resources/theme_for_light.png";
         faqIconPath = ":/resources/faq_for_light.png";
         accountIconPath = ":/resources/user_for_light.png";
+        myProfileIconPath = ":/resources/my_profile_for_light.png";
+        editProfileIconPath = ":/resources/edit_for_light.png";
     }
 
     ui->themeButton->setIcon(QIcon(themeIconPath));
     ui->FaQButton->setIcon(QIcon(faqIconPath));
     ui->accountButton->setIcon(QIcon(accountIconPath));
+
+    // Меню для кнопки профиля
+    QAction *profileAction = toolMenu->addAction(QIcon(myProfileIconPath), "Мой профиль");
+    connect(profileAction, &QAction::triggered, this, &MainWindow::onProfileClicked);
+    QAction *editAction = toolMenu->addAction(QIcon(editProfileIconPath), "Редактировать");
+    connect(editAction, &QAction::triggered, this, &MainWindow::onEditClicked);
+    QAction *exitAction = toolMenu->addAction(QIcon(":/resources/exit.png"), "Выход");
+    connect(exitAction, &QAction::triggered, this, &MainWindow::onExitClicked);
+    ui->accountButton->setMenu(toolMenu);
 
     settings->setValue("darkTheme", isDarkTheme);
 }
