@@ -98,7 +98,7 @@ QPushButton:pressed {
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer_10">
+    <spacer name="verticalSpacer_21">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -125,7 +125,7 @@ QPushButton:pressed {
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="login">
       <attribute name="title">
@@ -153,7 +153,7 @@ QPushButton:pressed {
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_11">
+        <spacer name="verticalSpacer_1">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -195,7 +195,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_5">
+          <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -253,7 +253,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_12">
+          <spacer name="verticalSpacer_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -316,7 +316,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_2">
+          <spacer name="verticalSpacer_4">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -369,7 +369,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_3">
+          <spacer name="verticalSpacer_22">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -415,7 +415,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_8">
+          <spacer name="verticalSpacer_23">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -452,7 +452,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_7">
+          <spacer name="verticalSpacer_24">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -492,7 +492,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_6">
+          <spacer name="verticalSpacer_25">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -547,7 +547,7 @@ QPushButton:pressed {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_4">
+          <spacer name="verticalSpacer_26">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>

@@ -31,6 +31,14 @@ set(PROJECT_SOURCES
         authorizationwindow.ui
 
 	resources.qrc
+
+        gameinputdialog.h
+        gameinputdialog.cpp
+        gameinputdialog.ui
+
+        deletegamedialog.h
+        deletegamedialog.cpp
+        deletegamedialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

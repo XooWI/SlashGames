@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QTabBar>
+#include <QRegularExpression>
 
 AuthorizationWindow::AuthorizationWindow(QWidget *parent) :
     QDialog(parent),
@@ -70,14 +71,17 @@ void AuthorizationWindow::on_registerButton_clicked()
         ui->regErrorLabel->setText("Заполните все поля!");
         return;
     }
-
+    if(login.length() <10) {
+        ui->regErrorLabel->setText("Логин должен быть не меньше 10 символов!");
+        return;
+    }
     if(password != confirmPassword) {
         ui->regErrorLabel->setText("Пароли не совпадают!");
         return;
     }
 
-    if(password.length() < 6) {
-        ui->regErrorLabel->setText("Пароль должен содержать минимум 6 символов!");
+    if(AuthorizationWindow::password_strength(password) == 1) {
+        // ui->regErrorLabel->setText("Пароль не подходит!");
 
         return;
     }
@@ -95,6 +99,52 @@ void AuthorizationWindow::on_registerButton_clicked()
     on_switchToLogin_clicked();
 }
 
+int AuthorizationWindow::password_strength(QString &password)
+{
+    // Длина пароля
+    if (password.length() < 10){
+        ui->regErrorLabel->setText("Пароль меньше 10 символов!");
+        return 1;
+    }
+
+    // Отсутствие пробелов
+    if (password.contains(' ')){
+        ui->regErrorLabel->setText("Не должно быть пробелов!");
+        return 1;
+    }
+
+    // Содержит заглавные буквы
+    if (password == password.toLower()){
+        ui->regErrorLabel->setText("Должны быть заглавные буквы!");
+        return 1;
+    }
+
+    // Содержит строчные буквы
+    if (password == password.toUpper()){
+        ui->regErrorLabel->setText("Должны быть прописные буквы!");
+        return 1;
+    }
+
+    // Содержит цифры
+    if (password.count(QRegularExpression("[0-9]"))==0){
+        ui->regErrorLabel->setText("Должны быть цифры!");
+        return 1;
+    }
+
+    // Содержит русские и английские буквы
+    if ( ((password.count(QRegularExpression("[a-zA-Z]"))>0) + (password.count(QRegularExpression("[а-яА-Я]"))>0)) <2) {
+        ui->regErrorLabel->setText("Должны быть английские и русские буквы!");
+        return 1;
+    }
+
+    // Содержит спецсимволы
+    if (password.count(QRegularExpression("[^a-zа-яA-ZА-Я0-9]"))==0){
+        ui->regErrorLabel->setText("Должны быть символы!");
+        return 1;
+    }
+
+    return 0;
+}
 
 AuthorizationWindow::~AuthorizationWindow()
 {

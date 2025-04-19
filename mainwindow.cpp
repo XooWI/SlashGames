@@ -4,6 +4,10 @@
 #include <QDateTime>
 #include <QMessageBox>
 
+
+#include <QDebug>
+#include <QProcess>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -19,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     checkBonusAvailability();
 
     connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
-    connect(ui->getBonusButton, &QPushButton::clicked, this, &MainWindow::claimBonus);
 
     ui->supportLabel->setText("Нет нужной игры? "
                               "<a href='https://t.me/SlashGames_support_bot' style='color: #2a7ae9; text-decoration: none;'>"
@@ -38,7 +41,7 @@ void MainWindow::loadBalance()
 void MainWindow::loadTheme()
 {
     isDarkTheme = settings->value("darkTheme", false).toBool();
-    apply_theme(isDarkTheme);
+    applyTheme(isDarkTheme);
 }
 
 
@@ -51,35 +54,114 @@ void MainWindow::on_FaQButton_clicked()
 
 void MainWindow::on_themeButton_clicked()
 {
-    apply_theme(!isDarkTheme);
+    applyTheme(!isDarkTheme);
 }
 
+void MainWindow::on_getBonusButton_clicked()
+{
+    balance += BONUS_AMOUNT;
+    saveBalance();
+    showBalanceChange(BONUS_AMOUNT);
+
+    settings->setValue("lastBonusTime", QDateTime::currentDateTime());
+    startBonusReload(BONUS_RELOAD);
+}
 
 void MainWindow::on_addGameButton_clicked()
 {
-   QMessageBox::information(this, "В разработке...", "Кнопка добавления новых игр находится в разработке\n\n(GitHub: MrAnonim114).");
+
+    GameInputDialog gameInputDialog(this);
+    if (gameInputDialog.exec() != QDialog::Accepted) {
+        return; // Пользователь отменил ввод
+    }
+
+    QString gameName = gameInputDialog.getName();
+    QString iconPath = gameInputDialog.getIconPath();
+    QString executablePath = gameInputDialog.getExecutablePath();
+
+    // Создаем новую кнопку игры
+    QPushButton *newGameButton = new QPushButton(ui->gamesContainer);
+    newGameButton->setMinimumSize(QSize(400, 300));
+    newGameButton->setMaximumSize(QSize(600, 300));
+    newGameButton->setCursor(Qt::PointingHandCursor);
+
+
+    newGameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
+    newGameButton->setText(gameName);
+
+    newGameButton->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(newGameButton, &QPushButton::customContextMenuRequested, [this, newGameButton](const QPoint&){
+        QPoint centerPos = newGameButton->rect().center();
+        QPoint globalPos = newGameButton->mapToGlobal(centerPos);
+        QString gameName = newGameButton->property("gameName").toString();
+        gameButtonRight_clicked(gameName, globalPos);
+    });
+
+    // Вычисляем позицию для новой кнопки
+    int row = gameCount / 2;  // Учитываем 2 стандартные игры
+    int column = gameCount % 2;
+
+    // Добавляем новую кнопку в сетку
+    ui->gamesGridLayout->addWidget(newGameButton, row, column);
+    gameCount++;
+
+    // Перемещаем кнопку "+" в следующую позицию
+    ui->gamesGridLayout->removeWidget(ui->addGameButton);
+    int newRow = gameCount / 2;
+    int newCol = gameCount % 2;
+    ui->gamesGridLayout->addWidget(ui->addGameButton, newRow, newCol);
+
+    // Подключаем обработчик клика для запуска игры
+    connect(newGameButton, &QPushButton::clicked, [executablePath]() {QProcess::startDetached(executablePath);});
+
 }
 
-void MainWindow::onProfileClicked()
+
+
+void MainWindow::gameButtonRight_clicked(const QString& gameName, const QPoint& globalPos)
+{
+    QMenu menu(this);
+
+    QAction* editAction = menu.addAction("Редактировать");
+    connect(editAction, &QAction::triggered, this, &MainWindow::menuGameEdit_clicked);
+
+    QAction* deleteAction = menu.addAction("Удалить");
+    connect(deleteAction, &QAction::triggered, this, &MainWindow::menuGameDelete_clicked);
+
+    menu.exec(globalPos);
+}
+
+
+void MainWindow::menuProfile_clicked()
 {
        AuthorizationWindow authWindow(this);
        authWindow.exec();
 }
 
-void MainWindow::onEditClicked()
+void MainWindow::menuGameEdit_clicked()
 {
+    qDebug() << "Press edit game button";
 }
 
-void MainWindow::onExitClicked()
+void MainWindow::menuGameDelete_clicked()
 {
-    // Подтверждение выхода
+    qDebug() << "Press delete game button";
+}
+
+void MainWindow::menuEdit_clicked()
+{
+    qDebug() << "Press edit button";
+}
+
+void MainWindow::menuExit_clicked()
+{
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Подтверждение",
                                 "Вы действительно хотите выйти?",
                                 QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        qApp->quit(); // Закрытие приложения
+        qApp->quit();
     }
 }
 
@@ -95,7 +177,7 @@ void MainWindow::on_slotsButton_clicked()
 }
 
 
-void MainWindow::apply_theme(bool darkTheme)
+void MainWindow::applyTheme(bool darkTheme)
 {
     isDarkTheme = darkTheme;
     QString themeIconPath, faqIconPath, accountIconPath, myProfileIconPath, editProfileIconPath;
@@ -125,11 +207,11 @@ void MainWindow::apply_theme(bool darkTheme)
 
     // Меню для кнопки профиля
     QAction *profileAction = toolMenu->addAction(QIcon(myProfileIconPath), "Мой профиль");
-    connect(profileAction, &QAction::triggered, this, &MainWindow::onProfileClicked);
+    connect(profileAction, &QAction::triggered, this, &MainWindow::menuProfile_clicked);
     QAction *editAction = toolMenu->addAction(QIcon(editProfileIconPath), "Редактировать");
-    connect(editAction, &QAction::triggered, this, &MainWindow::onEditClicked);
+    connect(editAction, &QAction::triggered, this, &MainWindow::menuEdit_clicked);
     QAction *exitAction = toolMenu->addAction(QIcon(":/resources/exit.png"), "Выход");
-    connect(exitAction, &QAction::triggered, this, &MainWindow::onExitClicked);
+    connect(exitAction, &QAction::triggered, this, &MainWindow::menuExit_clicked);
     ui->accountButton->setMenu(toolMenu);
 
     settings->setValue("darkTheme", isDarkTheme);
@@ -188,18 +270,6 @@ void MainWindow::checkBonusAvailability()
     enableBonusButton();
 }
 
-
-void MainWindow::claimBonus()
-{
-    balance += BONUS_AMOUNT;
-    saveBalance();
-    showBalanceChange(BONUS_AMOUNT);
-
-    settings->setValue("lastBonusTime", QDateTime::currentDateTime());
-    startBonusReload(BONUS_RELOAD);
-}
-
-
 void MainWindow::startBonusReload(int seconds)
 {
     remainingSeconds = seconds;
@@ -254,7 +324,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
 
 
 

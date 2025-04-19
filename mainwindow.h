@@ -10,6 +10,9 @@
 #include "authorizationwindow.h"
 
 
+#include"gameinputdialog.h"
+#include"deletegamedialog.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -25,21 +28,25 @@ public:
     ~MainWindow() override;
 
 private slots:
-    void claimBonus();
     void updateBonusTimer();
     void showBalanceChange(int amount);
+    void on_getBonusButton_clicked();
     void on_addGameButton_clicked();
     void on_FaQButton_clicked();
     void on_themeButton_clicked();
-    //void on_accountButton_clicked();
 
 
     void on_rouletteButton_clicked();
     void on_slotsButton_clicked();
 
-    void onProfileClicked();
-    void onEditClicked();
-    void onExitClicked();
+    void menuProfile_clicked();
+    void menuEdit_clicked();
+    void menuExit_clicked();
+
+
+    void gameButtonRight_clicked(const QString& gameName, const QPoint& globalPos);
+    void menuGameEdit_clicked();
+    void menuGameDelete_clicked();
 
 private:
     static constexpr int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
@@ -66,8 +73,10 @@ private:
     void updateBonusButtonAppearance();
 
     // Смена темы
-    void apply_theme(bool darkTheme);
+    void applyTheme(bool darkTheme);
     void loadTheme();
 
+
+    int gameCount = 2; // Удалить
 };
 #endif // MAINWINDOW_H

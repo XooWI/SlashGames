@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameInputDialog</class>
+ <widget class="QDialog" name="GameInputDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>450</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>450</width>
+    <height>350</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>450</width>
+    <height>350</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Добавить игру</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog {
+    border-radius: 10px;
+}
+QLabel {
+    font-size: 15px;
+}
+QLineEdit {
+	border: 1px solid dark-gray;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #45a049;
+}
+QPushButton:pressed {
+    background-color: #3d8b40;
+}
+QPushButton#browseIconButton, QPushButton#browseFileButton {
+    background-color: #2196F3;
+}
+QPushButton#browseIconButton:hover, QPushButton#browseFileButton:hover {
+    background-color: #1976D2;
+}
+QPushButton#browseIconButton:pressed, QPushButton#browseFileButton:pressed {
+    background-color: #1565C0;
+}
+QPushButton#cancelButton {
+    background-color: #f44336;
+}
+QPushButton#cancelButton:hover {
+    background-color: #da190b;
+}
+QPushButton#cancelButton:pressed {
+    background-color: #b71c1c;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>15</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="nameLabel">
+     <property name="text">
+      <string>Название игры:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="nameEdit"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="iconLabel">
+     <property name="text">
+      <string>Иконка игры:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="iconLayout">
+     <item>
+      <widget class="QLineEdit" name="iconPathEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseIconButton">
+       <property name="text">
+        <string>Обзор</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="fileLabel">
+     <property name="minimumSize">
+      <size>
+       <width>2</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Файл игры:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="fileLayout">
+     <item>
+      <widget class="QLineEdit" name="filePathEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseFileButton">
+       <property name="text">
+        <string>Обзор</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="acceptButton">
+       <property name="text">
+        <string>Добавить</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Отмена</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

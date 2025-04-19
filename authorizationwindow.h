@@ -14,12 +14,14 @@ class AuthorizationWindow : public QDialog
 public:
     explicit AuthorizationWindow(QWidget *parent = nullptr);
     ~AuthorizationWindow();
+    int password_strength(QString &password);
 
 private slots:
     void on_switchToRegister_clicked();
     void on_switchToLogin_clicked();
     void on_loginButton_clicked();
     void on_registerButton_clicked();
+
 
 private:
     Ui::AuthWindow *ui;
