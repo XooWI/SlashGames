@@ -12,7 +12,7 @@ class DeleteGameDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit DeleteGameDialog(QWidget *parent = nullptr);
+    explicit DeleteGameDialog(const QString& gameName, QWidget *parent = nullptr);
     ~DeleteGameDialog();
 
 private slots:

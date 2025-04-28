@@ -1,38 +1,37 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <QDateTime>
-#include <QMessageBox>
-
-
-#include <QDebug>
-#include <QProcess>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       bonusTimer(new QTimer(this)),
-      settings(new QSettings("SlashGames", "Menu", this))
+      settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Menu", this)),
+      // Настройки хранятся в C:\Users\<NAME_USER>\AppData\Roaming\SlashGames\Menu.ini
+
+      dbManager(new DatabaseManagement(settings))
 {
     ui->setupUi(this);
     toolMenu = new QMenu(this);
 
     // Загрузка сохраненных данных
+    local_ID = settings->value("ID", "0").toString();
     loadTheme();
     loadBalance();
     checkBonusAvailability();
+    refreshGamesLayout();
 
     connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
-
-    ui->supportLabel->setText("Нет нужной игры? "
-                              "<a href='https://t.me/SlashGames_support_bot' style='color: #2a7ae9; text-decoration: none;'>"
-                              "Напишите нам!");
+    ui->supportLabel->setText(CustomStyle::getTextSupportLabel());
     ui->supportLabel->setOpenExternalLinks(true);
 }
 
 
 void MainWindow::loadBalance()
 {
+    if (local_ID != "0" && dbManager->checkToken()){
+        settings->setValue("balance", dbManager->getBalance());
+        qDebug() << "You login! username:" << dbManager->getUsername() << dbManager->getBalance();
+    }
     balance = settings->value("balance", 0).toInt();
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
@@ -67,65 +66,240 @@ void MainWindow::on_getBonusButton_clicked()
     startBonusReload(BONUS_RELOAD);
 }
 
+
 void MainWindow::on_addGameButton_clicked()
 {
-
-    GameInputDialog gameInputDialog(this);
+    GameInputDialog gameInputDialog(false, this);
     if (gameInputDialog.exec() != QDialog::Accepted) {
         return; // Пользователь отменил ввод
     }
 
     QString gameName = gameInputDialog.getName();
     QString iconPath = gameInputDialog.getIconPath();
-    QString executablePath = gameInputDialog.getExecutablePath();
+    QString executablePath = gameInputDialog.getFilePath();
 
-    // Создаем новую кнопку игры
-    QPushButton *newGameButton = new QPushButton(ui->gamesContainer);
-    newGameButton->setMinimumSize(QSize(400, 300));
-    newGameButton->setMaximumSize(QSize(600, 300));
-    newGameButton->setCursor(Qt::PointingHandCursor);
+    // Сохраняем данные игры
+    saveGame(gameName, iconPath, executablePath);
+    refreshGamesLayout();
+}
 
 
-    newGameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
-    newGameButton->setText(gameName);
-
-    newGameButton->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(newGameButton, &QPushButton::customContextMenuRequested, [this, newGameButton](const QPoint&){
-        QPoint centerPos = newGameButton->rect().center();
-        QPoint globalPos = newGameButton->mapToGlobal(centerPos);
-        QString gameName = newGameButton->property("gameName").toString();
-        gameButtonRight_clicked(gameName, globalPos);
-    });
-
-    // Вычисляем позицию для новой кнопки
-    int row = gameCount / 2;  // Учитываем 2 стандартные игры
-    int column = gameCount % 2;
-
-    // Добавляем новую кнопку в сетку
-    ui->gamesGridLayout->addWidget(newGameButton, row, column);
+void MainWindow::saveGame(const QString &name, const QString &iconPath, const QString &executablePath)
+{
+    // Сохраняем количество игр
+    gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
     gameCount++;
+    settings->setValue("GameCount", gameCount);
 
-    // Перемещаем кнопку "+" в следующую позицию
-    ui->gamesGridLayout->removeWidget(ui->addGameButton);
-    int newRow = gameCount / 2;
-    int newCol = gameCount % 2;
-    ui->gamesGridLayout->addWidget(ui->addGameButton, newRow, newCol);
-
-    // Подключаем обработчик клика для запуска игры
-    connect(newGameButton, &QPushButton::clicked, [executablePath]() {QProcess::startDetached(executablePath);});
+    // Сохраняем данные конкретной игры
+    settings->beginGroup(QString("Game_%1").arg(gameCount));
+    settings->setValue("Name", name);
+    settings->setValue("IconPath", iconPath);
+    settings->setValue("ExecutablePath", executablePath);
+    settings->endGroup();
 
 }
 
 
-
-void MainWindow::gameButtonRight_clicked(const QString& gameName, const QPoint& globalPos)
+QPushButton* MainWindow::createGameButton(const QString &name, const QString &iconPath, const QString &executablePath)
 {
+    QPushButton *newGameButton = new QPushButton(ui->gamesContainer);
+    newGameButton->setMinimumSize(QSize(MINIMUM_SIZE_WIDTH, MINIMUM_SIZE_HEIGHT));
+    newGameButton->setMaximumSize(QSize(MAXIMUM_SIZE_WIDTH, MAXIMUM_SIZE_HEIGHT));
+
+    newGameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
+    newGameButton->setText(name);
+    newGameButton->setProperty("gameName", name);
+    newGameButton->setProperty("executablePath", executablePath);
+    newGameButton->setProperty("iconPath", iconPath);
+
+    newGameButton->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(newGameButton, &QPushButton::customContextMenuRequested, [this, newGameButton](const QPoint& pos){
+        QPoint globalPos = newGameButton->mapToGlobal(pos);
+        gameButtonRight_clicked(newGameButton, globalPos);
+    });
+
+    connect(newGameButton, &QPushButton::clicked, [executablePath]() {
+        QProcess::startDetached(executablePath);
+    });
+
+    return newGameButton;
+}
+
+
+void MainWindow::refreshGamesLayout()
+{
+    ui->gamesGridLayout->removeWidget(ui->addGameButton);
+
+    // Очищаем все кнопки
+    for (int i = ui->gamesGridLayout->count() - 1; i >= 0; --i) {
+        QLayoutItem* item = ui->gamesGridLayout->itemAt(i);
+        if (item && item->widget()) {
+            if (QPushButton* button = qobject_cast<QPushButton*>(item->widget())) {
+
+                bool isUserGame = button->property("isUserGame").toBool();
+
+                if (isUserGame) {
+                    ui->gamesGridLayout->removeWidget(button);
+                    button->deleteLater();
+                }
+            }
+        }
+    }
+
+    // Загружаем и добавляем игры из настроек
+    gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+
+    for (int i = GAME_PREINSTALL_COUNT + 1; i <= gameCount; ++i) {
+            settings->beginGroup(QString("Game_%1").arg(i));
+
+            QString name = settings->value("Name").toString();
+            QString iconPath = settings->value("IconPath").toString();
+            QString executablePath = settings->value("ExecutablePath").toString();
+
+            settings->endGroup();
+
+            QPushButton* gameButton = createGameButton(name, iconPath, executablePath);
+
+            // Помечаем кнопку как пользовательскую
+            gameButton->setProperty("isUserGame", true);
+
+            int gridIndex = GAME_PREINSTALL_COUNT + (i - (GAME_PREINSTALL_COUNT + 1));
+            int row = gridIndex / 2;
+            int col = gridIndex % 2;
+
+            ui->gamesGridLayout->addWidget(gameButton, row, col);
+    }
+
+    // Обновляем позицию кнопки "+"
+    ui->gamesGridLayout->addWidget(ui->addGameButton, gameCount / 2, gameCount % 2);
+
+}
+
+
+void MainWindow::menuGameEdit_clicked()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (!action) return;
+
+    QVariant gameDataVariant = action->data();
+    QVariantMap gameData = gameDataVariant.toMap();
+
+    // Извлекаем старые свойства игры из карты (до редактирования)
+    QString currentName = gameData.value("Name").toString();
+    QString currentIconPath = gameData.value("IconPath").toString();
+    QString currentExecutablePath = gameData.value("ExecutablePath").toString();
+
+
+    GameInputDialog editDialog(true, this);
+    editDialog.setName(currentName);
+    editDialog.setIconPath(currentIconPath);
+    editDialog.setFilePath(currentExecutablePath);
+
+    if (editDialog.exec() != QDialog::Accepted) {
+        return; // Пользователь отменил ввод
+    }
+
+    QString newName = editDialog.getName();
+    QString newIconPath = editDialog.getIconPath();
+    QString newExecutablePath = editDialog.getFilePath();
+
+    // Если ничего не поменялось
+    if (newName == currentName && newIconPath == currentIconPath && newExecutablePath == currentExecutablePath) {
+        return;
+    }
+
+    for (int i = 1; i <= gameCount; ++i) {
+        settings->beginGroup(QString("Game_%1").arg(i));
+        QString entryName = settings->value("Name").toString();
+        QString entryIconPath = settings->value("IconPath").toString();
+        QString entryExecutablePath = settings->value("ExecutablePath").toString();
+        if (entryName == currentName &&
+                entryIconPath == currentIconPath &&
+                entryExecutablePath == currentExecutablePath) {
+            settings->setValue("Name", newName);
+            settings->setValue("IconPath", newIconPath);
+            settings->setValue("ExecutablePath", newExecutablePath);
+            settings->endGroup();
+            break;
+        }
+        settings->endGroup();
+    }
+
+    refreshGamesLayout();
+}
+
+
+void MainWindow::menuGameDelete_clicked()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (!action) return;
+
+    QString gameName = action->data().toString();
+    if (gameName.isEmpty()) return;
+
+    DeleteGameDialog DeleteGameDialog(gameName, this);
+    if (DeleteGameDialog.exec() != QDialog::Accepted) {
+        return; // Пользователь отменил ввод
+    }
+
+
+    QVector<QVariantMap> userGamesToKeep;
+    int currentTotalGameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+
+    for (int i = GAME_PREINSTALL_COUNT + 1; i <= currentTotalGameCount; ++i) {
+        settings->beginGroup(QString("Game_%1").arg(i));
+        QString currentName = settings->value("Name").toString();
+        if (!currentName.isEmpty() && currentName != gameName) {
+            QVariantMap game;
+            game["Name"] = currentName;
+            game["IconPath"] = settings->value("IconPath");
+            game["ExecutablePath"] = settings->value("ExecutablePath");
+            userGamesToKeep.append(game);
+        }
+        settings->endGroup();
+    }
+
+    // Очищаем все пользовательские игры из настроек
+    for (int i = GAME_PREINSTALL_COUNT + 1; i <= currentTotalGameCount; ++i) {
+        settings->remove(QString("Game_%1").arg(i));
+    }
+
+    for (int i = 0; i < userGamesToKeep.size(); ++i) {
+        int newGameIndex = GAME_PREINSTALL_COUNT + 1 + i;
+        settings->beginGroup(QString("Game_%1").arg(newGameIndex));
+        settings->setValue("Name", userGamesToKeep[i]["Name"]);
+        settings->setValue("IconPath", userGamesToKeep[i]["IconPath"]);
+        settings->setValue("ExecutablePath", userGamesToKeep[i]["ExecutablePath"]);
+        settings->endGroup();
+    }
+
+    gameCount = GAME_PREINSTALL_COUNT + userGamesToKeep.size(); // Обновляем член класса
+    settings->setValue("GameCount", gameCount);
+
+    // Обновляем поля
+    refreshGamesLayout();
+
+}
+
+void MainWindow::gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos) {
     QMenu menu(this);
 
+    QString gameName = gameButton->property("gameName").toString();
+    QString iconPath = gameButton->property("iconPath").toString();
+    QString executablePath = gameButton->property("executablePath").toString();
+
+    QVariantMap gameData;
+        gameData["Name"] = gameName;
+        gameData["IconPath"] = iconPath;
+        gameData["ExecutablePath"] = executablePath;
+
     QAction* editAction = menu.addAction("Редактировать");
+    editAction->setData(gameData);
     connect(editAction, &QAction::triggered, this, &MainWindow::menuGameEdit_clicked);
 
     QAction* deleteAction = menu.addAction("Удалить");
+    deleteAction->setData(gameName);;
     connect(deleteAction, &QAction::triggered, this, &MainWindow::menuGameDelete_clicked);
 
     menu.exec(globalPos);
@@ -134,35 +308,39 @@ void MainWindow::gameButtonRight_clicked(const QString& gameName, const QPoint& 
 
 void MainWindow::menuProfile_clicked()
 {
-       AuthorizationWindow authWindow(this);
+    if(local_ID != "0" && dbManager->checkToken()){
+        qDebug() << "You login!";
+        return;
+    }
+       AuthorizationWindow authWindow(settings, dbManager, this);
        authWindow.exec();
 }
 
-void MainWindow::menuGameEdit_clicked()
-{
-    qDebug() << "Press edit game button";
-}
-
-void MainWindow::menuGameDelete_clicked()
-{
-    qDebug() << "Press delete game button";
-}
 
 void MainWindow::menuEdit_clicked()
 {
-    qDebug() << "Press edit button";
+    if(local_ID != "0" && dbManager->checkToken()){
+        qDebug() << "You login and edit!";
+        return;
+    }
 }
 
 void MainWindow::menuExit_clicked()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение",
-                                "Вы действительно хотите выйти?",
-                                QMessageBox::Yes | QMessageBox::No);
+    if(local_ID != "0" && dbManager->checkToken()){
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Подтверждение",
+                                    "Вы действительно хотите выйти?",
+                                    QMessageBox::Yes | QMessageBox::No);
 
-    if (reply == QMessageBox::Yes) {
-        qApp->quit();
+        if (reply == QMessageBox::Yes) {
+            settings->setValue("ID", "0");
+            local_ID = settings->value("ID", "0").toString();
+        }
+        return;
     }
+    qDebug() << "You not login( ";
+
 }
 
 void MainWindow::on_rouletteButton_clicked()
@@ -320,9 +498,11 @@ void MainWindow::enableBonusButton()
 }
 
 
+
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete dbManager;
 }
 
 

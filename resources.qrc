@@ -22,5 +22,7 @@
         <file>resources/edit_for_light.png</file>
         <file>resources/edit_for_dark.png</file>
         <file>resources/exit.png</file>
+        <file>resources/open_eye_for_light.png</file>
+        <file>resources/hide_eye_for_light.png</file>
     </qresource>
 </RCC> 

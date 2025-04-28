@@ -2,6 +2,8 @@
 #define FAQWINDOW_H
 
 #include <QDialog>
+#include <QDesktopServices>
+#include <QUrl>
 
 namespace Ui {
 class FAQWindow;
