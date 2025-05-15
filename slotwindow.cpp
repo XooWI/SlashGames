@@ -14,8 +14,7 @@ SlotWindow::~SlotWindow()
     delete ui;
 }
 
-void SlotWindow::on_pushButton_clicked()
-{
+QString randomizer(){
     QString val1 = "background-image: url(:/resources/shrimpThvg200200.png);";
     QString val2 = "background-image: url(:/resources/shrimpThvg200200hover.png);";
     QString val;
@@ -25,8 +24,14 @@ void SlotWindow::on_pushButton_clicked()
     }else{
         val = val2;
     }
-    ui->label->setStyleSheet(val);
-    ui->label_2->setStyleSheet(val);
-    ui->label_3->setStyleSheet(val);
+    return val;
+}
+
+void SlotWindow::on_pushButton_clicked()
+{
+
+    ui->label->setStyleSheet(randomizer());
+    ui->label_2->setStyleSheet(randomizer());
+    ui->label_3->setStyleSheet(randomizer());
 }
 
