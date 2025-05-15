@@ -11,5 +11,7 @@
         <file>resources/roulette200200.png</file>
         <file>resources/roulette200200hover.png</file>
         <file>resources/shrimpThvg200200hover.png</file>
+        <file>resources/slotBackground.png</file>
+        <file>resources/slotBackground126.png</file>
     </qresource>
 </RCC>
