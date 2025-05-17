@@ -30,6 +30,10 @@ public:
 
     int password_strength(QString &password);
 
+signals:
+    // Сигнал, испускаемый при успешной авторизации
+    void loginSuccessful();
+
 private slots:
     void on_switchToRegister_clicked();
     void on_switchToLogin_clicked();
@@ -44,6 +48,19 @@ private slots:
 
     void on_regShowConfirmPassword_pressed();
     void on_regShowConfirmPassword_released();
+
+    void on_regPasswordEdit_textEdited(const QString &arg1);
+
+    void on_confirmPasswordEdit_textEdited(const QString &arg1);
+
+
+    void on_regLoginEdit_textEdited(const QString &arg1);
+
+    void on_loginEdit_textEdited(const QString &arg1);
+
+    void on_passwordEdit_textEdited(const QString &arg1);
+
+    void on_regUsernameEdit_textEdited(const QString &arg1);
 
 private:
     Ui::AuthWindow *ui;

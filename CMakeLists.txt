@@ -36,12 +36,13 @@ set(PROJECT_SOURCES
         gameinputdialog.cpp
         gameinputdialog.ui
 
-        deletegamedialog.h
-        deletegamedialog.cpp
-        deletegamedialog.ui
-
         databasemanagement.h
         databasemanagement.cpp
+
+        customwindow.h
+        customwindow.cpp
+        customwindow.ui
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

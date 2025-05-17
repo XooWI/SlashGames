@@ -2,35 +2,53 @@
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-      ui(new Ui::MainWindow),
-      bonusTimer(new QTimer(this)),
-      settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Menu", this)),
-      // Настройки хранятся в C:\Users\<NAME_USER>\AppData\Roaming\SlashGames\Menu.ini
+        : QMainWindow(parent),
+        ui(new Ui::MainWindow),
+        bonusTimer(new QTimer(this)),
+        settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Menu", this)),
+        // Настройки хранятся в C:\Users\<NAME_USER>\AppData\Roaming\SlashGames\Menu.ini
+        // Перенести в системный реестр settings(new QSettings("SlashGames", "Menu", this))
 
-      dbManager(new DatabaseManagement(settings))
+      dbManager(new DatabaseManagement(settings)),
+      toolMenu(nullptr)
 {
     ui->setupUi(this);
-    toolMenu = new QMenu(this);
 
     // Загрузка сохраненных данных
-    local_ID = settings->value("ID", "0").toString();
-    loadTheme();
+    local_ID = settings->value("ID", "").toString();
     loadBalance();
+    loadTheme();
     checkBonusAvailability();
     refreshGamesLayout();
 
     connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
     ui->supportLabel->setText(CustomStyle::getTextSupportLabel());
     ui->supportLabel->setOpenExternalLinks(true);
+    connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
+
+    ui->supportLabel->setText(CustomStyle::getTextSupportLabel());
+    ui->supportLabel->setOpenExternalLinks(true);
+}
+
+
+void MainWindow::checkAndUpdateAccountState()
+{
+    if (!dbManager->checkToken()) {
+        updateAccountButtonState();
+        ui->usernameLabel->setText("Гость");
+        QMessageBox::information(this, "Сеанс истек", "Ваш сеанс истек. Необходимо заново авторизироваться.");
+        //tokenCheckTimer->stop();
+        settings->setValue("balance", "0");
+    }
 }
 
 
 void MainWindow::loadBalance()
 {
-    if (local_ID != "0" && dbManager->checkToken()){
+    qDebug() << "Balance checkToken";
+    if (local_ID != "" && dbManager->checkToken()){
         settings->setValue("balance", dbManager->getBalance());
-        qDebug() << "You login! username:" << dbManager->getUsername() << dbManager->getBalance();
+        qDebug() << "You login! username: " << dbManager->getUsername() << " Balance:"<<dbManager->getBalance();
     }
     balance = settings->value("balance", 0).toInt();
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
@@ -67,11 +85,12 @@ void MainWindow::on_getBonusButton_clicked()
 }
 
 
+// Управление пользовательскими играми
 void MainWindow::on_addGameButton_clicked()
 {
     GameInputDialog gameInputDialog(false, this);
     if (gameInputDialog.exec() != QDialog::Accepted) {
-        return; // Пользователь отменил ввод
+        return;
     }
 
     QString gameName = gameInputDialog.getName();
@@ -99,33 +118,6 @@ void MainWindow::saveGame(const QString &name, const QString &iconPath, const QS
     settings->endGroup();
 
 }
-
-
-QPushButton* MainWindow::createGameButton(const QString &name, const QString &iconPath, const QString &executablePath)
-{
-    QPushButton *newGameButton = new QPushButton(ui->gamesContainer);
-    newGameButton->setMinimumSize(QSize(MINIMUM_SIZE_WIDTH, MINIMUM_SIZE_HEIGHT));
-    newGameButton->setMaximumSize(QSize(MAXIMUM_SIZE_WIDTH, MAXIMUM_SIZE_HEIGHT));
-
-    newGameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
-    newGameButton->setText(name);
-    newGameButton->setProperty("gameName", name);
-    newGameButton->setProperty("executablePath", executablePath);
-    newGameButton->setProperty("iconPath", iconPath);
-
-    newGameButton->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(newGameButton, &QPushButton::customContextMenuRequested, [this, newGameButton](const QPoint& pos){
-        QPoint globalPos = newGameButton->mapToGlobal(pos);
-        gameButtonRight_clicked(newGameButton, globalPos);
-    });
-
-    connect(newGameButton, &QPushButton::clicked, [executablePath]() {
-        QProcess::startDetached(executablePath);
-    });
-
-    return newGameButton;
-}
-
 
 void MainWindow::refreshGamesLayout()
 {
@@ -174,6 +166,56 @@ void MainWindow::refreshGamesLayout()
     // Обновляем позицию кнопки "+"
     ui->gamesGridLayout->addWidget(ui->addGameButton, gameCount / 2, gameCount % 2);
 
+}
+
+
+QPushButton* MainWindow::createGameButton(const QString &name, const QString &iconPath, const QString &executablePath)
+{
+    QPushButton *newGameButton = new QPushButton(ui->gamesContainer);
+    newGameButton->setMinimumSize(QSize(MINIMUM_SIZE_WIDTH, MINIMUM_SIZE_HEIGHT));
+    newGameButton->setMaximumSize(QSize(MAXIMUM_SIZE_WIDTH, MAXIMUM_SIZE_HEIGHT));
+
+    newGameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
+    newGameButton->setText(name);
+    newGameButton->setProperty("gameName", name);
+    newGameButton->setProperty("executablePath", executablePath);
+    newGameButton->setProperty("iconPath", iconPath);
+
+    newGameButton->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(newGameButton, &QPushButton::customContextMenuRequested, [this, newGameButton](const QPoint& pos){
+        QPoint globalPos = newGameButton->mapToGlobal(pos);
+        gameButtonRight_clicked(newGameButton, globalPos);
+    });
+
+    connect(newGameButton, &QPushButton::clicked, [executablePath]() {
+        QProcess::startDetached(executablePath);
+    });
+
+    return newGameButton;
+}
+
+
+void MainWindow::gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos) {
+    QMenu menu(this);
+
+    QString gameName = gameButton->property("gameName").toString();
+    QString iconPath = gameButton->property("iconPath").toString();
+    QString executablePath = gameButton->property("executablePath").toString();
+
+    QVariantMap gameData;
+        gameData["Name"] = gameName;
+        gameData["IconPath"] = iconPath;
+        gameData["ExecutablePath"] = executablePath;
+
+    QAction* editAction = menu.addAction("Редактировать");
+    editAction->setData(gameData);
+    connect(editAction, &QAction::triggered, this, &MainWindow::menuGameEdit_clicked);
+
+    QAction* deleteAction = menu.addAction("Удалить");
+    deleteAction->setData(gameName);;
+    connect(deleteAction, &QAction::triggered, this, &MainWindow::menuGameDelete_clicked);
+
+    menu.exec(globalPos);
 }
 
 
@@ -238,8 +280,8 @@ void MainWindow::menuGameDelete_clicked()
     QString gameName = action->data().toString();
     if (gameName.isEmpty()) return;
 
-    DeleteGameDialog DeleteGameDialog(gameName, this);
-    if (DeleteGameDialog.exec() != QDialog::Accepted) {
+    CustomWindow deleteDialog(CustomWindow::DeleteConfirmation, gameName, QString(), this);
+    if (deleteDialog.exec() != QDialog::Accepted) {
         return; // Пользователь отменил ввод
     }
 
@@ -282,66 +324,52 @@ void MainWindow::menuGameDelete_clicked()
 
 }
 
-void MainWindow::gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos) {
-    QMenu menu(this);
+// Конец управления играми
 
-    QString gameName = gameButton->property("gameName").toString();
-    QString iconPath = gameButton->property("iconPath").toString();
-    QString executablePath = gameButton->property("executablePath").toString();
 
-    QVariantMap gameData;
-        gameData["Name"] = gameName;
-        gameData["IconPath"] = iconPath;
-        gameData["ExecutablePath"] = executablePath;
-
-    QAction* editAction = menu.addAction("Редактировать");
-    editAction->setData(gameData);
-    connect(editAction, &QAction::triggered, this, &MainWindow::menuGameEdit_clicked);
-
-    QAction* deleteAction = menu.addAction("Удалить");
-    deleteAction->setData(gameName);;
-    connect(deleteAction, &QAction::triggered, this, &MainWindow::menuGameDelete_clicked);
-
-    menu.exec(globalPos);
+// Кнопки и меню профиль
+void MainWindow::showMenuProfileInfo_clicked()
+{
+    qDebug() << "Пользователь авторизован.";
+    CustomWindow General(CustomWindow::GeneralInfo, "Вы авторизованы!", dbManager->getUsername(), this);
+    General.exec();
 }
 
 
-void MainWindow::menuProfile_clicked()
+void MainWindow::menuEditProfile_clicked()
 {
-    if(local_ID != "0" && dbManager->checkToken()){
-        qDebug() << "You login!";
-        return;
-    }
-       AuthorizationWindow authWindow(settings, dbManager, this);
-       authWindow.exec();
-}
-
-
-void MainWindow::menuEdit_clicked()
-{
-    if(local_ID != "0" && dbManager->checkToken()){
-        qDebug() << "You login and edit!";
+    qDebug() << "menuEditProfile checkToken";
+    if(dbManager->checkToken()){
+        qDebug() << "You enter button menu edit!";
+        CustomWindow UserInfo(CustomWindow::UserInfo, "You edit!",QString(), this);
+        UserInfo.exec();
         return;
     }
 }
 
-void MainWindow::menuExit_clicked()
+void MainWindow::menuExitProfile_clicked()
 {
-    if(local_ID != "0" && dbManager->checkToken()){
+    qDebug() << "menuExitProfile checkToken";
+
+    if(dbManager->checkToken()){
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Подтверждение",
-                                    "Вы действительно хотите выйти?",
+                                    "Вы действительно хотите выйти?\nВаш прогресс будет потерян!",
                                     QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes) {
             settings->setValue("ID", "0");
-            local_ID = settings->value("ID", "0").toString();
+            settings->setValue("balance", "0");
+            local_ID = settings->value("ID", "").toString();
+            loadBalance();
+            updateAccountButtonState();
+            qDebug() << "You 0 ";
         }
         return;
     }
-    qDebug() << "You not login( ";
 
 }
+
 
 void MainWindow::on_rouletteButton_clicked()
 {
@@ -355,50 +383,100 @@ void MainWindow::on_slotsButton_clicked()
 }
 
 
+void MainWindow::handleLoginSuccessful()
+{
+    local_ID = settings->value("ID", "").toString();
+    loadBalance();
+    updateAccountButtonState();
+    CustomWindow UserInfo(CustomWindow::UserInfo, "Вы авторизованы!", dbManager->getUsername(), this);
+    UserInfo.exec();
+}
+
 void MainWindow::applyTheme(bool darkTheme)
 {
     isDarkTheme = darkTheme;
-    QString themeIconPath, faqIconPath, accountIconPath, myProfileIconPath, editProfileIconPath;
-    toolMenu->clear();
+    QString themeIconPath, faqIconPath, accountButtonIconPath, myProfileIconPath, editProfileIconPath, exitIconPath;
 
     if (isDarkTheme) {
         setStyleSheet(CustomStyle::getDarkThemeStyle());
 
         themeIconPath = ":/resources/theme_for_dark.png";
         faqIconPath = ":/resources/faq_for_dark.png";
-        accountIconPath = ":/resources/user_for_dark.png";
+        accountButtonIconPath = ":/resources/user_for_dark.png";
         myProfileIconPath = ":/resources/my_profile_for_dark.png";
         editProfileIconPath = ":/resources/edit_for_dark.png";
+        exitIconPath = ":/resources/exit.png";
     } else {
         setStyleSheet(CustomStyle::getLightThemeStyle());
 
         themeIconPath = ":/resources/theme_for_light.png";
         faqIconPath = ":/resources/faq_for_light.png";
-        accountIconPath = ":/resources/user_for_light.png";
+        accountButtonIconPath = ":/resources/user_for_light.png";
         myProfileIconPath = ":/resources/my_profile_for_light.png";
         editProfileIconPath = ":/resources/edit_for_light.png";
+        exitIconPath = ":/resources/exit.png";
     }
 
+    // Обновляем иконки кнопок
     ui->themeButton->setIcon(QIcon(themeIconPath));
     ui->FaQButton->setIcon(QIcon(faqIconPath));
-    ui->accountButton->setIcon(QIcon(accountIconPath));
+    ui->accountButton->setIcon(QIcon(accountButtonIconPath)); // Устанавливаем иконку главной кнопки
 
-    // Меню для кнопки профиля
-    QAction *profileAction = toolMenu->addAction(QIcon(myProfileIconPath), "Мой профиль");
-    connect(profileAction, &QAction::triggered, this, &MainWindow::menuProfile_clicked);
-    QAction *editAction = toolMenu->addAction(QIcon(editProfileIconPath), "Редактировать");
-    connect(editAction, &QAction::triggered, this, &MainWindow::menuEdit_clicked);
-    QAction *exitAction = toolMenu->addAction(QIcon(":/resources/exit.png"), "Выход");
-    connect(exitAction, &QAction::triggered, this, &MainWindow::menuExit_clicked);
-    ui->accountButton->setMenu(toolMenu);
+    if (!toolMenu) {
+            toolMenu = new QMenu(this);
+        } else {
+            toolMenu->clear();
+        }
+
+        // Создаем действия меню и назначаем им иконки
+        QAction *profileAction = toolMenu->addAction(QIcon(myProfileIconPath), "Мой профиль");
+        connect(profileAction, &QAction::triggered, this, &MainWindow::showMenuProfileInfo_clicked);
+
+        QAction *editAction = toolMenu->addAction(QIcon(editProfileIconPath), "Редактировать");
+        connect(editAction, &QAction::triggered, this, &MainWindow::menuEditProfile_clicked);
+
+        QAction *exitAction = toolMenu->addAction(QIcon(exitIconPath), "Выход");
+        connect(exitAction, &QAction::triggered, this, &MainWindow::menuExitProfile_clicked);
+
 
     settings->setValue("darkTheme", isDarkTheme);
+
+    updateAccountButtonState();
+}
+
+
+void MainWindow::updateAccountButtonState() {
+    disconnect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::openAuthorizationWindow);
+    qDebug() << "updateAccountButtonState checkToken";
+    if (dbManager->checkToken()) {
+        ui->accountButton->setMenu(toolMenu);
+        ui->usernameLabel->setText(dbManager->getUsername());
+    } else {
+        ui->accountButton->setMenu(nullptr); // Удаляем поведение выпадающего меню
+        connect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::openAuthorizationWindow); // Подключаем сигнал clicked
+    }
+}
+
+void MainWindow::openAuthorizationWindow()
+{
+    AuthorizationWindow authWindow(settings, dbManager, this);
+    connect(&authWindow, &AuthorizationWindow::loginSuccessful, this, &MainWindow::handleLoginSuccessful);
+    authWindow.exec();
 }
 
 
 void MainWindow::saveBalance()
 {
     settings->setValue("balance", balance);
+    qDebug() << "saveBalance checkToken";
+    if (dbManager->checkToken()){
+        if(dbManager->updateBalance(balance)){
+            qDebug() << "Update balance from DB";
+        } else{
+            qDebug() << "Error update balance from DB";
+        }
+    }
+
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
@@ -501,6 +579,7 @@ void MainWindow::enableBonusButton()
 
 MainWindow::~MainWindow()
 {
+
     delete ui;
     delete dbManager;
 }

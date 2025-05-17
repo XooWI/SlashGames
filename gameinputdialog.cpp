@@ -26,6 +26,19 @@ void GameInputDialog::on_browseIconButton_clicked()
     QString fileName = QFileDialog::getOpenFileName(this, "Выберите иконку", "",
                        "Иконка (*.png *.jpg *.jpeg *.bmp)");
     if (!fileName.isEmpty()) {
+        QImage image(fileName);
+        if (image.isNull()) {
+            QMessageBox::warning(this, "Ошибка", "Не удалось загрузить изображение.");
+            return;
+        }
+
+        const int MIN_WIDTH = 400;
+        const int MIN_HEIGHT = 300;
+
+        if (image.width() < MIN_WIDTH || image.height() < MIN_HEIGHT) {
+            QMessageBox::warning(this, "Ошибка", QString("Изображение слишком маленькое. Минимальный размер: %1x%2 пикселей.").arg(MIN_WIDTH).arg(MIN_HEIGHT));
+            return;
+        }
         ui->iconPathEdit->setText(fileName);
         ui->iconPathEdit->setStyleSheet("");
     }

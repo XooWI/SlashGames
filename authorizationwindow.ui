@@ -125,7 +125,7 @@ QPushButton:pressed {
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="login">
       <attribute name="title">
@@ -214,30 +214,6 @@ QPushButton:pressed {
            </property>
            <property name="flat">
             <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" colspan="3">
-          <widget class="QLineEdit" name="loginEdit">
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>400</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>-1</pointsize>
-            </font>
-           </property>
-           <property name="placeholderText">
-            <string>Логин/email</string>
            </property>
           </widget>
          </item>
@@ -338,14 +314,14 @@ QPushButton:pressed {
           <widget class="QPushButton" name="loginShowPassword">
            <property name="minimumSize">
             <size>
-             <width>20</width>
+             <width>30</width>
              <height>20</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -353,7 +329,7 @@ QPushButton:pressed {
     background-color: transparent;
     color: none;
 	min-height: 0px;
-	margin-left: 2px;
+	margin-left: 0px;
 }
 </string>
            </property>
@@ -363,6 +339,33 @@ QPushButton:pressed {
            <property name="icon">
             <iconset resource="resources.qrc">
              <normaloff>:/resources/hide_eye_for_light.png</normaloff>:/resources/hide_eye_for_light.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QLineEdit" name="loginEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Normal</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Логин/email</string>
            </property>
           </widget>
          </item>
@@ -417,36 +420,6 @@ QPushButton:pressed {
            </property>
            <property name="text">
             <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QLineEdit" name="regUsernameEdit">
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>400</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="sizeIncrement">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>-1</pointsize>
-            </font>
-           </property>
-           <property name="placeholderText">
-            <string>Имя</string>
            </property>
           </widget>
          </item>
@@ -618,14 +591,14 @@ QPushButton:pressed {
           <widget class="QPushButton" name="regShowConfirmPassword">
            <property name="minimumSize">
             <size>
-             <width>20</width>
+             <width>30</width>
              <height>20</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -650,14 +623,14 @@ QPushButton:pressed {
           <widget class="QPushButton" name="regShowPassword">
            <property name="minimumSize">
             <size>
-             <width>20</width>
+             <width>30</width>
              <height>20</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -678,7 +651,7 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="4" column="0" colspan="2">
+         <item row="4" column="0">
           <widget class="QLineEdit" name="regLoginEdit">
            <property name="minimumSize">
             <size>
@@ -699,6 +672,36 @@ QPushButton:pressed {
            </property>
            <property name="placeholderText">
             <string>Логин</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="regUsernameEdit">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="sizeIncrement">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+            </font>
+           </property>
+           <property name="placeholderText">
+            <string>Имя</string>
            </property>
           </widget>
          </item>

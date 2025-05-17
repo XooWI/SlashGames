@@ -119,10 +119,22 @@
            <string>In development...</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton { background-color: #4CAF50; font-size: 150px; 
-font-weight: bold; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; }
-QPushButton:hover { background-color: #45a049; }
-QPushButton:pressed { background-color: #3d8b40; }</string>
+           <string notr="true">#addGameButton { 
+	background-color: #4CAF50; 
+	font-size: 150px; 
+	font-weight: bold; 
+	color: #ffffff; 
+	border: 2px solid #45a049; 
+	border-radius: 25px;
+}
+
+#addGameButton:hover { 
+	background-color: #45a049; 
+}
+
+#addGameButton:pressed { 
+	background-color: #3d8b40; 
+}</string>
           </property>
           <property name="text">
            <string>+</string>
@@ -150,21 +162,22 @@ QPushButton:pressed { background-color: #3d8b40; }</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton {
+           <string notr="true">#rouletteButton {
+	background-color: #4CAF50;
     background-image: url(:/resources/roulette.png);
     background-position: center;     
     border-radius: 25px;
-color: white; 
-font-size: 50px; 
-font-weight: bold; 
-padding-top: 240px
+	color: white; 
+	font-size: 50px; 
+	font-weight: bold; 
+	padding-top: 240px
 }
 
-QPushButton:hover { 
+#rouletteButton:hover { 
     background-image: url(:/resources/roulette_hover.png);   
 }
 
-QPushButton:pressed { 
+#rouletteButton:pressed { 
     background-image: url(:/resources/roulette_hover.png);  
  }</string>
           </property>
@@ -194,21 +207,22 @@ QPushButton:pressed {
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">QPushButton {
+           <string notr="true">#slotsButton {
+	background-color: #4CAF50;
     background-image: url(:/resources/slots.png);
     background-position: center;     
     border-radius: 25px;
-color: white; 
-font-size: 50px; 
-font-weight: bold; 
-padding-top: 240px
+	color: white; 
+	font-size: 50px; 
+	font-weight: bold; 
+	padding-top: 240px
 }
 
-QPushButton:hover { 
+#slotsButton:hover { 
     background-image: url(:/resources/slots_hover.png);   
 }
 
-QPushButton:pressed { 
+#slotsButton:pressed { 
     background-image: url(:/resources/slots_hover.png);  
  }</string>
           </property>
@@ -223,65 +237,6 @@ QPushButton:pressed {
     </item>
     <item row="0" column="1" rowspan="3">
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="6" alignment="Qt::AlignRight">
-       <widget class="QPushButton" name="themeButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="contextMenuPolicy">
-         <enum>Qt::DefaultContextMenu</enum>
-        </property>
-        <property name="toolTip">
-         <string>Сменить оформление</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background: transparent;
-    border: none;
-}
-QPushButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-QPushButton:pressed {
-    background: rgba(255, 255, 255, 0.2);
-}</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/theme_for_light.png</normaloff>:/resources/theme_for_light.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="autoRepeat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="5">
        <widget class="QToolButton" name="accountButton">
         <property name="minimumSize">
@@ -300,17 +255,17 @@ QPushButton:pressed {
          <string>Аккаунт</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QToolButton {
+         <string notr="true">#accountButton {
     background: transparent;
     border: none;
 }
-QToolButton:hover {
+#accountButton:hover {
     background: rgba(255, 255, 255, 0.1);
 }
-QToolButton:pressed {
+#accountButton:pressed {
     background: rgba(255, 255, 255, 0.2);
 }
-QToolButton::menu-indicator {
+#accountButton::menu-indicator {
     image: none; 
     width: 0px;
    height: 0px;
@@ -364,14 +319,14 @@ QToolButton::menu-indicator {
          <string>FaQ and guide</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton {
+         <string notr="true">#FaQButton{
     background: transparent;
     border: none;
 }
-QPushButton:hover {
+#FaQButton:hover {
     background: rgba(255, 255, 255, 0.1);
 }
-QPushButton:pressed {
+#FaQButton:pressed {
     background: rgba(255, 255, 255, 0.2);
 }</string>
         </property>
@@ -387,6 +342,81 @@ QPushButton:pressed {
           <width>30</width>
           <height>30</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7" alignment="Qt::AlignRight">
+       <widget class="QPushButton" name="themeButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::DefaultContextMenu</enum>
+        </property>
+        <property name="toolTip">
+         <string>Сменить оформление</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#themeButton {
+    background: transparent;
+    border: none;
+}
+
+#themeButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#themeButton:pressed {
+    background: rgba(255, 255, 255, 0.2);
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/theme_for_light.png</normaloff>:/resources/theme_for_light.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="autoRepeat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="usernameLabel">
+        <property name="styleSheet">
+         <string notr="true">#usernameLabel {   
+	color: #4CAF50; 
+	font-size: 30px; 
+	font-weight: bold; 
+}</string>
+        </property>
+        <property name="text">
+         <string>Гость</string>
         </property>
        </widget>
       </item>
@@ -423,10 +453,28 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;Получать бонус можно каждые 3 часа!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton { background-color: #4CAF50; color: #ffffff; border: 2px solid #45a049; border-radius: 25px; padding: 15px; font-size: 14px; font-weight: bold; }
-QPushButton:hover { background-color: #45a049; }
-QPushButton:pressed { background-color: #3d8b40; }
-QPushButton:disabled { background-color: #808080; border-color: #666666; }
+         <string notr="true">#getBonusButton{
+	background-color: #4CAF50; 
+	color: #ffffff; 
+	border: 2px solid #45a049; 
+	border-radius: 25px; 
+	padding: 15px; 
+	font-size: 14px; 
+	font-weight: bold; 
+}
+
+#getBonusButton:hover { 
+	background-color: #45a049; 
+}
+
+#getBonusButton:pressed {
+background-color: #3d8b40; 
+}
+
+#getBonusButton:disabled { 
+background-color: #808080; 
+border-color: #666666; 
+}
 </string>
         </property>
         <property name="text">

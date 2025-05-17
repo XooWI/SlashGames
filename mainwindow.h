@@ -5,7 +5,7 @@
 #include "customstyle.h"
 #include "authorizationwindow.h"
 #include"gameinputdialog.h"
-#include"deletegamedialog.h"
+#include"customwindow.h"
 #include"databasemanagement.h"
 
 #include <QMainWindow>
@@ -31,9 +31,11 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow() override;
+    ~MainWindow();
 
 private slots:
+    void checkAndUpdateAccountState();
+
     void updateBonusTimer();
     void showBalanceChange(int amount);
     void on_getBonusButton_clicked();
@@ -45,26 +47,31 @@ private slots:
     void on_rouletteButton_clicked();
     void on_slotsButton_clicked();
 
-    void menuProfile_clicked();
-    void menuEdit_clicked();
-    void menuExit_clicked();
+    void showMenuProfileInfo_clicked();
+    void menuEditProfile_clicked();
+    void menuExitProfile_clicked();
 
+    void openAuthorizationWindow();
+    void handleLoginSuccessful();
 
     void gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos);
     void menuGameEdit_clicked();
     void menuGameDelete_clicked();
 
 private:
-    const int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах
-    const int BONUS_AMOUNT = 3000;  // Количество получаемых монет (3 часа = 10800 секунд)
+    const int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
+    const int BONUS_AMOUNT = 3000;  // Количество получаемых монет
 
     Ui::MainWindow *ui;
     QTimer *bonusTimer;
     QSettings *settings;
     QMenu *toolMenu;
+    DatabaseManagement *dbManager;
+    QTimer *tokenCheckTimer;
+
 
     int balance;
-    int remainingSeconds;
+    int remainingSeconds; //секунд до получения следующего бонуса
     bool isDarkTheme;
     QString local_ID;
 
@@ -83,15 +90,20 @@ private:
     void applyTheme(bool darkTheme);
     void loadTheme();
 
+    void updateAccountButtonState();
+
+    QByteArray Encrypt(const QByteArray &data, const QString &passphrase); // Шифрование и хеширование УДАЛИТЬ! (есть в БД)
 
 
     const int GAME_PREINSTALL_COUNT = 2;
+    int gameCount;
+
+    // Размеры пользовательских кнопок
     const int MINIMUM_SIZE_WIDTH = 400;
     const int MINIMUM_SIZE_HEIGHT = 300;
     const int MAXIMUM_SIZE_WIDTH = 1000;
     const int MAXIMUM_SIZE_HEIGHT = 500;
 
-    int gameCount;
 
     // Работа с играми
     QPushButton* createGameButton(const QString &name, const QString &iconPath, const QString &executablePath);
@@ -99,6 +111,5 @@ private:
     void refreshGamesLayout();
 
 
-    DatabaseManagement *dbManager;
 };
 #endif // MAINWINDOW_H
