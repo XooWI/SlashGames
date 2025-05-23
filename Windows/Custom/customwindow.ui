@@ -78,18 +78,15 @@ QPushButton#deleteButton:pressed {
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="buttonLayout">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
       <widget class="QPushButton" name="deleteButton">
        <property name="text">
         <string>Удалить</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="2">
       <widget class="QPushButton" name="cancelButton">
        <property name="text">
         <string>Отмена</string>
@@ -97,6 +94,13 @@ QPushButton#deleteButton:pressed {
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="contunieButton">
+     <property name="text">
+      <string>Продолжить</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

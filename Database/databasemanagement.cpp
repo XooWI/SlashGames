@@ -4,7 +4,6 @@ DatabaseManagement::DatabaseManagement(QSettings* settings) :
     settings(settings),
     connectionName("local_sqlite_connection")
 {
-    qDebug() << "Запуск БД";
     initializeDatabase();
 }
 
@@ -22,8 +21,6 @@ void DatabaseManagement::initializeDatabase()
     if (!db.open()) {
         QMessageBox::critical(nullptr, "Ошибка базы данных", "Не удалось открыть базу данных");
         return;
-    } else {
-        qDebug() << "База данных успешно открыта!";
     }
 
     QSqlQuery query(db);
@@ -37,8 +34,6 @@ void DatabaseManagement::initializeDatabase()
 
     if (!success) {
         qDebug() << "Не удалось создать таблицу" << query.lastError().text();
-    } else {
-        qDebug() << "Таблица создана!";
     }
 }
 
@@ -154,14 +149,13 @@ bool DatabaseManagement::checkLogin(const QString &login)
 
 bool DatabaseManagement::checkToken()
 {
-    if (!db.isOpen()) return false;
-    QByteArray encryptedLocalTokenDataHex = settings->value("ID").toByteArray();
-    QByteArray encryptedLocalTokenData = QByteArray::fromHex(encryptedLocalTokenDataHex);
-
-    if (encryptedLocalTokenData.isEmpty()) {
-        qDebug() << "checkToken 1Локальные данные токена отсутствуют";
+    if (settings->value("ID") == ""){
+        //qDebug() << "checkToken1 Локальные данные токена отсутствуют";
         return false;
-    }
+   }
+    if (!db.isOpen()) return false;
+
+    QByteArray encryptedLocalTokenData = QByteArray::fromHex(settings->value("ID").toByteArray());
 
     QByteArray decryptedLocalTokenData = localEncrypt(encryptedLocalTokenData);
     QString localTokenString = QString::fromUtf8(decryptedLocalTokenData);
@@ -169,7 +163,8 @@ bool DatabaseManagement::checkToken()
 
     if (tokenParts.size() != 3) {
         qDebug() << "checkToken Неверный формат локальных данных токена";
-        settings->setValue("ID", QByteArray().toHex());
+        settings->setValue("ID", ""); // Очищаем локальные данные
+        settings->setValue("balance", 0);
         return false;
     }
 
@@ -179,7 +174,6 @@ bool DatabaseManagement::checkToken()
 
     QDateTime currentDate = QDateTime::currentDateTime();
 
-    qDebug() << "checkToken Токен истекает: " << tokenExpiryTime;
     if (currentDate <= tokenExpiryTime && lastLogin <= currentDate) {
             // Токен локально действителен, проверяем хэш в БД
             QSqlQuery query(db);
@@ -197,15 +191,18 @@ bool DatabaseManagement::checkToken()
                                                QString(rawAuthToken.toHex());
                 QByteArray newEncryptedLocalTokenData = localEncrypt(newLocalTokenString.toUtf8());
                 settings->setValue("ID", newEncryptedLocalTokenData.toHex());
+                //qDebug() << "checkToken Токен истекает: " << tokenExpiryTime;
                 return true;
             } else {
                 qDebug() << "checkToken Хэш локального токена не найден в БД или не совпадает";
-                settings->setValue("ID", QByteArray().toHex()); // Очищаем локальные данные
+                settings->setValue("ID", ""); // Очищаем локальные данные
+                settings->setValue("balance", 0);
                 return false;
             }
         } else {
-            qDebug() << "checkToken Срок действия локального токена истек. Очистка ID";
-            settings->setValue("ID", QByteArray().toHex()); // Очищаем локальные данные
+            qDebug() << "checkToken Срок действия локального токена истек. Очистка ID и баланса!";
+            settings->setValue("ID", ""); // Очищаем локальные данные
+            settings->setValue("balance", 0);
             return false;
         }
     return false;
@@ -230,9 +227,10 @@ QString DatabaseManagement::getToken()
 
             QDateTime currentDate = QDateTime::currentDateTime();
 
-            if (currentDate > tokenExpiryTime || lastLogin > currentDate) {
-                qDebug() << "getToken Токен истек!";
-                settings->setValue("ID", QByteArray().toHex()); // Очищаем локальные данные
+            if (currentDate > tokenExpiryTime || lastLogin > currentDate || !(tokenExpiryTime.isValid()) || !(lastLogin.isValid())) {
+                qDebug() << "getToken Токен истек! Очистка ID и баланса!";
+                settings->setValue("ID", QByteArray().toHex());
+                settings->setValue("balance", 0);
                 return QString();
             }
             return rawAuthTokenHex;
@@ -303,6 +301,28 @@ QString DatabaseManagement::getUsername()
     return "None";
 }
 
+QDateTime DatabaseManagement::getTokenExpiryTime()
+{
+    QByteArray encryptedLocalTokenDataHex = settings->value("ID").toByteArray();
+    QByteArray encryptedLocalTokenData = QByteArray::fromHex(encryptedLocalTokenDataHex);
+
+    if (encryptedLocalTokenData.isEmpty()) {
+        qDebug() << "getTokenExpiryTime: Локальные данные токена отсутствуют";
+        return QDateTime(); // Возвращаем невалидное QDateTime
+    }
+
+    QByteArray decryptedLocalTokenData = localEncrypt(encryptedLocalTokenData);
+    QString localTokenString = QString::fromUtf8(decryptedLocalTokenData);
+    QStringList tokenParts = localTokenString.split("|");
+
+    if (tokenParts.size() == 3) {
+        return QDateTime::fromString(tokenParts[0], Qt::ISODate);
+    } else {
+        qDebug() << "getTokenExpiryTime: Неверный формат локальных данных токена";
+        return QDateTime(); // Возвращаем невалидное QDateTime
+    }
+}
+
 
 bool DatabaseManagement::updateBalance(int &balance)
 {
@@ -322,9 +342,5 @@ bool DatabaseManagement::updateBalance(int &balance)
 
 DatabaseManagement::~DatabaseManagement()
 {
-    // Закрываем соединение с базой данных
-    if (db.isOpen()) {
-        qDebug() << "Закрытие соединения с БД: " << connectionName;
-        db.close();
-    }
+    if (db.isOpen()) db.close();
 }

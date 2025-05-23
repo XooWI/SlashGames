@@ -4,7 +4,7 @@ QString CustomStyle::getLightThemeStyle() {
     return R"(
             QMainWindow { background-color: #ffffff; color: #000000; }
             QDialog { background-color: #ffffff; color: #000000; }
-
+            QPushButton { background-color: #ffffff; color: #000000; }
             QLabel { color: #000000; }
             QTextEdit { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
 
@@ -108,7 +108,7 @@ QString CustomStyle::getDarkThemeStyle() {
     return R"(
             QMainWindow { background-color: #1e1e1e; color: #ffffff; }
             QDialog { background-color: #1e1e1e; color: #ffffff; }
-
+            QPushButton { background-color: #737373; color: #ffffff; }
             QLabel { color: #ffffff; }
             QTextEdit { background-color: #1e1e1e; color: #ffffff; border: 1px solid #4d4d4d; }
 
@@ -252,12 +252,14 @@ QString CustomStyle::getCustomNewButton() {
             QPushButton {
                 background-image: url(%1);
                 background-color: #4CAF50;
-                color: white;
+                background-repeat: no-repeat;
                 background-position: center;
                 border-radius: 25px;
+                color: white;
                 font-size: 50px;
                 font-weight: bold;
                 padding-top: 240px;
+
             }
             QPushButton:hover {
                 background-color: #45a049;

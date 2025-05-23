@@ -31,6 +31,7 @@ public:
     int getBalance();
     QString getToken();
     QString getUsername();
+    QDateTime getTokenExpiryTime();
 
 private:
     QSettings *settings;
@@ -40,14 +41,13 @@ private:
     void initializeDatabase();
     QString getUniqueID();
 
-
     // Методы шифрования и хэширования
     QByteArray localEncrypt(const QByteArray &data);
     QByteArray dbEncrypt(const QByteArray &data);
     QByteArray hash(const QByteArray &data);
 
 
-    const qint64 TOKEN_LIFETIME = 120; // 7 * 24 * 60 * 60 7 дней
+    const qint64 TOKEN_LIFETIME = 40; // 7 * 24 * 60 * 60 7 дней
     // Ключ для шифрования локальных данных
     const QByteArray LOCAL_ENCRYPTION_KEY = "LocalSecretEncryptionKey";
 

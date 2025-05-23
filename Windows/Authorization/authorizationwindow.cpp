@@ -272,37 +272,37 @@ void AuthorizationWindow::on_confirmPasswordEdit_textEdited(const QString &arg1)
 void AuthorizationWindow::on_loginShowPassword_pressed()
 {
     ui->passwordEdit->setEchoMode(QLineEdit::Normal);
-    ui->loginShowPassword->setIcon(QIcon(":/resources/open_eye_for_light.png"));
+    ui->loginShowPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
 }
 
 void AuthorizationWindow::on_loginShowPassword_released()
 {
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
-    ui->loginShowPassword->setIcon(QIcon(":/resources/hide_eye_for_light.png"));
+    ui->loginShowPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
 }
 
 void AuthorizationWindow::on_regShowPassword_pressed()
 {
     ui->regPasswordEdit->setEchoMode(QLineEdit::Normal);
-    ui->regShowPassword->setIcon(QIcon(":/resources/open_eye_for_light.png"));
+    ui->regShowPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
 }
 
 void AuthorizationWindow::on_regShowPassword_released()
 {
     ui->regPasswordEdit->setEchoMode(QLineEdit::Password);
-    ui->regShowPassword->setIcon(QIcon(":/resources/hide_eye_for_light.png"));
+    ui->regShowPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
 }
 
 void AuthorizationWindow::on_regShowConfirmPassword_pressed()
 {
     ui->confirmPasswordEdit->setEchoMode(QLineEdit::Normal);
-    ui->regShowConfirmPassword->setIcon(QIcon(":/resources/open_eye_for_light.png"));
+    ui->regShowConfirmPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
 }
 
 void AuthorizationWindow::on_regShowConfirmPassword_released()
 {
     ui->confirmPasswordEdit->setEchoMode(QLineEdit::Password);
-    ui->regShowConfirmPassword->setIcon(QIcon(":/resources/hide_eye_for_light.png"));
+    ui->regShowConfirmPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
 }
 
 

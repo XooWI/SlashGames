@@ -29,10 +29,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
     QLabel* contentLabel = findChild<QLabel*>("gameNameLabel");
     QPushButton* deleteButton = findChild<QPushButton*>("deleteButton");
     QPushButton* cancelButton = findChild<QPushButton*>("cancelButton");
-
-    if (!contentLabel || !deleteButton || !cancelButton) {
-        return;
-    }
+    QPushButton* contunieButton = findChild<QPushButton*>("contunieButton");
 
     switch (m_windowType) {
         case DeleteConfirmation:
@@ -40,6 +37,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             contentLabel->setText(QString("Удалить игру '%1'?").arg(mainText));
             deleteButton->show();
             cancelButton->show();
+            contunieButton->hide();
             break;
 
         case UserInfo:
@@ -47,6 +45,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             contentLabel->setText(mainText);
             deleteButton->hide();
             cancelButton->hide();
+            contunieButton->show();
             break;
 
         case GeneralInfo:
@@ -58,12 +57,14 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             contentLabel->setText(mainText);
             deleteButton->hide();
             cancelButton->hide();
+            contunieButton->show();
             break;
 
         default:
             contentLabel->setText("Ошибка: Неизвестный тип окна.");
             deleteButton->hide();
             cancelButton->hide();
+            contunieButton->show();
             setWindowTitle("Ошибка");
             break;
     }
@@ -79,3 +80,9 @@ void CustomWindow::on_cancelButton_clicked()
 {
     QDialog::reject();
 }
+
+void CustomWindow::on_contunieButton_clicked()
+{
+    QDialog::reject();
+}
+

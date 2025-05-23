@@ -15,33 +15,36 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 set(PROJECT_SOURCES
         main.cpp
 
-        mainwindow.h
-        mainwindow.cpp
-        mainwindow.ui
+        Windows/Main/mainwindow.h
+        Windows/Main/mainwindow.cpp
+        Windows/Main/mainwindow.ui
 
-        faqwindow.h
-        faqwindow.cpp
-        faqwindow.ui
+        Windows/FaQ/faqwindow.h
+        Windows/FaQ/faqwindow.cpp
+        Windows/FaQ/faqwindow.ui
 
-        customstyle.h
-        customstyle.cpp
+        Style/customstyle.h
+        Style/customstyle.cpp
 
-        authorizationwindow.h
-        authorizationwindow.cpp
-        authorizationwindow.ui
+        Windows/Authorization/authorizationwindow.h
+        Windows/Authorization/authorizationwindow.cpp
+        Windows/Authorization/authorizationwindow.ui
 
-	resources.qrc
+        resources/resources.qrc
 
-        gameinputdialog.h
-        gameinputdialog.cpp
-        gameinputdialog.ui
+        Windows/GameInput/gameinputdialog.h
+        Windows/GameInput/gameinputdialog.cpp
+        Windows/GameInput/gameinputdialog.ui
 
-        databasemanagement.h
-        databasemanagement.cpp
+        Database/databasemanagement.h
+        Database/databasemanagement.cpp
 
-        customwindow.h
-        customwindow.cpp
-        customwindow.ui
+        Windows/Custom/customwindow.h
+        Windows/Custom/customwindow.cpp
+        Windows/Custom/customwindow.ui
+
+        GameManager/gamemanager.h
+        GameManager/gamemanager.cpp
 
 )
 
@@ -69,6 +72,7 @@ else()
 endif()
 
 target_link_libraries(SlashGames PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql)
+target_include_directories(SlashGames PRIVATE ${CMAKE_SOURCE_DIR})
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

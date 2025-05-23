@@ -1,18 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "faqwindow.h"
-#include "customstyle.h"
-#include "authorizationwindow.h"
-#include"gameinputdialog.h"
-#include"customwindow.h"
-#include"databasemanagement.h"
+#include "Windows/FaQ/faqwindow.h"
+#include "Style/customstyle.h"
+#include "Windows/Authorization/authorizationwindow.h"
+#include"Windows/GameInput/gameinputdialog.h"
+#include"Windows/Custom/customwindow.h"
+#include"Database/databasemanagement.h"
+#include "GameManager/gamemanager.h"
 
 #include <QMainWindow>
 #include <QSettings>
 #include <QTimer>
 #include <QDateTime>
-#include <QProcess>
 
 // Удалить после обновления!
 #include <QMessageBox>
@@ -43,7 +43,6 @@ private slots:
     void on_FaQButton_clicked();
     void on_themeButton_clicked();
 
-
     void on_rouletteButton_clicked();
     void on_slotsButton_clicked();
 
@@ -54,21 +53,18 @@ private slots:
     void openAuthorizationWindow();
     void handleLoginSuccessful();
 
-    void gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos);
-    void menuGameEdit_clicked();
-    void menuGameDelete_clicked();
-
 private:
     const int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
     const int BONUS_AMOUNT = 3000;  // Количество получаемых монет
+    const int TOKEN_CHECK_INTERVAL = 20;
 
     Ui::MainWindow *ui;
     QTimer *bonusTimer;
+    QTimer *tokenCheckTimer;
     QSettings *settings;
     QMenu *toolMenu;
     DatabaseManagement *dbManager;
-    QTimer *tokenCheckTimer;
-
+    GameManager *gameManager;
 
     int balance;
     int remainingSeconds; //секунд до получения следующего бонуса
@@ -91,25 +87,8 @@ private:
     void loadTheme();
 
     void updateAccountButtonState();
+    void logoutAccount();
 
     QByteArray Encrypt(const QByteArray &data, const QString &passphrase); // Шифрование и хеширование УДАЛИТЬ! (есть в БД)
-
-
-    const int GAME_PREINSTALL_COUNT = 2;
-    int gameCount;
-
-    // Размеры пользовательских кнопок
-    const int MINIMUM_SIZE_WIDTH = 400;
-    const int MINIMUM_SIZE_HEIGHT = 300;
-    const int MAXIMUM_SIZE_WIDTH = 1000;
-    const int MAXIMUM_SIZE_HEIGHT = 500;
-
-
-    // Работа с играми
-    QPushButton* createGameButton(const QString &name, const QString &iconPath, const QString &executablePath);
-    void saveGame(const QString &name, const QString &iconPath, const QString &executablePath);
-    void refreshGamesLayout();
-
-
 };
 #endif // MAINWINDOW_H

@@ -28,6 +28,8 @@ public:
 private slots:
     void on_deleteButton_clicked();
     void on_cancelButton_clicked();
+    void on_contunieButton_clicked();
+
 
 private:
     void setupWindow(WindowType type, const QString& mainText, const QString& windowTitle);

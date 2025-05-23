@@ -1,7 +1,7 @@
 #include "faqwindow.h"
 #include "ui_faqwindow.h"
 
-#include "customstyle.h"
+#include "Style/customstyle.h"
 
 FAQWindow::FAQWindow(QWidget *parent) :
     QDialog(parent),

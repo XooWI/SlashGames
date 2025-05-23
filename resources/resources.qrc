@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RCC>
+    <qresource prefix="">
+        <file>icons/universal/SlashGames.png</file>
+        <file>icons/universal/github.png</file>
+        <file>icons/universal/telegram.png</file>
+
+        <file>icons/universal/menu_exit.png</file>
+    </qresource>
+
+
+    <qresource prefix="">
+        <file>icons/light_mode/button_faq.png</file>
+        <file>icons/light_mode/button_profile.png</file>
+        <file>icons/light_mode/button_toggle_theme.png</file>
+
+        <file>icons/light_mode/menu_edit.png</file>
+        <file>icons/light_mode/menu_my_profile.png</file>
+        
+        <file>icons/light_mode/button_open_eye.png</file>
+        <file>icons/light_mode/button_hide_eye.png</file>
+    </qresource>
+
+
+    <qresource prefix="">
+        <file>icons/dark_mode/button_faq.png</file>
+        <file>icons/dark_mode/button_profile.png</file>
+        <file>icons/dark_mode/button_toggle_theme.png</file>
+        
+        <file>icons/dark_mode/menu_edit.png</file>
+        <file>icons/dark_mode/menu_my_profile.png</file>
+        
+        <file>icons/dark_mode/button_open_eye.png</file>
+        <file>icons/dark_mode/button_hide_eye.png</file>
+    </qresource>
+
+
+    <qresource prefix="">
+        <file>images/default/slots.png</file>
+        <file>images/default/roulette.png</file>
+    </qresource>
+
+
+    <qresource prefix="">
+        <file>images/hover/slots.png</file>
+        <file>images/hover/roulette.png</file>
+    </qresource>
+</RCC> 

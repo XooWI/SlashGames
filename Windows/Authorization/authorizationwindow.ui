@@ -125,7 +125,7 @@ QPushButton:pressed {
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="login">
       <attribute name="title">
@@ -337,8 +337,8 @@ QPushButton:pressed {
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/resources/hide_eye_for_light.png</normaloff>:/resources/hide_eye_for_light.png</iconset>
+            <iconset resource="../../resources/resources.qrc">
+             <normaloff>:/icons/light_mode/button_hide_eye.png</normaloff>:/icons/light_mode/button_hide_eye.png</iconset>
            </property>
           </widget>
          </item>
@@ -614,8 +614,8 @@ QPushButton:pressed {
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/resources/hide_eye_for_light.png</normaloff>:/resources/hide_eye_for_light.png</iconset>
+            <iconset resource="../../resources/resources.qrc">
+             <normaloff>:/icons/light_mode/button_hide_eye.png</normaloff>:/icons/light_mode/button_hide_eye.png</iconset>
            </property>
           </widget>
          </item>
@@ -646,8 +646,8 @@ QPushButton:pressed {
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/resources/hide_eye_for_light.png</normaloff>:/resources/hide_eye_for_light.png</iconset>
+            <iconset resource="../../resources/resources.qrc">
+             <normaloff>:/icons/light_mode/button_hide_eye.png</normaloff>:/icons/light_mode/button_hide_eye.png</iconset>
            </property>
           </widget>
          </item>
@@ -714,7 +714,7 @@ QPushButton:pressed {
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

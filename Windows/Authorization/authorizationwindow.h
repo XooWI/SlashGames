@@ -1,7 +1,7 @@
 #ifndef AUTHORIZATIONWINDOW_H
 #define AUTHORIZATIONWINDOW_H
 
-#include"databasemanagement.h"
+#include"Database/databasemanagement.h"
 
 #include <QDialog>
 #include <QSettings>
