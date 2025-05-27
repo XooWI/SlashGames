@@ -48,6 +48,51 @@ set(PROJECT_SOURCES
 
 )
 
+
+
+source_group("MainWindow" FILES
+    Windows/Main/mainwindow.h
+    Windows/Main/mainwindow.cpp
+    Windows/Main/mainwindow.ui
+)
+
+source_group("FaQ" FILES
+    Windows/FaQ/faqwindow.h
+    Windows/FaQ/faqwindow.cpp
+    Windows/FaQ/faqwindow.ui
+)
+
+source_group("Authorization" FILES
+    Windows/Authorization/authorizationwindow.h
+    Windows/Authorization/authorizationwindow.cpp
+    Windows/Authorization/authorizationwindow.ui
+)
+
+source_group("GameInput" FILES
+    Windows/GameInput/gameinputdialog.h
+    Windows/GameInput/gameinputdialog.cpp
+    Windows/GameInput/gameinputdialog.ui
+)
+
+source_group("Database" FILES
+    Database/databasemanagement.h
+    Database/databasemanagement.cpp
+)
+
+source_group("GameManager" FILES
+    GameManager/gamemanager.h
+    GameManager/gamemanager.cpp
+)
+
+source_group("Resources" FILES
+    resources/resources.qrc
+    Style/customstyle.h
+    Style/customstyle.cpp
+    Windows/Custom/customwindow.h
+    Windows/Custom/customwindow.cpp
+    Windows/Custom/customwindow.ui
+)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SlashGames
         MANUAL_FINALIZATION

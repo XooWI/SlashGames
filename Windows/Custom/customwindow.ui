@@ -2,19 +2,46 @@
 <ui version="4.0">
  <class>CustomWindow</class>
  <widget class="QDialog" name="CustomWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>150</height>
+    <height>359</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>150</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>500</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Удаление игры</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QDialog {
+   <string notr="true">QLineEdit, QPushButton {
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+QDialog {
     border-radius: 10px;
 }
 QLabel {
@@ -35,20 +62,18 @@ QPushButton {
     padding: 8px 15px;
     font-weight: bold;
 }
+
 QPushButton:hover {
     background-color: #45a049;
 }
 QPushButton:pressed {
     background-color: #3d8b40;
 }
-QPushButton#deleteButton {
+QPushButton#acceptButton {
     background-color: #f44336;
 }
-QPushButton#deleteButton:hover {
+QPushButton#acceptButton:hover {
     background-color: #da190b;
-}
-QPushButton#deleteButton:pressed {
-    background-color: #b71c1c;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -78,9 +103,49 @@ QPushButton#deleteButton:pressed {
     </widget>
    </item>
    <item>
+    <widget class="QLineEdit" name="nameLineEdit">
+     <property name="placeholderText">
+      <string>Имя</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="oldPasswordLineEdit">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Старый пароль</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="newPasswordLineEdit">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Новый пароль</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="confirmNewPasswordLineEdit">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Подтверждение пароля</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QPushButton" name="deleteButton">
+      <widget class="QPushButton" name="acceptButton">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Удалить</string>
        </property>

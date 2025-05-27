@@ -6,9 +6,8 @@
 #include <QFile>
 #include <QLineEdit>
 
-// Удалить после обновления!
-#include <QMessageBox>
-#include <QDebug>
+#include "Windows/Custom/customwindow.h"
+
 
 namespace Ui {
 class GameInputDialog;
@@ -33,6 +32,7 @@ public:
 private slots:
     void on_browseIconButton_clicked();
     void on_browseFileButton_clicked();
+
     void on_acceptButton_clicked();
     void on_cancelButton_clicked();
 
@@ -41,8 +41,11 @@ private slots:
     void on_filePathEdit_textChanged(const QString &arg1);
 
 private:
-
     Ui::GameInputDialog *ui;
+
+    const int MIN_WIDTH_ICON = 1000;
+    const int MIN_HEIGHT_ICON = 300;
+
 };
 
 #endif // GAMEINPUTDIALOG_H

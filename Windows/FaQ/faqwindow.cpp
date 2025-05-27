@@ -1,8 +1,6 @@
 #include "faqwindow.h"
 #include "ui_faqwindow.h"
 
-#include "Style/customstyle.h"
-
 FAQWindow::FAQWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FAQWindow)
@@ -20,13 +18,13 @@ FAQWindow::FAQWindow(QWidget *parent) :
 
 void FAQWindow::on_telegramSocial_clicked()
 {
-    QDesktopServices::openUrl(QUrl("https://t.me/SlashGames_support_bot"));
+    QDesktopServices::openUrl(QUrl(telegramSocialPath));
 }
 
 
 void FAQWindow::on_githubSocial_clicked()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/XooWI/SlashGames"));
+    QDesktopServices::openUrl(QUrl(githubSocialPath));
 }
 
 

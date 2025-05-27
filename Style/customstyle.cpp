@@ -4,7 +4,6 @@ QString CustomStyle::getLightThemeStyle() {
     return R"(
             QMainWindow { background-color: #ffffff; color: #000000; }
             QDialog { background-color: #ffffff; color: #000000; }
-            QPushButton { background-color: #ffffff; color: #000000; }
             QLabel { color: #000000; }
             QTextEdit { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
 
@@ -108,7 +107,6 @@ QString CustomStyle::getDarkThemeStyle() {
     return R"(
             QMainWindow { background-color: #1e1e1e; color: #ffffff; }
             QDialog { background-color: #1e1e1e; color: #ffffff; }
-            QPushButton { background-color: #737373; color: #ffffff; }
             QLabel { color: #ffffff; }
             QTextEdit { background-color: #1e1e1e; color: #ffffff; border: 1px solid #4d4d4d; }
 
@@ -253,13 +251,12 @@ QString CustomStyle::getCustomNewButton() {
                 background-image: url(%1);
                 background-color: #4CAF50;
                 background-repeat: no-repeat;
-                background-position: center;
+                background-position: center 20px;
                 border-radius: 25px;
                 color: white;
                 font-size: 50px;
                 font-weight: bold;
                 padding-top: 240px;
-
             }
             QPushButton:hover {
                 background-color: #45a049;
@@ -309,3 +306,13 @@ QString CustomStyle::getTextSupportLabel() {
             "Напишите нам";
 }
 
+QString CustomStyle::userInfoText(){
+    return R"(
+            <table width='100%' style='font-size: 12pt; border-collapse: collapse;'>
+            <tr><td style='padding: 4px;'><b style='color: #3465A4;'>Имя:</b></td><td style='padding: 4px;'>%1</td></tr>
+            <tr><td style='padding: 4px;'><b style='color: #3465A4;'>Баланс:</b></td><td style='padding: 4px;'>%2</td></tr>
+            <tr><td style='padding: 4px;'><b style='color: #3465A4;'>Дата регистрации:</b></td><td style='padding: 4px;'>%3</td></tr>
+            <tr><td style='padding: 4px;'><b style='color: #3465A4;'>Токен до:</b></td><td style='padding: 4px;'><span style='%6'>%4</span> %5</td></tr>
+            </table>
+            )";
+}

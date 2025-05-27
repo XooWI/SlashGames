@@ -2,42 +2,40 @@
 
 GameManager::GameManager(QSettings *settings, QGridLayout *gamesLayout, QPushButton *addGameButton,  QObject *parent)
     : QObject(parent),
-      m_settings(settings),
-      m_gamesLayout(gamesLayout),
-      m_addGameButton(addGameButton)
+      settings(settings),
+      gamesLayout(gamesLayout),
+      addGameButton(addGameButton)
 {
     // Инициализируем gameCount из настроек
-    m_gameCount = m_settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+    gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
 }
 
-void GameManager::saveGame(const QString &name, const QString &iconPath, const QString &executablePath) // Добавили GameManager::
+void GameManager::saveGame(const QString &name, const QString &iconPath, const QString &executablePath)
 {
-    // Сохраняем количество игр
-    // Можно убрать!!!
-    m_gameCount = m_settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt(); // Используем m_settings и m_gameCount
-    m_gameCount++;
-    m_settings->setValue("GameCount", m_gameCount);
+    gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt(); // Используем settings и gameCount
+    gameCount++;
+    settings->setValue("GameCount", gameCount);
 
     // Сохраняем данные конкретной игры
-    m_settings->beginGroup(QString("Game_%1").arg(m_gameCount));
-    m_settings->setValue("Name", name);
-    m_settings->setValue("IconPath", iconPath);
-    m_settings->setValue("ExecutablePath", executablePath);
-    m_settings->endGroup();
+    settings->beginGroup(QString("Game_%1").arg(gameCount));
+    settings->setValue("Name", name);
+    settings->setValue("IconPath", iconPath);
+    settings->setValue("ExecutablePath", executablePath);
+    settings->endGroup();
 }
 
-void GameManager::refreshGamesLayout() // Добавили GameManager::
+void GameManager::refreshGamesLayout()
 {
-    m_gamesLayout->removeWidget(m_addGameButton);
+    gamesLayout->removeWidget(addGameButton);
 
     // Очищаем все кнопки
-    for (int i = m_gamesLayout->count() - 1; i >= 0; --i) {
-        QLayoutItem* item = m_gamesLayout->itemAt(i);
+    for (int i = gamesLayout->count() - 1; i >= 0; --i) {
+        QLayoutItem* item = gamesLayout->itemAt(i);
         if (item && item->widget()) {
             if (QPushButton* button = qobject_cast<QPushButton*>(item->widget())) {
                 bool isUserGame = button->property("gameIndex").toBool();
                 if (isUserGame) {
-                    m_gamesLayout->removeWidget(button);
+                    gamesLayout->removeWidget(button);
                     button->deleteLater();
                 }
             }
@@ -45,36 +43,37 @@ void GameManager::refreshGamesLayout() // Добавили GameManager::
     }
 
     // Загружаем и добавляем игры из настроек
-    m_gameCount = m_settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+    gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
 
-    for (int i = GAME_PREINSTALL_COUNT + 1; i <= m_gameCount; ++i) {
-        m_settings->beginGroup(QString("Game_%1").arg(i));
+    for (int i = GAME_PREINSTALL_COUNT + 1; i <= gameCount; ++i) {
+        settings->beginGroup(QString("Game_%1").arg(i));
 
-        QString name = m_settings->value("Name").toString();
-        QString iconPath = m_settings->value("IconPath").toString();
-        QString executablePath = m_settings->value("ExecutablePath").toString();
+        QString name = settings->value("Name").toString();
+        QString iconPath = settings->value("IconPath").toString();
+        QString executablePath = settings->value("ExecutablePath").toString();
 
-        m_settings->endGroup();
+        settings->endGroup();
 
         QPushButton* gameButton = createGameButton(name, iconPath, executablePath);
 
         gameButton->setProperty("gameIndex", i);
 
-        // Индекс в сетке:
         int gridIndex = GAME_PREINSTALL_COUNT + (i - (GAME_PREINSTALL_COUNT + 1));
         int row = gridIndex / 2;
         int col = gridIndex % 2;
 
-        m_gamesLayout->addWidget(gameButton, row, col);
+        gamesLayout->addWidget(gameButton, row, col);
     }
 
-    // Обновляем позицию кнопки "+"
-    m_gamesLayout->addWidget(m_addGameButton, m_gameCount / 2, m_gameCount % 2);
+    if (MAX_CUSTOM_GAME_COUNT>0 && MAX_CUSTOM_GAME_COUNT>(gameCount-GAME_PREINSTALL_COUNT)){
+        // Обновляем позицию кнопки "+"
+        gamesLayout->addWidget(addGameButton, gameCount / 2, gameCount % 2);
+    }
 }
 
 QPushButton* GameManager::createGameButton(const QString &name, const QString &iconPath, const QString &executablePath) // Добавили GameManager::
 {
-    QPushButton *newGameButton = new QPushButton(m_gamesLayout->parentWidget());
+    QPushButton *newGameButton = new QPushButton(gamesLayout->parentWidget());
     newGameButton->setMinimumSize(QSize(MINIMUM_SIZE_WIDTH, MINIMUM_SIZE_HEIGHT));
     newGameButton->setMaximumSize(QSize(MAXIMUM_SIZE_WIDTH, MAXIMUM_SIZE_HEIGHT));
 
@@ -98,12 +97,12 @@ QPushButton* GameManager::createGameButton(const QString &name, const QString &i
 }
 
 void GameManager::gameButtonRight_clicked(QPushButton* gameButton, const QPoint& globalPos) {
-    QMenu menu(m_gamesLayout->parentWidget());
+    QMenu menu(gamesLayout->parentWidget());
 
     QString gameName = gameButton->property("gameName").toString();
     QString iconPath = gameButton->property("iconPath").toString();
     QString executablePath = gameButton->property("executablePath").toString();
-    int gameIndex = gameButton->property("gameIndex").toInt(); // Make sure this property is set when the button is created!
+    int gameIndex = gameButton->property("gameIndex").toInt();
 
     QVariantMap gameData;
     gameData["Name"] = gameName;
@@ -131,19 +130,18 @@ void GameManager::menuGameEdit_clicked()
     QVariant gameDataVariant = action->data();
     QVariantMap gameData = gameDataVariant.toMap();
 
-    // Извлекаем старые свойства игры из карты (до редактирования)
     QString currentName = gameData.value("Name").toString();
     QString currentIconPath = gameData.value("IconPath").toString();
     QString currentExecutablePath = gameData.value("ExecutablePath").toString();
 
 
-    GameInputDialog editDialog(true, m_gamesLayout->parentWidget());
+    GameInputDialog editDialog(true, gamesLayout->parentWidget());
     editDialog.setName(currentName);
     editDialog.setIconPath(currentIconPath);
     editDialog.setFilePath(currentExecutablePath);
 
     if (editDialog.exec() != QDialog::Accepted) {
-        return; // Пользователь отменил ввод
+        return;
     }
 
     QString newName = editDialog.getName();
@@ -155,21 +153,21 @@ void GameManager::menuGameEdit_clicked()
         return;
     }
 
-    for (int i = 1; i <= m_gameCount; ++i) {
-        m_settings->beginGroup(QString("Game_%1").arg(i));
-        QString entryName = m_settings->value("Name").toString();
-        QString entryIconPath = m_settings->value("IconPath").toString();
-        QString entryExecutablePath = m_settings->value("ExecutablePath").toString();
+    for (int i = 1; i <= gameCount; ++i) {
+        settings->beginGroup(QString("Game_%1").arg(i));
+        QString entryName = settings->value("Name").toString();
+        QString entryIconPath = settings->value("IconPath").toString();
+        QString entryExecutablePath = settings->value("ExecutablePath").toString();
         if (entryName == currentName &&
                 entryIconPath == currentIconPath &&
                 entryExecutablePath == currentExecutablePath) {
-            m_settings->setValue("Name", newName);
-            m_settings->setValue("IconPath", newIconPath);
-            m_settings->setValue("ExecutablePath", newExecutablePath);
-            m_settings->endGroup();
+            settings->setValue("Name", newName);
+            settings->setValue("IconPath", newIconPath);
+            settings->setValue("ExecutablePath", newExecutablePath);
+            settings->endGroup();
             break;
         }
-        m_settings->endGroup();
+        settings->endGroup();
     }
 
     refreshGamesLayout();
@@ -190,46 +188,46 @@ void GameManager::menuGameDelete_clicked()
         return;
     }
 
-    CustomWindow deleteDialog(CustomWindow::DeleteConfirmation, gameName, QString(), m_gamesLayout->parentWidget());
+    CustomWindow deleteDialog(CustomWindow::ConfirmationDeleteGame, gameName, QString(), gamesLayout->parentWidget());
     if (deleteDialog.exec() != QDialog::Accepted) {
         return;
     }
 
     QVector<QVariantMap> userGamesToKeep;
-    int currentTotalGameCount = m_settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+    int currentTotalGameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
 
     for (int i = GAME_PREINSTALL_COUNT + 1; i <= currentTotalGameCount; ++i) {
         if (i == gameIndexToDelete) {
             continue;
         }
 
-        m_settings->beginGroup(QString("Game_%1").arg(i));
-        QString currentName = m_settings->value("Name").toString();
+        settings->beginGroup(QString("Game_%1").arg(i));
+        QString currentName = settings->value("Name").toString();
         if (!currentName.isEmpty()) {
             QVariantMap game;
             game["Name"] = currentName;
-            game["IconPath"] = m_settings->value("IconPath").toString(); // Ensure toString()
-            game["ExecutablePath"] = m_settings->value("ExecutablePath").toString(); // Ensure toString()
+            game["IconPath"] = settings->value("IconPath").toString(); // Ensure toString()
+            game["ExecutablePath"] = settings->value("ExecutablePath").toString(); // Ensure toString()
             userGamesToKeep.append(game);
         }
-        m_settings->endGroup();
+        settings->endGroup();
     }
 
     for (int i = GAME_PREINSTALL_COUNT + 1; i <= currentTotalGameCount; ++i) {
-        m_settings->remove(QString("Game_%1").arg(i));
+        settings->remove(QString("Game_%1").arg(i));
     }
 
     for (int i = 0; i < userGamesToKeep.size(); ++i) {
         int newGameIndex = GAME_PREINSTALL_COUNT + i + 1;
-        m_settings->beginGroup(QString("Game_%1").arg(newGameIndex));
-        m_settings->setValue("Name", userGamesToKeep[i]["Name"]);
-        m_settings->setValue("IconPath", userGamesToKeep[i]["IconPath"]);
-        m_settings->setValue("ExecutablePath", userGamesToKeep[i]["ExecutablePath"]);
-        m_settings->endGroup();
+        settings->beginGroup(QString("Game_%1").arg(newGameIndex));
+        settings->setValue("Name", userGamesToKeep[i]["Name"]);
+        settings->setValue("IconPath", userGamesToKeep[i]["IconPath"]);
+        settings->setValue("ExecutablePath", userGamesToKeep[i]["ExecutablePath"]);
+        settings->endGroup();
     }
 
-    m_gameCount = GAME_PREINSTALL_COUNT + userGamesToKeep.size();
-    m_settings->setValue("GameCount", m_gameCount);
+    gameCount = GAME_PREINSTALL_COUNT + userGamesToKeep.size();
+    settings->setValue("GameCount", gameCount);
 
     refreshGamesLayout();
 }

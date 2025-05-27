@@ -6,30 +6,25 @@ MainWindow::MainWindow(QWidget *parent)
         ui(new Ui::MainWindow),
         bonusTimer(new QTimer(this)),
         tokenCheckTimer(new QTimer(this)),
-        settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Menu", this)),
+        settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Settings", this)),
         // Настройки хранятся в C:\Users\<NAME_USER>\AppData\Roaming\SlashGames\Menu.ini
         // Перенести в системный реестр settings(new QSettings("SlashGames", "Menu", this))
 
-      dbManager(new DatabaseManagement(settings)),
-      toolMenu(new QMenu(this)) // Инициализация toolMenu
+        dbManager(new DatabaseManagement(settings)),
+        toolMenu(new QMenu(this))
 {
     ui->setupUi(this);
     gameManager = new GameManager(settings, ui->gamesGridLayout, ui->addGameButton, this);
 
-    // Загрузка сохраненных данных
-    qDebug() << "Install token timer";
+    // Установка таймера локального токена
     if (dbManager->checkToken()) {
-            QDateTime expiryTime = dbManager->getTokenExpiryTime();
-            qint64 timeToExpiry = QDateTime::currentDateTime().msecsTo(expiryTime);
-            tokenCheckTimer->setInterval(timeToExpiry);
-            tokenCheckTimer->start();
-            qDebug() << "Таймер выхода (автоматический вход) запущен. Сработает в:" << expiryTime.toString(Qt::ISODate);
-            updateAccountButtonState();
+        QDateTime expiryTime = dbManager->getTokenExpiryTime();
+        qint64 timeToExpiry = QDateTime::currentDateTime().msecsTo(expiryTime);
+        tokenCheckTimer->setInterval(timeToExpiry);
+        tokenCheckTimer->start();
+    }
 
-    } else {
-        qDebug() << "Install token timer Токена нет";
-        updateAccountButtonState(); // Установить состояние "Гость", если нет токена или он недействителен
-        }
+    updateAccountButtonState();
 
     loadBalance();
     loadTheme();
@@ -44,27 +39,25 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-
-void MainWindow::checkAndUpdateAccountState()
+MainWindow::~MainWindow()
 {
-    QDateTime expiryTime = dbManager->getTokenExpiryTime();
-    if (expiryTime.isValid() && QDateTime::currentDateTime() >= expiryTime) {
-        logoutAccount();
-        CustomWindow General(CustomWindow::GeneralInfo, "Время вашего сеанса истекло!\nНеобходимо заново авторизироваться.","Сеанс истек!", this);
-        General.exec();
-    } else if (!dbManager->checkToken()) {
-        // Дополнительная проверка, если токен стал недействителен по другой причине
-        logoutAccount();
-        QMessageBox::information(this, "Сеанс истек2", "Ваш сеанс истек. Необходимо заново авторизироваться.");
-            } else {
-                updateAccountButtonState();
-            }
+    if (tokenCheckTimer->isActive()) {
+        tokenCheckTimer->stop();
+    }
+    delete ui;
+    delete dbManager;
 }
 
 
+void MainWindow::checkAndUpdateAccountState()
+{
+    logoutAccount();
+    CustomWindow General(CustomWindow::GeneralInfo, "Время вашего сеанса истекло!\nНеобходимо заново авторизироваться.","Сеанс истек!", this);
+    General.exec();
+}
+
 
 void MainWindow::updateAccountButtonState() {
-    qDebug() << "updateAccountButtonState checkToken";
     if (dbManager->checkToken()) {
         disconnect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::openAuthorizationWindow);
         ui->accountButton->setMenu(toolMenu);
@@ -72,13 +65,12 @@ void MainWindow::updateAccountButtonState() {
         return;
     }
     ui->accountButton->setMenu(nullptr); // Удаляем поведение выпадающего меню
-    connect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::openAuthorizationWindow); // Подключаем сигнал clicked
+    connect(ui->accountButton, &QPushButton::clicked, this, &MainWindow::openAuthorizationWindow);
 }
 
 
 void MainWindow::logoutAccount()
 {
-    qDebug() << "logoutAccount Выход из аккаунта";
     settings->setValue("ID", "");
     settings->setValue("balance", 0);
     ui->usernameLabel->setText("Гость");
@@ -86,17 +78,14 @@ void MainWindow::logoutAccount()
     updateAccountButtonState();
     if (tokenCheckTimer->isActive()) {
         tokenCheckTimer->stop();
-        qDebug() << "logoutAccount Таймер проверки токена остановлен при выходе.";
     }
 }
 
 
 void MainWindow::loadBalance()
 {
-    qDebug() << "Balance checkToken";
     if (dbManager->checkToken()){
         settings->setValue("balance", dbManager->getBalance());
-        qDebug() << "You login! Username: " << dbManager->getUsername() << " Balance from DB:"<<dbManager->getBalance();
     } else{ui->usernameLabel->setText("Гость");}
     balance = settings->value("balance", 0).toInt();
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
@@ -113,21 +102,15 @@ void MainWindow::loadTheme()
 void MainWindow::saveBalance()
 {
     settings->setValue("balance", balance);
-    qDebug() << "saveBalance checkToken";
 
     if (dbManager->checkToken()){
-        if (dbManager->updateBalance(balance)){
-            qDebug() << "Update balance from DB";
-        } else{
-            qDebug() << "Error update balance from DB";
-        }
+        dbManager->updateBalance(balance);
     }
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
-void MainWindow::on_addGameButton_clicked() // Добавили GameManager::
+void MainWindow::on_addGameButton_clicked()
 {
-    // Используем m_mainWindowParent в качестве родителя для диалога
     GameInputDialog gameInputDialog(false, this);
     if (gameInputDialog.exec() != QDialog::Accepted) {
         return;
@@ -160,10 +143,10 @@ void MainWindow::showBalanceChange(int amount)
 
         // Очистка текста через 2 секунды
         QTimer::singleShot(2000, this, [this]() {
-                if (ui && ui->balanceChangeLabel) {
-                    ui->balanceChangeLabel->setText("");
-                    ui->balanceChangeLabel->setStyleSheet("");
-                }
+            if (ui && ui->balanceChangeLabel) {
+                ui->balanceChangeLabel->setText("");
+                ui->balanceChangeLabel->setStyleSheet("");
+            }
         });
 }
 
@@ -254,44 +237,47 @@ void MainWindow::on_getBonusButton_clicked()
 // Кнопки и меню профиль
 void MainWindow::showMenuProfileInfo_clicked()
 {
-    qDebug() << "Пользователь авторизован.";
-    CustomWindow General(CustomWindow::GeneralInfo, "Вы авторизованы!", dbManager->getUsername(), this);
-    General.exec();
+    QString name = dbManager->getUsername();
+    int balance = dbManager->getBalance();
+    QDateTime regDate = dbManager->getRegistredTime();
+    QDateTime tokenDate = dbManager->getTokenExpiryTime();
+
+    QString userInfoString = QString("%1,%2,%3,%4")
+            .arg(name, QString::number(balance), regDate.toString("yyyy-MM-dd"), tokenDate.toString("yyyy-MM-dd"));
+
+    CustomWindow UserInfo(CustomWindow::UserInfo, userInfoString, QString(), this);
+    UserInfo.exec();
 }
 
 
 void MainWindow::menuEditProfile_clicked()
 {
-    qDebug() << "You enter button menu edit!";
-    CustomWindow UserInfo(CustomWindow::UserInfo, "You edit!",QString(), this);
-    UserInfo.exec();
+    CustomWindow EditProfile(CustomWindow::EditProfile,"", "", this, dbManager);
+    EditProfile.exec();
     return;
 }
 
 void MainWindow::menuExitProfile_clicked()
 {
-    qDebug() << "menuExitProfile checkToken";
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение",
+    CustomWindow confirmation(CustomWindow::Confirmation,
                                 "Вы действительно хотите выйти?\nВаш прогресс будет потерян!",
-                                QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes) {
+                                "Подтверждение", this);
+    if (confirmation.exec() == QDialog::Accepted) {
         logoutAccount();
-        qDebug() << "You exit from profile ";
     }
 }
 
 
 void MainWindow::on_rouletteButton_clicked()
 {
-    QMessageBox::information(this, "В разработке...", "Кнопка запуска рулетки");
-}
+    CustomWindow rouletteInfo(CustomWindow::GeneralInfo, "Кнопка запуска рулетки", "В разработке...", this);
+    rouletteInfo.exec();}
 
 
 void MainWindow::on_slotsButton_clicked()
 {
-    QMessageBox::information(this, "В разработке...", "Кнопка запуска слотов");
+    CustomWindow rouletteInfo(CustomWindow::GeneralInfo, "Кнопка запуска слотов", "В разработке...", this);
+    rouletteInfo.exec();
 }
 
 
@@ -307,18 +293,15 @@ void MainWindow::handleLoginSuccessful()
                 qint64 timeToExpiry = currentTime.msecsTo(expiryTime);
                 tokenCheckTimer->setInterval(timeToExpiry);
                 tokenCheckTimer->start();
-                qDebug() << "handleLoginSuccessful Таймер выхода запущен. Сработает в:" << expiryTime.toString(Qt::ISODate);
             } else {
-                qDebug() << "Срок действия токена уже истек при входе.";
                 logoutAccount();
-                QMessageBox::information(this, "Сеанс истек", "Время вашего сеанса истекло. Необходимо заново авторизоваться.");
-            }
+                CustomWindow General(CustomWindow::GeneralInfo, "Время вашего сеанса истекло2!\nНеобходимо заново авторизироваться.","Сеанс истек!", this);
+                General.exec();            }
         } else {
-            qDebug() << "Не удалось получить срок действия токена.";
-            tokenCheckTimer->start(TOKEN_CHECK_INTERVAL * 1000);
+            logoutAccount();
         }
-    CustomWindow UserInfo(CustomWindow::UserInfo, "Вы авторизованы!", dbManager->getUsername(), this);
-    UserInfo.exec();
+    CustomWindow GeneralInfo(CustomWindow::GeneralInfo, "Вы авторизованы!", dbManager->getUsername(), this);
+    GeneralInfo.exec();
 }
 
 
@@ -350,7 +333,7 @@ void MainWindow::applyTheme(bool darkTheme)
     // Обновляем иконки кнопок
     ui->themeButton->setIcon(QIcon(themeIconPath));
     ui->FaQButton->setIcon(QIcon(faqIconPath));
-    ui->accountButton->setIcon(QIcon(accountButtonIconPath)); // Устанавливаем иконку главной кнопки
+    ui->accountButton->setIcon(QIcon(accountButtonIconPath));
 
     if (!toolMenu) {
             toolMenu = new QMenu(this);
@@ -375,7 +358,7 @@ void MainWindow::applyTheme(bool darkTheme)
 
 void MainWindow::openAuthorizationWindow()
 {
-    AuthorizationWindow authWindow(settings, dbManager, this);
+    AuthorizationWindow authWindow(settings, dbManager, isDarkTheme, this);
     connect(&authWindow, &AuthorizationWindow::loginSuccessful, this, &MainWindow::handleLoginSuccessful);
     authWindow.exec();
 }
@@ -394,14 +377,7 @@ void MainWindow::on_themeButton_clicked()
 }
 
 
-MainWindow::~MainWindow()
-{
-    if (tokenCheckTimer->isActive()) {
-        tokenCheckTimer->stop();
-    }
-    delete ui;
-    delete dbManager;
-}
+
 
 
 

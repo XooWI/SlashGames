@@ -3,6 +3,13 @@
 
 #include <QDialog>
 #include <QString>
+#include <QLabel>
+#include <QPushButton>
+#include <QDate>
+
+#include "Style/customstyle.h"
+#include "Database/databasemanagement.h"
+
 
 namespace Ui {
 class CustomWindow;
@@ -14,19 +21,22 @@ class CustomWindow: public QDialog
 
 public:
     enum WindowType {
-        DeleteConfirmation,
+        ConfirmationDeleteGame,
         UserInfo,
-        GeneralInfo
+        GeneralInfo,
+        Confirmation,
+        EditProfile
     };
 
     explicit CustomWindow(WindowType type,
                           const QString& mainText,
                           const QString& windowTitle = QString(),
-                          QWidget *parent = nullptr);
+                          QWidget *parent = nullptr,
+                          DatabaseManagement *dbManager=nullptr);
     ~CustomWindow();
 
 private slots:
-    void on_deleteButton_clicked();
+    void on_acceptButton_clicked();
     void on_cancelButton_clicked();
     void on_contunieButton_clicked();
 
@@ -35,7 +45,8 @@ private:
     void setupWindow(WindowType type, const QString& mainText, const QString& windowTitle);
 
     Ui::CustomWindow *ui;
-    WindowType m_windowType;
+    QWidget *parent = nullptr;
+    DatabaseManagement *dbManager=nullptr;
 };
 
 #endif // CUSTOMWINDOW_H

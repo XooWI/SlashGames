@@ -1,19 +1,14 @@
 #ifndef AUTHORIZATIONWINDOW_H
 #define AUTHORIZATIONWINDOW_H
 
-#include"Database/databasemanagement.h"
-
 #include <QDialog>
 #include <QSettings>
-#include <QSqlDatabase>
-#include <QCryptographicHash>
 #include <QByteArray>
 #include <QTabBar>
-#include <QRegularExpression>
+#include <QCryptographicHash>
 
-// Убрать после обновления!
-#include <QDebug>
-#include <QMessageBox>
+#include "Database/databasemanagement.h"
+#include "Windows/Custom/customwindow.h"
 
 
 namespace Ui {
@@ -25,10 +20,8 @@ class AuthorizationWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, QWidget *parent = nullptr);
+    explicit AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, bool isDarkTheme, QWidget *parent = nullptr);
     ~AuthorizationWindow();
-
-    int password_strength(QString &password);
 
 signals:
     // Сигнал, испускаемый при успешной авторизации
@@ -45,28 +38,24 @@ private slots:
 
     void on_regShowPassword_released();
     void on_regShowPassword_pressed();
-
     void on_regShowConfirmPassword_pressed();
     void on_regShowConfirmPassword_released();
 
-    void on_regPasswordEdit_textEdited(const QString &arg1);
-
-    void on_confirmPasswordEdit_textEdited(const QString &arg1);
-
-
-    void on_regLoginEdit_textEdited(const QString &arg1);
-
     void on_loginEdit_textEdited(const QString &arg1);
-
     void on_passwordEdit_textEdited(const QString &arg1);
 
     void on_regUsernameEdit_textEdited(const QString &arg1);
+    void on_regLoginEdit_textEdited(const QString &arg1);
+    void on_regPasswordEdit_textEdited(const QString &arg1);
+    void on_confirmPasswordEdit_textEdited(const QString &arg1);
+
 
 private:
     Ui::AuthWindow *ui;
     DatabaseManagement *dbManager;
     QSettings *settings;
-    QByteArray hashPassword(const QString &password);
+    bool darkTheme;
+    QString getEyeIconPath(bool isOpenEye) const;
 };
 
 #endif // AUTHORIZATIONWINDOW_H

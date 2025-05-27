@@ -1,29 +1,24 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "Windows/FaQ/faqwindow.h"
-#include "Style/customstyle.h"
-#include "Windows/Authorization/authorizationwindow.h"
-#include"Windows/GameInput/gameinputdialog.h"
-#include"Windows/Custom/customwindow.h"
-#include"Database/databasemanagement.h"
-#include "GameManager/gamemanager.h"
-
 #include <QMainWindow>
 #include <QSettings>
 #include <QTimer>
 #include <QDateTime>
 
-// Удалить после обновления!
-#include <QMessageBox>
 #include <QDebug>
 
+#include "Windows/FaQ/faqwindow.h"
+#include "Style/customstyle.h"
+#include "Windows/Authorization/authorizationwindow.h"
+#include "Windows/GameInput/gameinputdialog.h"
+#include "Windows/Custom/customwindow.h"
+#include "Database/databasemanagement.h"
+#include "GameManager/gamemanager.h"
 
-QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
 }
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -38,6 +33,7 @@ private slots:
 
     void updateBonusTimer();
     void showBalanceChange(int amount);
+
     void on_getBonusButton_clicked();
     void on_addGameButton_clicked();
     void on_FaQButton_clicked();
@@ -54,10 +50,6 @@ private slots:
     void handleLoginSuccessful();
 
 private:
-    const int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
-    const int BONUS_AMOUNT = 3000;  // Количество получаемых монет
-    const int TOKEN_CHECK_INTERVAL = 20;
-
     Ui::MainWindow *ui;
     QTimer *bonusTimer;
     QTimer *tokenCheckTimer;
@@ -65,11 +57,6 @@ private:
     QMenu *toolMenu;
     DatabaseManagement *dbManager;
     GameManager *gameManager;
-
-    int balance;
-    int remainingSeconds; //секунд до получения следующего бонуса
-    bool isDarkTheme;
-    QString local_ID;
 
     // Управление балансом
     void loadBalance();
@@ -89,6 +76,13 @@ private:
     void updateAccountButtonState();
     void logoutAccount();
 
-    QByteArray Encrypt(const QByteArray &data, const QString &passphrase); // Шифрование и хеширование УДАЛИТЬ! (есть в БД)
+    const int BONUS_RELOAD = 20;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
+    const int BONUS_AMOUNT = 3000;  // Количество получаемых монет
+
+    int balance;
+    int remainingSeconds; // Секунд до получения следующего бонуса
+    bool isDarkTheme;
+    QString local_ID;
+
 };
 #endif // MAINWINDOW_H

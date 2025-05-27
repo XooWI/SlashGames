@@ -9,11 +9,10 @@
 #include <QDateTime>
 #include <QSysInfo>
 #include <QCryptographicHash>
+#include <QRegularExpression>
 
-// Убрать после обновления!
-#include <QDebug>
-#include <QMessageBox>
 #include <QSqlError>
+#include <QDebug>
 
 class DatabaseManagement
 {
@@ -24,19 +23,25 @@ public:
     bool checkUser(const QString &login, const QByteArray &hashedPassword);
     bool checkLogin(const QString &login);
     bool checkToken();
-    bool registredUser(const QString &username, const QString &login, const QByteArray &hashedPassword);
 
-    bool updateBalance(int &balance);
+    bool registredUser(const QString &username, const QString &login, const QByteArray &hashedPassword);
 
     int getBalance();
     QString getToken();
     QString getUsername();
+    QString getLogin();
+    QDateTime getRegistredTime();
     QDateTime getTokenExpiryTime();
+
+    bool updateBalance(int &balance);
+    int password_strength(QString &password);
+
+    QByteArray hash(const QString &data);
 
 private:
     QSettings *settings;
     QSqlDatabase db;
-    QString connectionName;
+    const QString connectionName = "local_sqlite_connection";
 
     void initializeDatabase();
     QString getUniqueID();
@@ -44,14 +49,14 @@ private:
     // Методы шифрования и хэширования
     QByteArray localEncrypt(const QByteArray &data);
     QByteArray dbEncrypt(const QByteArray &data);
-    QByteArray hash(const QByteArray &data);
 
+    // Время жизни токена
+    const qint64 TOKEN_LIFETIME = 7 * 24 * 60 * 60; // 7 * 24 * 60 * 60 = 7 дней
 
-    const qint64 TOKEN_LIFETIME = 40; // 7 * 24 * 60 * 60 7 дней
     // Ключ для шифрования локальных данных
     const QByteArray LOCAL_ENCRYPTION_KEY = "LocalSecretEncryptionKey";
 
-    // Ключ для шифрования данных в БД (баланс)
+    // Ключ для шифрования данных в БД (имя, баланс)
     const QByteArray DB_ENCRYPTION_KEY = "DatabaseSecretEncryptionKey";
 };
 

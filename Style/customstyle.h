@@ -18,6 +18,8 @@ public:
     static QString getTextRules();
     static QString getTextFAQ();
 
+    static QString userInfoText();
+
 };
 
 #endif // CUSTOMSTYLE_H

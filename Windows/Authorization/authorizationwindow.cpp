@@ -2,7 +2,7 @@
 #include "ui_authorizationwindow.h"
 
 
-AuthorizationWindow::AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, QWidget *parent) :
+AuthorizationWindow::AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, bool isDarkTheme, QWidget *parent) :
     QDialog(parent),
     settings(settings),
     dbManager(dbManager),
@@ -10,6 +10,11 @@ AuthorizationWindow::AuthorizationWindow(QSettings* settings, DatabaseManagement
 
 {
     ui->setupUi(this);
+    darkTheme = isDarkTheme;
+
+    ui->loginShowPassword->setIcon(QIcon(getEyeIconPath(false)));
+    ui->regShowPassword->setIcon(QIcon(getEyeIconPath(false)));
+    ui->regShowConfirmPassword->setIcon(QIcon(getEyeIconPath(false)));
 
     // Убирает вкладки
     ui->tabWidget->tabBar()->setVisible(false);
@@ -64,7 +69,7 @@ void AuthorizationWindow::on_loginButton_clicked()
     }
 
     // Хешируем введенный пользователем пароль для сравнения с хешем в БД
-    QByteArray enteredPasswordHash = hashPassword(password);
+    QByteArray enteredPasswordHash = dbManager->hash(password);
 
     if (dbManager->checkUser(login, enteredPasswordHash)){
         // Успешный вход
@@ -74,16 +79,11 @@ void AuthorizationWindow::on_loginButton_clicked()
 
         emit loginSuccessful(); // Сигнал об успешной регистрации
 
-        // Отображаем сообщение об успехе
-        // Заменить на кастомное окно!
-        //QMessageBox::information(this, "Успех", "Вход выполнен успешно!");
-
         this->accept();
     } else {
-        // Неверный логин или пароль
         ui->errorLabel->setText("Неверный логин или пароль.");
         ui->passwordEdit->clear();
-        ui->loginEdit->setFocus(); // Ставим курсор на ввод логина
+        ui->loginEdit->setFocus();
         return;
     }
 }
@@ -125,7 +125,7 @@ void AuthorizationWindow::on_registerButton_clicked()
         return;
     }
 
-    switch(password_strength(password)){
+    switch(dbManager->password_strength(password)){
     case 1: ui->regErrorLabel->setText("Пароль должен быть не меньше 10 символов!"); return;
     case 2: ui->regErrorLabel->setText("Пароль не должен содержать пробелов!"); return;
     case 3: ui->regErrorLabel->setText("Пароль должен содержать заглавные буквы!"); return;
@@ -136,7 +136,7 @@ void AuthorizationWindow::on_registerButton_clicked()
     case 0: ui->regErrorLabel->setText("");
     }
 
-    QByteArray hashedPassword = hashPassword(password);
+    QByteArray hashedPassword = dbManager->hash(password);
 
     if(dbManager->registredUser(username, login, hashedPassword)){
         // Успешная регистрация
@@ -145,50 +145,16 @@ void AuthorizationWindow::on_registerButton_clicked()
         ui->regPasswordEdit->clear();
         ui->confirmPasswordEdit->clear();
 
-        // Отображаем сообщение об успехе
-        // Заменить на кастомное окно!
-        QMessageBox::information(this, "Успех", "Регистрация выполнена успешно!");
+        CustomWindow successDialog(CustomWindow::GeneralInfo, "Регистрация выполнена успешно!", "Успех", this);
+        successDialog.exec();
 
-        // Переключаемся на вкладку входа
+        // Переключение на вкладку входа
         on_switchToLogin_clicked();
     } else {
         ui->regErrorLabel->setText("Ошибка при регистрации пользователя.");
     }
 }
 
-// Проверка сложности пароля
-int AuthorizationWindow::password_strength(QString &password)
-{
-    // Длина пароля
-    if (password.length() < 10) return 1;
-
-    // Отсутствие пробелов
-    if (password.contains(' ')) return 2;
-
-    // Содержит заглавные буквы
-    if (password == password.toLower()) return 3;
-
-    // Содержит строчные буквы
-    if (password == password.toUpper()) return 4;
-
-    // Содержит цифры
-    if (password.count(QRegularExpression("[0-9]")) == 0) return 5;
-
-    // Содержит русские и английские буквы
-    if ( ((password.count(QRegularExpression("[a-zA-Z]"))>0) + (password.count(QRegularExpression("[а-яА-Я]"))>0)) <2) return 6;
-
-    // Содержит спецсимволы
-    if (password.count(QRegularExpression("[^a-zA-Zа-яА-Я0-9]")) == 0) return 7;
-
-    return 0;
-}
-
-
-// Хеширование пароля
-// Добавить salt!
-QByteArray AuthorizationWindow::hashPassword(const QString &password){
-    return QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
-}
 
 void AuthorizationWindow::on_loginEdit_textEdited(const QString &arg1)
 {
@@ -222,7 +188,7 @@ void AuthorizationWindow::on_regPasswordEdit_textEdited(const QString &arg1)
     ui->regErrorLabel->setText("");
     ui->regPasswordEdit->setStyleSheet("");
     QString password = ui->regPasswordEdit->text();
-    int count = password_strength(password);
+    int count = dbManager->password_strength(password);
     if (count==0) {
        ui->regPasswordEdit->setStyleSheet("border: 1px solid green;");
        return;
@@ -248,7 +214,7 @@ void AuthorizationWindow::on_confirmPasswordEdit_textEdited(const QString &arg1)
     ui->confirmPasswordEdit->setStyleSheet("");
 
     QString password = ui->confirmPasswordEdit->text();
-    int count = password_strength(password);
+    int count = dbManager->password_strength(password);
     if (count==0) {
        ui->confirmPasswordEdit->setStyleSheet("border: 1px solid green;");
        return;
@@ -268,41 +234,48 @@ void AuthorizationWindow::on_confirmPasswordEdit_textEdited(const QString &arg1)
 
 }
 
+QString AuthorizationWindow::getEyeIconPath(bool isOpenEye) const
+{
+    QString mode = darkTheme ? "dark" : "light";
+    QString openOrHide = isOpenEye ? "open" : "hide";
+    return QString(":/icons/%1_mode/button_%2_eye.png").arg(mode, openOrHide);
+}
+
 // Показ пароля при нажатии кнопки с глазом
 void AuthorizationWindow::on_loginShowPassword_pressed()
 {
     ui->passwordEdit->setEchoMode(QLineEdit::Normal);
-    ui->loginShowPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
+    ui->loginShowPassword->setIcon(QIcon(getEyeIconPath(true)));
 }
 
 void AuthorizationWindow::on_loginShowPassword_released()
 {
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
-    ui->loginShowPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
+    ui->loginShowPassword->setIcon(QIcon(getEyeIconPath(false)));
 }
 
 void AuthorizationWindow::on_regShowPassword_pressed()
 {
     ui->regPasswordEdit->setEchoMode(QLineEdit::Normal);
-    ui->regShowPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
+    ui->regShowPassword->setIcon(QIcon(getEyeIconPath(true)));
 }
 
 void AuthorizationWindow::on_regShowPassword_released()
 {
     ui->regPasswordEdit->setEchoMode(QLineEdit::Password);
-    ui->regShowPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
+    ui->regShowPassword->setIcon(QIcon(getEyeIconPath(false)));
 }
 
 void AuthorizationWindow::on_regShowConfirmPassword_pressed()
 {
     ui->confirmPasswordEdit->setEchoMode(QLineEdit::Normal);
-    ui->regShowConfirmPassword->setIcon(QIcon(":/icons/light_mode/button_open_eye.png"));
+    ui->regShowConfirmPassword->setIcon(QIcon(getEyeIconPath(true)));
 }
 
 void AuthorizationWindow::on_regShowConfirmPassword_released()
 {
     ui->confirmPasswordEdit->setEchoMode(QLineEdit::Password);
-    ui->regShowConfirmPassword->setIcon(QIcon(":/icons/light_mode/button_hide_eye.png"));
+    ui->regShowConfirmPassword->setIcon(QIcon(getEyeIconPath(false)));
 }
 
 

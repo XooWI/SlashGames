@@ -5,6 +5,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+#include "Style/customstyle.h"
+
 namespace Ui {
 class FAQWindow;
 }
@@ -23,6 +25,9 @@ private slots:
 
 private:
     Ui::FAQWindow *ui;
+
+    const QString telegramSocialPath = "https://t.me/SlashGames_support_bot";
+    const QString githubSocialPath = "https://github.com/XooWI/SlashGames";
 };
 
 #endif // FAQWINDOW_H
