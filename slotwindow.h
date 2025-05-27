@@ -2,6 +2,7 @@
 #define SLOTWINDOW_H
 
 #include <QWidget>
+#include <QSettings>
 
 namespace Ui {
 class SlotWindow;
@@ -12,7 +13,7 @@ class SlotWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit SlotWindow(QWidget *parent = nullptr);
+    explicit SlotWindow(QSettings *settings, QWidget *parent = nullptr);
     ~SlotWindow();
 
 private slots:
@@ -20,6 +21,8 @@ private slots:
 
 private:
     Ui::SlotWindow *ui;
+
+    void saveBalance();
 };
 
 #endif // SLOTWINDOW_H

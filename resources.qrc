@@ -13,5 +13,10 @@
         <file>resources/shrimpThvg200200hover.png</file>
         <file>resources/slotBackground.png</file>
         <file>resources/slotBackground126.png</file>
+        <file>resources/rollstuff.png</file>
+        <file>resources/shrimpBar200200.jpg</file>
+        <file>resources/shrimpCherry200200.jpg</file>
+        <file>resources/shrimpLemon200200.jpg</file>
+        <file>resources/shrimpSeven200200.jpg</file>
     </qresource>
 </RCC>

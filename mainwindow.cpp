@@ -72,6 +72,14 @@ void MainWindow::on_themeButton_clicked()
 
 }
 
+void MainWindow::on_slotButton_clicked()
+{
+    SlotWindow *slotWindow = new SlotWindow(settings);
+    slotWindow->setAttribute(Qt::WA_DeleteOnClose);
+    slotWindow->show();
+
+}
+
 void MainWindow::saveBalance()
 {
     settings->setValue("balance", balance);
@@ -194,10 +202,5 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_slotButton_clicked()
-{
-    SlotWindow *slotWindow = new SlotWindow();
-    slotWindow->setAttribute(Qt::WA_DeleteOnClose);
-    slotWindow->show();
-}
+
 
