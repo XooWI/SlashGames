@@ -10,7 +10,6 @@ CustomWindow::CustomWindow(WindowType type, const QString& mainText, const QStri
 
     // Отключаем знак вопроса & Qt::WindowTitleHint
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
     setupWindow(type, mainText, windowTitle);
 }
 
@@ -114,59 +113,148 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             cancelButton->show();
             break;
 
-    case EditProfile: {
-            setWindowTitle("Редактирование профиля");
-            nameLineEdit->show();
-            oldPasswordLineEdit->show();
-            newPasswordLineEdit->show();
-            confirmNewPasswordLineEdit->show();
-
-            contentLabel->setText("Редактирование");
-            contentLabel->setStyleSheet("font-size: 30px;");
-            ui->oldPasswordLineEdit->setFocus();
-
-            nameLineEdit->setStyleSheet("");
-            oldPasswordLineEdit->setStyleSheet("");
-            newPasswordLineEdit->setStyleSheet("");
-            confirmNewPasswordLineEdit->setStyleSheet("");
-
-            nameLineEdit->setText(dbManager->getUsername());
-
-            acceptButton->setText("Сохранить");
-            acceptButton->setStyleSheet("QPushButton#acceptButton {background-color: #4CAF50;}QPushButton#acceptButton:hover {background-color: #45a049;}");
-            cancelButton->setText("Отмена");
-            cancelButton->setStyleSheet("QPushButton#cancelButton {background-color: #f44336;}QPushButton#cancelButton:hover {background-color: #b71c1c;}");
-            acceptButton->show();
-            cancelButton->show();
-
-            connect(acceptButton, &QPushButton::clicked, this, [this, nameLineEdit, oldPasswordLineEdit, newPasswordLineEdit, confirmNewPasswordLineEdit]() {
-                QString newName = nameLineEdit->text();
-                QString oldPassword = oldPasswordLineEdit->text();
-                QString newPassword = newPasswordLineEdit->text();
-                QString confirmNewPassword = confirmNewPasswordLineEdit->text();
-
-
-                if (newName.isEmpty()) {
-                    nameLineEdit->setStyleSheet("border: 1px solid red;");
-                    return;
-                }
-
-                if (newPassword != confirmNewPassword) {
-                    newPasswordLineEdit->setStyleSheet("border: 1px solid red;");
-                    confirmNewPasswordLineEdit->setStyleSheet("border: 1px solid red;");
-                    return;
-                }
-                if (oldPassword.isEmpty()) {
-                    oldPasswordLineEdit->setStyleSheet("border: 1px solid red;");
-                    return;
-                }
-                qDebug() << "Успешно";
-            });
-
-            connect(cancelButton, &QPushButton::clicked, this, &CustomWindow::on_cancelButton_clicked);
-
-            break;
+    case ConfirmationPay:
+        if (!windowTitle.isEmpty()) {
+            setWindowTitle(windowTitle);
+        } else {
+            setWindowTitle("Подтверждение");
         }
+        contentLabel->setText(mainText);
+        acceptButton->setText("Подтвердить");
+        cancelButton->setText("Отмена");
+        acceptButton->setStyleSheet("QPushButton#acceptButton {background-color: #4CAF50;}QPushButton#acceptButton:hover {background-color: #45a049;}");
+        cancelButton->setStyleSheet("QPushButton#cancelButton {background-color: #f44336;}QPushButton#cancelButton:hover {background-color: #b71c1c;}");
+        acceptButton->show();
+        cancelButton->show();
+        break;
+
+    case EditProfile: {
+        setWindowTitle("Редактирование профиля");
+
+        ui->nameLineEdit->show();
+        ui->oldPasswordLineEdit->show();
+        ui->newPasswordLineEdit->show();
+        ui->confirmNewPasswordLineEdit->show();
+
+        contentLabel->setText("Редактирование");
+        contentLabel->setStyleSheet("font-size: 30px;");
+        ui->oldPasswordLineEdit->setFocus();
+
+        ui->nameLineEdit->setStyleSheet("");
+        ui->oldPasswordLineEdit->setStyleSheet("");
+        ui->newPasswordLineEdit->setStyleSheet("");
+        ui->confirmNewPasswordLineEdit->setStyleSheet("");
+
+        if (dbManager) {
+            ui->nameLineEdit->setText(dbManager->getUsername());
+        } else {
+            qDebug() << "Ошибка: dbManager не инициализирован.";
+        }
+
+
+        ui->acceptButton->setText("Сохранить");
+        ui->acceptButton->setStyleSheet("QPushButton#acceptButton {background-color: #4CAF50;}QPushButton#acceptButton:hover {background-color: #45a049;}");
+        ui->cancelButton->setText("Отмена");
+        ui->cancelButton->setStyleSheet("QPushButton#cancelButton {background-color: #f44336;}QPushButton#cancelButton:hover {background-color: #b71c1c;}");
+        ui->acceptButton->show();
+        ui->cancelButton->show();
+
+
+        disconnect(ui->acceptButton, &QPushButton::clicked, nullptr, nullptr);
+        connect(ui->acceptButton, &QPushButton::clicked, this, [this]() {
+            QString newName = ui->nameLineEdit->text().trimmed();
+            QString oldPassword = ui->oldPasswordLineEdit->text();
+            QString newPassword = ui->newPasswordLineEdit->text();
+            QString confirmNewPassword = ui->confirmNewPasswordLineEdit->text();
+
+            // Сброс стилей ошибок
+            ui->nameLineEdit->setStyleSheet("");
+            ui->oldPasswordLineEdit->setStyleSheet("");
+            ui->newPasswordLineEdit->setStyleSheet("");
+            ui->confirmNewPasswordLineEdit->setStyleSheet("");
+
+            bool hasError = false;
+            QString errorMessage = "";
+
+            if (newName.isEmpty()) {
+                ui->nameLineEdit->setStyleSheet("border: 1px solid red;");
+                errorMessage += "Имя пользователя не может быть пустым.\n";
+                hasError = true;
+            }
+
+            if (oldPassword.isEmpty()) {
+                ui->oldPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                errorMessage += "Пожалуйста, введите старый пароль.\n";
+                hasError = true;
+            }
+
+            if (!newPassword.isEmpty() && newPassword != confirmNewPassword) {
+                ui->newPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                ui->confirmNewPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                errorMessage += "Новый пароль и подтверждение не совпадают.\n";
+                hasError = true;
+            }
+
+            if (!newPassword.isEmpty() && dbManager->password_strength(newPassword) != 0) {
+                ui->newPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                errorMessage += "Новый пароль слишком слабый. Используйте комбинацию букв, цифр и символов.\n";
+                hasError = true;
+            }
+
+            if (hasError) {
+                CustomWindow errorDialog(CustomWindow::GeneralInfo, errorMessage.trimmed(), "Ошибка ввода", this);
+                errorDialog.exec();
+                return;
+            }
+
+            if ((dbManager->checkPassword(oldPassword))) {
+                ui->oldPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                CustomWindow errorDialog(CustomWindow::GeneralInfo, "Неверный старый пароль.", "Ошибка авторизации", this);
+                errorDialog.exec();
+                return;
+            }
+
+            bool updateSuccess = true;
+            bool changesMade = false;
+
+            if (newName != dbManager->getUsername()) {
+                if (dbManager->updateUsername(newName)) {
+                    changesMade = true;
+                } else {
+                    qDebug()<<"Не удалось обновить имя пользователя";
+                    CustomWindow errorDialog(CustomWindow::GeneralInfo, "Не удалось обновить имя пользователя.", "Ошибка обновления", this); // Возможно, CustomWindow::Error
+                    errorDialog.exec();
+                    updateSuccess = false;
+                }
+            }
+
+            if (!newPassword.isEmpty() && updateSuccess) {
+                qDebug()<<"Upgrade password";
+                if (dbManager->updatePassword(newPassword)) {
+                    changesMade = true;
+                } else {
+                    qDebug()<< "Не удалось обновить пароль";
+                    CustomWindow errorDialog(CustomWindow::GeneralInfo, "Не удалось обновить пароль.", "Ошибка обновления", this);
+                    errorDialog.exec();
+                    updateSuccess = false;
+                }
+            }
+
+            if (updateSuccess && changesMade) {
+                CustomWindow infoDialog(CustomWindow::GeneralInfo, "Данные профиля успешно обновлены.", "Успех", this);
+                infoDialog.exec();
+                QDialog::accept();
+            } else if (!changesMade && updateSuccess) {
+                CustomWindow infoDialog(CustomWindow::GeneralInfo, "Изменений не обнаружено.", "Информация", this);
+                infoDialog.exec();
+                QDialog::reject();
+            }
+
+        });
+
+        connect(ui->cancelButton, &QPushButton::clicked, this, &CustomWindow::on_cancelButton_clicked, Qt::UniqueConnection); // Также с UniqueConnection
+        break;
+    }
 
         default:
             contentLabel->setText("Ошибка: Неизвестный тип окна.");
@@ -178,6 +266,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
 
     // Перерасчет оптимального размера окна
     adjustSize();
+    setFixedSize(sizeHint());
 }
 
 void CustomWindow::on_acceptButton_clicked()

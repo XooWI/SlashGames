@@ -20,7 +20,7 @@ class AuthorizationWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, bool isDarkTheme, QWidget *parent = nullptr);
+    AuthorizationWindow(QSettings* settings, DatabaseManagement *dbManager, bool isDarkTheme, QWidget *parent = nullptr);
     ~AuthorizationWindow();
 
 signals:

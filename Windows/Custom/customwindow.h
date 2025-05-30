@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDate>
+#include <QMessageBox>
 
 #include "Style/customstyle.h"
 #include "Database/databasemanagement.h"
@@ -25,10 +26,11 @@ public:
         UserInfo,
         GeneralInfo,
         Confirmation,
+        ConfirmationPay,
         EditProfile
     };
 
-    explicit CustomWindow(WindowType type,
+    CustomWindow(WindowType type,
                           const QString& mainText,
                           const QString& windowTitle = QString(),
                           QWidget *parent = nullptr,

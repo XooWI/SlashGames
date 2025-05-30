@@ -46,6 +46,10 @@ set(PROJECT_SOURCES
         GameManager/gamemanager.h
         GameManager/gamemanager.cpp
 
+        Windows/Balance/balancewindow.h
+        Windows/Balance/balancewindow.cpp
+        Windows/Balance/balancewindow.ui
+
 )
 
 
@@ -54,6 +58,12 @@ source_group("MainWindow" FILES
     Windows/Main/mainwindow.h
     Windows/Main/mainwindow.cpp
     Windows/Main/mainwindow.ui
+)
+
+source_group("BalanceWindow" FILES
+    Windows/Balance/balancewindow.h
+    Windows/Balance/balancewindow.cpp
+    Windows/Balance/balancewindow.ui
 )
 
 source_group("FaQ" FILES

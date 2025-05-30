@@ -18,7 +18,7 @@ class GameInputDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit GameInputDialog(bool isEditMode = false, QWidget *parent = nullptr);
+    GameInputDialog(bool isEditMode = false, QWidget *parent = nullptr);
     ~GameInputDialog();
 
     QString getName();
@@ -43,8 +43,8 @@ private slots:
 private:
     Ui::GameInputDialog *ui;
 
-    const int MIN_WIDTH_ICON = 1000;
-    const int MIN_HEIGHT_ICON = 300;
+    const int MIN_WIDTH_ICON = 0; // 1000
+    const int MIN_HEIGHT_ICON = 0; // 300
 
 };
 

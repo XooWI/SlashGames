@@ -15,21 +15,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     gameManager = new GameManager(settings, ui->gamesGridLayout, ui->addGameButton, this);
-
-    // Установка таймера локального токена
-    if (dbManager->checkToken()) {
-        QDateTime expiryTime = dbManager->getTokenExpiryTime();
-        qint64 timeToExpiry = QDateTime::currentDateTime().msecsTo(expiryTime);
-        tokenCheckTimer->setInterval(timeToExpiry);
-        tokenCheckTimer->start();
-    }
+    initializeTimers();
 
     updateAccountButtonState();
 
     loadBalance();
     loadTheme();
     checkBonusAvailability();
-    gameManager->refreshGamesLayout();
 
     connect(bonusTimer, &QTimer::timeout, this, &MainWindow::updateBonusTimer);
     connect(tokenCheckTimer, &QTimer::timeout, this, &MainWindow::checkAndUpdateAccountState);
@@ -37,7 +29,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->supportLabel->setText(CustomStyle::getTextSupportLabel());
     ui->supportLabel->setOpenExternalLinks(true);
 
+
 }
+
+void MainWindow::initializeTimers() {
+    if (dbManager->checkToken()) {
+        QDateTime expiryTime = dbManager->getTokenExpiryTime();
+        qint64 timeToExpiry = QDateTime::currentDateTime().msecsTo(expiryTime);
+        tokenCheckTimer->setInterval(timeToExpiry);
+        tokenCheckTimer->start();
+    }
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -122,7 +125,7 @@ void MainWindow::on_addGameButton_clicked()
 
     // Сохраняем данные игры
     gameManager->saveGame(gameName, iconPath, executablePath);
-    gameManager->refreshGamesLayout();
+    gameManager->refreshGamesLayout(this->size().width() > 1600? 3: 2);
 }
 
 
@@ -254,14 +257,13 @@ void MainWindow::menuEditProfile_clicked()
 {
     CustomWindow EditProfile(CustomWindow::EditProfile,"", "", this, dbManager);
     EditProfile.exec();
-    return;
 }
 
 void MainWindow::menuExitProfile_clicked()
 {
     CustomWindow confirmation(CustomWindow::Confirmation,
                                 "Вы действительно хотите выйти?\nВаш прогресс будет потерян!",
-                                "Подтверждение", this);
+                                "Подтверждение выхода", this);
     if (confirmation.exec() == QDialog::Accepted) {
         logoutAccount();
     }
@@ -377,8 +379,20 @@ void MainWindow::on_themeButton_clicked()
 }
 
 
+void MainWindow::on_balanceLabel_clicked()
+{
+    BalanceWindow balancewindow(this);
+    balancewindow.exec();
+}
 
 
+// Реализация события изменения размера
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    if (event->size().width() > 1600) {
+        gameManager->refreshGamesLayout(3);
+    } else{
+        gameManager->refreshGamesLayout(2);
+    }
 
-
-
+}

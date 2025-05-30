@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BalanceWindow</class>
+ <widget class="QWidget" name="BalanceWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>917</width>
+    <height>555</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Управление балансом</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="depositFrame">
+     <property name="styleSheet">
+      <string notr="true">background-color: #FFFFFF;
+border-right: 1px solid #E0E0E0;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_deposit">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="leftMargin">
+       <number>30</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>30</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="depositTitleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 20pt;
+font-weight: 700;
+color: #333333;
+border-right: 0px;</string>
+        </property>
+        <property name="text">
+         <string>Пополнение баланса</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QPushButton" name="qrCodeButton">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>250</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/resources.qrc">
+          <normaloff>:/icons/light_mode/qr_balance.png</normaloff>:/icons/light_mode/qr_balance.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>250</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="addressHeaderLabel">
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 12pt; color: #555555; font-weight: 500;border-right: 0px;</string>
+        </property>
+        <property name="text">
+         <string>Адрес кошелька:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="cryptoAddressLabel">
+        <property name="styleSheet">
+         <string notr="true">background: #F0F0F0;
+padding: 10px;
+border-radius: 8px;
+font-family: 'Consolas', 'Courier New', monospace;
+font-size: 10pt;
+color: #333333;
+border: 1px solid #E0E0E0;</string>
+        </property>
+        <property name="text">
+         <string>0x12174343747473387hdjhdry7uhurhftt5566656b</string>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::TextSelectableByMouse</set>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QPushButton" name="copyAddressButton">
+        <property name="minimumSize">
+         <size>
+          <width>180</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+  background-color: transparent;
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12pt;
+  font-weight: 500;
+}
+QPushButton:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-color: #388E3C;
+  color: #388E3C;
+}
+QPushButton:pressed {
+  background-color: rgba(76, 175, 80, 0.2);
+}</string>
+        </property>
+        <property name="text">
+         <string>Копировать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_deposit">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="withdrawFrame">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #FFFFFF;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_withdraw">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="leftMargin">
+       <number>30</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>30</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="withdrawTitleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 20pt;
+font-weight: 700;
+color: #333333;</string>
+        </property>
+        <property name="text">
+         <string>Вывод средств</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="methodSelectionLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 12pt; color: #555555; font-weight: 500;</string>
+        </property>
+        <property name="text">
+         <string>Выберите способ вывода:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="withdrawalMethodLayout">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="cardMethodButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #E0E0E0;
+    border: 1px solid #C0C0C0;
+    border-radius: 10px;
+    padding: 10px;
+    color: #555555;
+    font-size: 10pt;
+    font-weight: 500;
+    icon-size: 32px 32px;
+}
+QPushButton:hover {
+    background-color: #D0D0D0;
+    border-color: #B0B0B0;
+}
+QPushButton:checked {
+    background-color: #4CAF50;
+    border-color: #388E3C;
+    color: white;
+}
+QPushButton:checked:hover {
+    background-color: #45a049;
+    border-color: #388E3C;
+}
+QPushButton:disabled {
+    background-color: #F5F5F5;
+    border-color: #E0E0E0;
+    color: #AAAAAA;
+}</string>
+          </property>
+          <property name="text">
+           <string>Карта</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../resources/resources.qrc">
+            <normaloff>:/icons/light_mode/card.png</normaloff>:/icons/light_mode/card.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="phoneMethodButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #E0E0E0;
+    border: 1px solid #C0C0C0;
+    border-radius: 10px;
+    padding: 10px;
+    color: #555555;
+    font-size: 10pt;
+    font-weight: 500;
+    icon-size: 32px 32px;
+}
+QPushButton:hover {
+    background-color: #D0D0D0;
+    border-color: #B0B0B0;
+}
+QPushButton:checked {
+    background-color: #4CAF50;
+    border-color: #388E3C;
+    color: white;
+}
+QPushButton:checked:hover {
+    background-color: #45a049;
+    border-color: #388E3C;
+}
+QPushButton:disabled {
+    background-color: #F5F5F5;
+    border-color: #E0E0E0;
+    color: #AAAAAA;
+}</string>
+          </property>
+          <property name="text">
+           <string>Телефон</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../resources/resources.qrc">
+            <normaloff>:/icons/light_mode/phone.png</normaloff>:/icons/light_mode/phone.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cryptoMethodButton">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+    background-color: #E0E0E0;
+    border: 1px solid #C0C0C0;
+    border-radius: 10px;
+    padding: 10px;
+    color: #555555;
+    font-size: 10pt;
+    font-weight: 500;
+    icon-size: 32px 32px;
+}
+QPushButton:hover {
+    background-color: #D0D0D0;
+    border-color: #B0B0B0;
+}
+QPushButton:checked {
+    background-color: #4CAF50;
+    border-color: #388E3C;
+    color: white;
+}
+QPushButton:checked:hover {
+    background-color: #45a049;
+    border-color: #388E3C;
+}
+QPushButton:disabled {
+    background-color: #F5F5F5;
+    border-color: #E0E0E0;
+    color: #AAAAAA;
+}</string>
+          </property>
+          <property name="text">
+           <string>Крипта</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../resources/resources.qrc">
+            <normaloff>:/icons/light_mode/crypto.png</normaloff>:/icons/light_mode/crypto.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="inputLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 12pt; color: #555555; font-weight: 500;</string>
+        </property>
+        <property name="text">
+         <string>Номер карты:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputField">
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+  padding: 10px;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  font-size: 11pt;
+  color: #333333;
+}
+QLineEdit:focus {
+  border: 1px solid #4CAF50;
+  background-color: #F9F9F9;
+}</string>
+        </property>
+        <property name="placeholderText">
+         <string>0000 0000 0000 0000</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="brandInfoLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>400</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="amountLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 12pt; color: #555555; font-weight: 500;</string>
+        </property>
+        <property name="text">
+         <string>Сумма вывода:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="amountLineEdit">
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+  padding: 10px;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  font-size: 11pt;
+  color: #333333;
+}
+QLineEdit:focus {
+  border: 1px solid #4CAF50;
+  background-color: #F9F9F9;
+}</string>
+        </property>
+        <property name="placeholderText">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="infoCommissionLabel">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>85</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Комиссия: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="commissionSizeLabel">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #FF5722;</string>
+          </property>
+          <property name="text">
+           <string>10%</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QPushButton" name="withdrawButton">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12pt;
+  font-weight: 600;
+}
+QPushButton:hover {
+  background-color: #45a049;
+}
+QPushButton:pressed {
+  background-color: #388E3C;
+}</string>
+        </property>
+        <property name="text">
+         <string>Вывести</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_withdraw">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

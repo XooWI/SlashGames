@@ -16,7 +16,7 @@ class FAQWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit FAQWindow(QWidget *parent = nullptr);
+    FAQWindow(QWidget *parent = nullptr);
     ~FAQWindow();
 
 private slots:

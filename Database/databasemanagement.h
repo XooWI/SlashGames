@@ -17,11 +17,12 @@
 class DatabaseManagement
 {
 public:
-    explicit DatabaseManagement(QSettings* settings = nullptr);
+    DatabaseManagement(QSettings* settings = nullptr);
     ~DatabaseManagement();
 
     bool checkUser(const QString &login, const QByteArray &hashedPassword);
     bool checkLogin(const QString &login);
+    bool checkPassword(const QString &password);
     bool checkToken();
 
     bool registredUser(const QString &username, const QString &login, const QByteArray &hashedPassword);
@@ -34,6 +35,8 @@ public:
     QDateTime getTokenExpiryTime();
 
     bool updateBalance(int &balance);
+    bool updateUsername(QString &username);
+    bool updatePassword(QString &password);
     int password_strength(QString &password);
 
     QByteArray hash(const QString &data);

@@ -19,9 +19,9 @@ class GameManager : public QObject
     Q_OBJECT
 
 public:
-    explicit GameManager(QSettings *settings, QGridLayout *gamesLayout, QPushButton *addGameButton, QObject *parent = nullptr);
+    GameManager(QSettings *settings, QGridLayout *gamesLayout, QPushButton *addGameButton, QObject *parent = nullptr);
 
-    void refreshGamesLayout(); // Обновления макета игр
+    void refreshGamesLayout(int column = 2); // Обновления макета игр
     void saveGame(const QString &name, const QString &iconPath, const QString &executablePath);
 
 private slots:
@@ -42,7 +42,7 @@ private:
     const int MAXIMUM_SIZE_WIDTH = 1000;
     const int MAXIMUM_SIZE_HEIGHT = 500;
     const int GAME_PREINSTALL_COUNT = 2;
-    const int MAX_CUSTOM_GAME_COUNT = 100;
+    const int MAX_CUSTOM_GAME_COUNT = 20; // -1 - неограничено
 
 };
 

@@ -8,6 +8,7 @@ GameManager::GameManager(QSettings *settings, QGridLayout *gamesLayout, QPushBut
 {
     // Инициализируем gameCount из настроек
     gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
+
 }
 
 void GameManager::saveGame(const QString &name, const QString &iconPath, const QString &executablePath)
@@ -24,25 +25,29 @@ void GameManager::saveGame(const QString &name, const QString &iconPath, const Q
     settings->endGroup();
 }
 
-void GameManager::refreshGamesLayout()
+void GameManager::refreshGamesLayout(int column)
 {
-    gamesLayout->removeWidget(addGameButton);
+    // Карта для хранения существующих кнопок пользовательских игр для возможного повторного использования
+    QMap<int, QPushButton*> existingGameButtons;
 
-    // Очищаем все кнопки
+    // Удаляем кнопку addGameButton
+    gamesLayout->removeWidget(addGameButton);
+    addGameButton->hide();
+
     for (int i = gamesLayout->count() - 1; i >= 0; --i) {
         QLayoutItem* item = gamesLayout->itemAt(i);
         if (item && item->widget()) {
             if (QPushButton* button = qobject_cast<QPushButton*>(item->widget())) {
-                bool isUserGame = button->property("gameIndex").toBool();
+                bool isUserGame = button->property("gameIndex").isValid();
                 if (isUserGame) {
-                    gamesLayout->removeWidget(button);
-                    button->deleteLater();
+                    int gameIndex = button->property("gameIndex").toInt();
+                    existingGameButtons.insert(gameIndex, button);
+                    gamesLayout->removeWidget(button); // Удаляем из макета, но не удаляем объект
                 }
             }
         }
     }
 
-    // Загружаем и добавляем игры из настроек
     gameCount = settings->value("GameCount", GAME_PREINSTALL_COUNT).toInt();
 
     for (int i = GAME_PREINSTALL_COUNT + 1; i <= gameCount; ++i) {
@@ -54,23 +59,37 @@ void GameManager::refreshGamesLayout()
 
         settings->endGroup();
 
-        QPushButton* gameButton = createGameButton(name, iconPath, executablePath);
+        QPushButton* gameButton = nullptr;
 
-        gameButton->setProperty("gameIndex", i);
+        if (existingGameButtons.contains(i)) {
+            gameButton = existingGameButtons.take(i);
+            gameButton->setText(name);
+            gameButton->setStyleSheet(CustomStyle::getCustomNewButton().arg(iconPath));
+            gameButton->setProperty("gameName", name);
+            gameButton->setProperty("iconPath", iconPath);
+            gameButton->setProperty("executablePath", executablePath);
+        } else {
+            gameButton = createGameButton(name, iconPath, executablePath);
+            gameButton->setProperty("gameIndex", i);
+        }
 
         int gridIndex = GAME_PREINSTALL_COUNT + (i - (GAME_PREINSTALL_COUNT + 1));
-        int row = gridIndex / 2;
-        int col = gridIndex % 2;
-
+        int row = gridIndex / column;
+        int col = gridIndex % column;
         gamesLayout->addWidget(gameButton, row, col);
     }
 
-    if (MAX_CUSTOM_GAME_COUNT>0 && MAX_CUSTOM_GAME_COUNT>(gameCount-GAME_PREINSTALL_COUNT)){
-        // Обновляем позицию кнопки "+"
-        gamesLayout->addWidget(addGameButton, gameCount / 2, gameCount % 2);
+    qDeleteAll(existingGameButtons);
+
+    int customGameCount = gameCount - GAME_PREINSTALL_COUNT;
+    if ((MAX_CUSTOM_GAME_COUNT > 0 && customGameCount < MAX_CUSTOM_GAME_COUNT) || MAX_CUSTOM_GAME_COUNT == -1) {
+        addGameButton->show();
+        // Вычисляем позицию для addGameButton
+        int addGameButtonRow = gameCount / column;
+        int addGameButtonCol = gameCount % column;
+        gamesLayout->addWidget(addGameButton, addGameButtonRow, addGameButtonCol);
     }
 }
-
 QPushButton* GameManager::createGameButton(const QString &name, const QString &iconPath, const QString &executablePath) // Добавили GameManager::
 {
     QPushButton *newGameButton = new QPushButton(gamesLayout->parentWidget());
@@ -170,7 +189,8 @@ void GameManager::menuGameEdit_clicked()
         settings->endGroup();
     }
 
-    refreshGamesLayout();
+    refreshGamesLayout(gamesLayout->parentWidget()->size().width() > 1600? 3: 2);
+
 }
 
 
@@ -229,6 +249,5 @@ void GameManager::menuGameDelete_clicked()
     gameCount = GAME_PREINSTALL_COUNT + userGamesToKeep.size();
     settings->setValue("GameCount", gameCount);
 
-    refreshGamesLayout();
+    refreshGamesLayout(gamesLayout->parentWidget()->size().width() > 1600? 3: 2);
 }
-

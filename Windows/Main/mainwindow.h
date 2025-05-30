@@ -15,6 +15,12 @@
 #include "Windows/Custom/customwindow.h"
 #include "Database/databasemanagement.h"
 #include "GameManager/gamemanager.h"
+#include "Windows/Balance/balancewindow.h"
+
+#include <QClipboard>
+#include <QGraphicsDropShadowEffect>
+#include <QMouseEvent>
+
 
 namespace Ui {
 class MainWindow;
@@ -25,7 +31,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -49,7 +55,13 @@ private slots:
     void openAuthorizationWindow();
     void handleLoginSuccessful();
 
+    void on_balanceLabel_clicked();
+
+    void resizeEvent(QResizeEvent *event);
+
 private:
+    void initializeTimers();
+
     Ui::MainWindow *ui;
     QTimer *bonusTimer;
     QTimer *tokenCheckTimer;

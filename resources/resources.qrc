@@ -19,6 +19,11 @@
         
         <file>icons/light_mode/button_open_eye.png</file>
         <file>icons/light_mode/button_hide_eye.png</file>
+
+        <file>icons/light_mode/qr_balance.png</file>
+        <file>icons/light_mode/card.png</file>
+        <file>icons/light_mode/crypto.png</file>
+        <file>icons/light_mode/phone.png</file>
     </qresource>
 
 
@@ -44,5 +49,10 @@
     <qresource prefix="">
         <file>images/hover/slots.png</file>
         <file>images/hover/roulette.png</file>
+    </qresource>
+
+    <qresource prefix="">
+        <file>bin-list-data.csv</file>
+        <file>phone-code-data.csv</file>
     </qresource>
 </RCC> 

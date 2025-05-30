@@ -20,6 +20,11 @@ public:
 
     static QString userInfoText();
 
+    static QString defaultCopyAddressButton();
+    static QString activeCopyAddressButton();
+    static QString confirmationPayWindow();
+    static QString checkPayWindow();
+
 };
 
 #endif // CUSTOMSTYLE_H

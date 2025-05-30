@@ -153,6 +153,20 @@ bool DatabaseManagement::checkLogin(const QString &login)
     return (query.next() && query.value(0).toInt() > 0);
 }
 
+bool DatabaseManagement::checkPassword(const QString &password)
+{
+    if (!db.isOpen()) return false;
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM users WHERE password_hash = :password_hash");
+    query.bindValue(":password_hash", hash(password));
+    //query.bindValue(":auth_token_hash", getToken());
+    if (!query.exec()) {
+        qDebug() << "checkPassword Query failed:" << query.lastError().text();
+        return false;
+    }
+    qDebug()<<"CheckPassword"<<(query.next() && query.value(0).toInt() > 0);
+    return (query.next() && query.value(0).toInt() > 0);
+}
 
 bool DatabaseManagement::checkToken()
 {
@@ -377,6 +391,34 @@ bool DatabaseManagement::updateBalance(int &balance)
     updateQuery.bindValue(":balance", encryptedBalance);
     updateQuery.bindValue(":auth_token_hash", hash(authTokenToCheck));
 
+    return updateQuery.exec() && updateQuery.numRowsAffected() > 0;
+}
+
+bool DatabaseManagement::updateUsername(QString &username)
+{
+    if (!db.isOpen()) return false;
+    QString authTokenHex = getToken();
+    if (authTokenHex.isEmpty()) return false;
+
+    QSqlQuery updateQuery(db);
+    updateQuery.prepare("UPDATE users SET username = :username WHERE auth_token_hash = :auth_token_hash");
+    updateQuery.bindValue(":username", username);
+    updateQuery.bindValue(":auth_token_hash", getToken());
+    qDebug()<<"updateUsername"<<(updateQuery.numRowsAffected() > 0);
+    return updateQuery.exec() && updateQuery.numRowsAffected() > 0;
+}
+
+bool DatabaseManagement::updatePassword(QString &password)
+{
+    if (!db.isOpen()) return false;
+    QString authTokenHex = getToken();
+    if (authTokenHex.isEmpty()) return false;
+
+    QSqlQuery updateQuery(db);
+    updateQuery.prepare("UPDATE users SET password_hash = :password_hash WHERE login = :login");
+    updateQuery.bindValue(":password_hash", hash(password));
+    updateQuery.bindValue(":login", getLogin());
+    qDebug()<<"updatePassword"<<(updateQuery.numRowsAffected() > 0);
     return updateQuery.exec() && updateQuery.numRowsAffected() > 0;
 }
 
