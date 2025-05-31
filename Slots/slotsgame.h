@@ -23,10 +23,7 @@ private:
 private slots:
     void resizeEvent(QResizeEvent* event);
     void framePerSecond();
-    //void on_pushButton_clicked(bool checked);
     void on_pushButton_clicked();
-    //void on_pushButton_released();
-    //void on_horizontalSlider_actionTriggered(int action);
     void on_horizontalSlider_sliderMoved(int position);
 };
 #endif // SLOTSGAME_H
