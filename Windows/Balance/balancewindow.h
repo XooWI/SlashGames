@@ -2,8 +2,8 @@
 #define BALANCEWINDOW_H
 
 #include <QDialog>
-#include <QMap> // Используем QMap для хранения BIN данных
-#include <QRegularExpression> // Для валидации
+#include <QMap>
+#include <QRegularExpression>
 #include <QIntValidator>
 #include <QUrl>
 #include <QButtonGroup>
@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QClipboard>
-#include <QDebug> // Для отладки
+#include <QDebug>
 
 #include "Style/customstyle.h"
 #include "Windows/Custom/customwindow.h"
@@ -40,7 +40,7 @@ class BalanceWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit BalanceWindow(QWidget *parent = nullptr);
+    BalanceWindow(QWidget *parent = nullptr);
     ~BalanceWindow();
 
 private slots:
@@ -67,7 +67,6 @@ private:
 
     const QString CryptoPath = "https://github.com/MrAnonim114";
     const QString CryptoAdressee = "0x12174343747473387hdjhdry7uhurhftt5566656b";
-
 
     void processCardInput(const QString &text, int originalCursorPos);
     void processPhoneInput(const QString &text, int originalCursorPos);

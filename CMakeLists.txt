@@ -50,6 +50,11 @@ set(PROJECT_SOURCES
         Windows/Balance/balancewindow.cpp
         Windows/Balance/balancewindow.ui
 
+        Slots/slotsgame.h
+        Slots/slotsgame.cpp
+        Slots/slotsgame.ui
+        Slots/animFunc.h
+
 )
 
 
@@ -66,6 +71,12 @@ source_group("BalanceWindow" FILES
     Windows/Balance/balancewindow.ui
 )
 
+source_group("SlotsGame" FILES
+    Slots/slotsgame.h
+    Slots/slotsgame.cpp
+    Slots/slotsgame.ui
+    Slots/animFunc.h
+)
 source_group("FaQ" FILES
     Windows/FaQ/faqwindow.h
     Windows/FaQ/faqwindow.cpp

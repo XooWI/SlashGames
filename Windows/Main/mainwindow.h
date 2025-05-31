@@ -16,6 +16,7 @@
 #include "Database/databasemanagement.h"
 #include "GameManager/gamemanager.h"
 #include "Windows/Balance/balancewindow.h"
+#include "Slots/slotsgame.h"
 
 #include <QClipboard>
 #include <QGraphicsDropShadowEffect>
@@ -33,6 +34,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    int getBalance();
 
 private slots:
     void checkAndUpdateAccountState();

@@ -94,6 +94,14 @@ void MainWindow::loadBalance()
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
+int MainWindow::getBalance()
+{
+    if (dbManager->checkToken()){
+        settings->setValue("balance", dbManager->getBalance());
+    } else{ui->usernameLabel->setText("Гость");}
+    balance = settings->value("balance", 0).toInt();
+    return balance;
+}
 
 void MainWindow::loadTheme()
 {
@@ -278,8 +286,12 @@ void MainWindow::on_rouletteButton_clicked()
 
 void MainWindow::on_slotsButton_clicked()
 {
-    CustomWindow rouletteInfo(CustomWindow::GeneralInfo, "Кнопка запуска слотов", "В разработке...", this);
-    rouletteInfo.exec();
+    this->hide();
+    slotsgame *roulette = new slotsgame(this);
+    roulette->exec();
+    this->show();
+    roulette->deleteLater();
+
 }
 
 

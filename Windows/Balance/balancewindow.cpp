@@ -18,7 +18,6 @@ BalanceWindow::BalanceWindow(QWidget *parent) :
     ui->amountLineEdit->setValidator(amountValidator);
     ui->cryptoAddressLabel->setText(CryptoAdressee);
 
-
     loadBinData();
     loadPhoneCarrierData();
 }
@@ -449,7 +448,6 @@ void BalanceWindow::on_withdrawButton_clicked()
     displayAmount = locale.toString(amount);
     displayCommissionAmount = locale.toString(commissionAmount, 'f', 2);
     displayTotalAmount = locale.toString(totalAmount, 'f', 2);
-
 
     const QString confirmationHtml = CustomStyle::confirmationPayWindow().arg(formattedRecipient, operatorInfo, displayAmount,
             QString::number(commissionRate * 100, 'f', 0), displayCommissionAmount,
