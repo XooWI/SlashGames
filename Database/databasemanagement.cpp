@@ -109,13 +109,13 @@ bool DatabaseManagement::registredUser(const QString &username, const QString &l
     query.prepare("INSERT INTO users (username, login, password_hash, balance, registration_date, auth_token_hash, last_bonus_time) "
                     "VALUES (:username, :login, :password_hash, :balance, :registration_date, :auth_token_hash, :last_bonus_time)"); // <-- Изменено здесь
 
-    query.bindValue(":username", dbEncrypt(username.toUtf8()));
+    query.bindValue(":username", dbEncrypt(username.toUtf8(), hash(login)));
     query.bindValue(":login", hash(login.toUtf8())); // Логин хешируется при регистрации
     query.bindValue(":password_hash", hashedPassword);
-    query.bindValue(":balance", dbEncrypt(QByteArray::number(0.00)));
-    query.bindValue(":registration_date", dbEncrypt(QDateTime::currentDateTime().toString(Qt::ISODate).toUtf8()));
+    query.bindValue(":balance", dbEncrypt(QByteArray::number(0.00), hash(login)));
+    query.bindValue(":registration_date", dbEncrypt(QDateTime::currentDateTime().toString(Qt::ISODate).toUtf8(), hash(login)));
     query.bindValue(":auth_token_hash", QByteArray());
-    query.bindValue(":last_bonus_time", dbEncrypt(QByteArray()));
+    query.bindValue(":last_bonus_time", dbEncrypt(QByteArray(), hash(login)));
 
     if (!query.exec()) {
         qDebug() << "registredUser: Failed to register user:" << query.lastError().text();
@@ -128,7 +128,8 @@ bool DatabaseManagement::registredUser(const QString &username, const QString &l
 // Шифрование для локального токена
 QByteArray DatabaseManagement::localEncrypt(const QByteArray &data)
 {
-    QByteArray encrypted;
+    // Ключ для шифрования локальных данных
+    QByteArray encrypted, LOCAL_ENCRYPTION_KEY = hash("Local" + getUniqueID());
     for (int i = 0; i < data.size(); ++i) {
         encrypted.append(data[i] ^ LOCAL_ENCRYPTION_KEY[i % LOCAL_ENCRYPTION_KEY.size()]);
     }
@@ -136,9 +137,10 @@ QByteArray DatabaseManagement::localEncrypt(const QByteArray &data)
 }
 
 // Для шифрования в БД
-QByteArray DatabaseManagement::dbEncrypt(const QByteArray &data)
+QByteArray DatabaseManagement::dbEncrypt(const QByteArray &data, const QByteArray &login)
 {
-    QByteArray encrypted;
+    // Ключ для шифрования данных в БД (имя, баланс, даты)
+    QByteArray encrypted, DB_ENCRYPTION_KEY = hash("Database" + login);
     for (int i = 0; i < data.size(); ++i) {
         encrypted.append(data[i] ^ DB_ENCRYPTION_KEY[i % DB_ENCRYPTION_KEY.size()]);
     }
@@ -311,7 +313,7 @@ int DatabaseManagement::getBalance()
 
     if (query.next()) {
         QByteArray encryptedBalance = query.value("balance").toByteArray();
-        QByteArray decryptedBalance = dbEncrypt(encryptedBalance);
+        QByteArray decryptedBalance = dbEncrypt(encryptedBalance, getLogin());
         return decryptedBalance.toDouble();
     }
     return 0;
@@ -339,12 +341,12 @@ QString DatabaseManagement::getUsername()
 
     if (query.next()) {
         QByteArray encryptedUsername = query.value("username").toByteArray();
-        return QString(dbEncrypt(encryptedUsername));
+        return QString(dbEncrypt(encryptedUsername, getLogin()));
     }
     return "None";
 }
 
-QString DatabaseManagement::getLogin()
+QByteArray DatabaseManagement::getLogin()
 {
     if (!db.isOpen()) return "None";
     QString authTokenHex = getToken();
@@ -355,15 +357,13 @@ QString DatabaseManagement::getLogin()
     query.prepare("SELECT login FROM users WHERE auth_token_hash = :auth_token_hash");
     query.bindValue(":auth_token_hash", hash(authTokenToCheck));
     if (!query.exec()) {
-        return "None";
+        return QByteArray();
     }
 
     if (query.next()) {
-        QByteArray encryptedLogin = query.value("login").toByteArray();
-        QByteArray decryptedLogin = localEncrypt(encryptedLogin);
-        return QString::fromUtf8(decryptedLogin);
+        return query.value("login").toByteArray();
     }
-    return "None";
+    return QByteArray();
 }
 
 QDateTime DatabaseManagement::getTokenExpiryTime()
@@ -403,7 +403,7 @@ QDateTime DatabaseManagement::getRegistredTime()
 
     if (query.next()) {
         QByteArray encryptedRegDate = query.value("registration_date").toByteArray();
-        QByteArray decryptedRegDate = dbEncrypt(encryptedRegDate);
+        QByteArray decryptedRegDate = dbEncrypt(encryptedRegDate, getLogin());
 
         QString regDateString = QString::fromUtf8(decryptedRegDate);
         return QDateTime::fromString(regDateString, Qt::ISODate);
@@ -418,7 +418,7 @@ bool DatabaseManagement::updateBalance(int &balance)
     QString authTokenHex = getToken();
     if (authTokenHex.isEmpty()) return false;
     QByteArray authTokenToCheck = QByteArray::fromHex(authTokenHex.toUtf8());
-    QByteArray encryptedBalance = dbEncrypt(QByteArray::number(balance));
+    QByteArray encryptedBalance = dbEncrypt(QByteArray::number(balance), getLogin());
 
     QSqlQuery updateQuery(db);
     updateQuery.prepare("UPDATE users SET balance = :balance WHERE auth_token_hash = :auth_token_hash");
@@ -444,7 +444,7 @@ bool DatabaseManagement::updateUsername(const QString &username)
     QSqlQuery updateQuery(db);
     updateQuery.prepare("UPDATE users SET username = :username WHERE auth_token_hash = :auth_token_hash");
 
-    updateQuery.bindValue(":username", dbEncrypt(username.toUtf8()));
+    updateQuery.bindValue(":username", dbEncrypt(username.toUtf8(), getLogin()));
 
     updateQuery.bindValue(":auth_token_hash", hash(QByteArray::fromHex(authTokenHex.toUtf8())));
 
@@ -518,23 +518,20 @@ int DatabaseManagement::password_strength(QString &password)
 bool DatabaseManagement::saveLastBonusTime(const QDateTime &dateTime)
 {
     if (!db.isOpen()) {
-        qDebug() << "saveLastBonusTime: Database is not open.";
         return false;
     }
 
     QString authTokenHex = getToken();
     if (authTokenHex.isEmpty()) {
-        qDebug() << "saveLastBonusTime: Authentication token is empty. Cannot save bonus time.";
         return false;
     }
 
     QSqlQuery updateQuery(db);
     updateQuery.prepare("UPDATE users SET last_bonus_time = :last_bonus_time WHERE auth_token_hash = :auth_token_hash");
-    updateQuery.bindValue(":last_bonus_time", dbEncrypt(dateTime.toString(Qt::ISODate).toUtf8()));
+    updateQuery.bindValue(":last_bonus_time", dbEncrypt(dateTime.toString(Qt::ISODate).toUtf8(), getLogin()));
     updateQuery.bindValue(":auth_token_hash", hash(QByteArray::fromHex(authTokenHex.toUtf8())));
 
     if (!updateQuery.exec()) {
-        qDebug() << "saveLastBonusTime: Query failed:" << updateQuery.lastError().text();
         return false;
     }
 
@@ -546,13 +543,11 @@ bool DatabaseManagement::saveLastBonusTime(const QDateTime &dateTime)
 QDateTime DatabaseManagement::getLastBonusTime()
 {
     if (!db.isOpen()) {
-        qDebug() << "getLastBonusTime: Database is not open.";
         return QDateTime();
     }
 
     QString authTokenHex = getToken();
     if (authTokenHex.isEmpty()) {
-        qDebug() << "getLastBonusTime: Authentication token is empty. Cannot get bonus time.";
         return QDateTime();
     }
 
@@ -561,13 +556,12 @@ QDateTime DatabaseManagement::getLastBonusTime()
     query.bindValue(":auth_token_hash", hash(QByteArray::fromHex(authTokenHex.toUtf8())));
 
     if (!query.exec()) {
-        qDebug() << "getLastBonusTime: Query failed:" << query.lastError().text();
         return QDateTime();
     }
 
     if (query.next()) {
         QByteArray encryptedBonusTime = query.value("last_bonus_time").toByteArray();
-        QByteArray decryptedBonusTime = dbEncrypt(encryptedBonusTime);
+        QByteArray decryptedBonusTime = dbEncrypt(encryptedBonusTime, getLogin());
 
         QString bonusTimeString = QString::fromUtf8(decryptedBonusTime);
 

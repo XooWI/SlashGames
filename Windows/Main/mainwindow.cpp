@@ -162,13 +162,9 @@ void MainWindow::checkBonusAvailability()
     QDateTime lastBonusTime;
 
     if (dbManager->checkToken()) {
-        // Пользователь авторизован, получаем время бонуса из БД
         lastBonusTime = dbManager->getLastBonusTime();
-        qDebug() << "checkBonusAvailability: User is logged in. Loading bonus time from DB.";
     } else {
-        // Пользователь не авторизован, получаем время бонуса из QSettings
         lastBonusTime = settings->value("lastBonusTime").toDateTime();
-        qDebug() << "checkBonusAvailability: User is NOT logged in. Loading bonus time from settings.";
     }
 
     if (lastBonusTime.isValid()) {

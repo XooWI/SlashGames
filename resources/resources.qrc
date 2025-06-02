@@ -52,13 +52,12 @@
     </qresource>
 
     <qresource prefix="">
-        <file>bin-list-data.csv</file>
-        <file>phone-code-data.csv</file>
+        <file>data/bin_code.csv</file>
+        <file>data/phone_code.csv</file>
     </qresource>
 
     <qresource prefix="">
         <file>images/slots/button.png</file>
         <file>images/slots/slot.png</file>
-        <file>images/slots/background.png</file>
     </qresource>
 </RCC> 

@@ -30,7 +30,7 @@ public:
     int getBalance();
     QString getToken();
     QString getUsername();
-    QString getLogin();
+    QByteArray getLogin();
     QDateTime getRegistredTime();
     QDateTime getTokenExpiryTime();
 
@@ -55,16 +55,11 @@ private:
 
     // Методы шифрования и хэширования
     QByteArray localEncrypt(const QByteArray &data);
-    QByteArray dbEncrypt(const QByteArray &data);
+    QByteArray dbEncrypt(const QByteArray &data, const QByteArray &login);
 
     // Время жизни токена
     const qint64 TOKEN_LIFETIME = 7 * 24 * 60 * 60; // 7 * 24 * 60 * 60 = 7 дней
 
-    // Ключ для шифрования локальных данных
-    const QByteArray LOCAL_ENCRYPTION_KEY = "LocalSecretEncryptionKey";
-
-    // Ключ для шифрования данных в БД (имя, баланс, даты)
-    const QByteArray DB_ENCRYPTION_KEY = "DatabaseSecretEncryptionKey";
 };
 
 #endif // DATABASEMANAGEMENT_H

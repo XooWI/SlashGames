@@ -89,7 +89,7 @@ private:
     void updateAccountButtonState();
     void logoutAccount();
 
-    const int BONUS_RELOAD = 10800;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
+    const int BONUS_RELOAD = 3*60*60;    // Время ожидания бонуса в секундах (3 часа = 10800 секунд)
     const int BONUS_AMOUNT = 3000;  // Количество получаемых монет
 
     int balance;

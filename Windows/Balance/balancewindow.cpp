@@ -30,7 +30,7 @@ BalanceWindow::~BalanceWindow()
 
 void BalanceWindow::loadBinData()
 {
-    QFile file(":/bin-list-data.csv");
+    QFile file(":/data/bin_code.csv");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Не удалось открыть файл BIN данных";
         return;
@@ -54,7 +54,7 @@ void BalanceWindow::loadBinData()
 
 void BalanceWindow::loadPhoneCarrierData()
 {
-    QFile file(":/phone-code-data.csv");
+    QFile file(":/data/phone_code.csv");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Не удалось открыть файл данных операторов связи";
         return;
