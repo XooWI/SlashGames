@@ -415,10 +415,9 @@ void MainWindow::on_balanceLabel_clicked()
 // Реализация события изменения размера
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if (event->size().width() > 1600) {
-        gameManager->refreshGamesLayout(3);
-    } else{
-        gameManager->refreshGamesLayout(2);
+    int currentColumn = (event->size().width())/500;
+    if (currentColumn != previousColumn) {
+        gameManager->refreshGamesLayout(currentColumn);
+        previousColumn = currentColumn;
     }
-
 }

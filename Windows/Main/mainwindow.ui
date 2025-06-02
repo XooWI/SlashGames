@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1304</width>
+    <width>1313</width>
     <height>815</height>
    </rect>
   </property>
@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1300</width>
-    <height>800</height>
+    <width>1000</width>
+    <height>600</height>
    </size>
   </property>
   <property name="cursor">
@@ -29,7 +29,7 @@
    <string>SlashGames</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../resources/resources.qrc">
     <normaloff>:/icons/universal/SlashGames.png</normaloff>:/icons/universal/SlashGames.png</iconset>
   </property>
   <property name="styleSheet">
@@ -90,7 +90,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1259</width>
+         <width>1268</width>
          <height>660</height>
         </rect>
        </property>
@@ -450,7 +450,7 @@ border-color: #666666;
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources/resources.qrc">
           <normaloff>:/icons/light_mode/button_profile.png</normaloff>:/icons/light_mode/button_profile.png</iconset>
         </property>
         <property name="iconSize">
@@ -509,7 +509,7 @@ border-color: #666666;
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources/resources.qrc">
           <normaloff>:/icons/light_mode/button_faq.png</normaloff>:/icons/light_mode/button_faq.png</iconset>
         </property>
         <property name="iconSize">
@@ -567,7 +567,7 @@ border-color: #666666;
          <string/>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources/resources.qrc">
           <normaloff>:/icons/light_mode/button_toggle_theme.png</normaloff>:/icons/light_mode/button_toggle_theme.png</iconset>
         </property>
         <property name="iconSize">
@@ -604,13 +604,15 @@ border-color: #666666;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1304</width>
+     <width>1313</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources/resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

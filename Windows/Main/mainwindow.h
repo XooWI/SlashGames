@@ -98,6 +98,8 @@ private:
     int remainingSeconds; // Секунд до получения следующего бонуса
     bool isDarkTheme;
     QString local_ID;
+    int previousColumn = 2;
+
 
 };
 #endif // MAINWINDOW_H
