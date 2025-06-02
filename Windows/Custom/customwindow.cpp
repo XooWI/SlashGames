@@ -145,12 +145,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
         ui->newPasswordLineEdit->setStyleSheet("");
         ui->confirmNewPasswordLineEdit->setStyleSheet("");
 
-        if (dbManager) {
-            ui->nameLineEdit->setText(dbManager->getUsername());
-        } else {
-            qDebug() << "Ошибка: dbManager не инициализирован.";
-        }
-
+        ui->nameLineEdit->setText(dbManager->getUsername());
 
         ui->acceptButton->setText("Сохранить");
         ui->acceptButton->setStyleSheet("QPushButton#acceptButton {background-color: #4CAF50;}QPushButton#acceptButton:hover {background-color: #45a049;}");
@@ -201,6 +196,12 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
                 hasError = true;
             }
 
+            if (!newPassword.isEmpty() && newPassword==oldPassword) {
+                ui->newPasswordLineEdit->setStyleSheet("border: 1px solid red;");
+                errorMessage += "Новый пароль совпадает со старым\n";
+                hasError = true;
+            }
+
             if (hasError) {
                 CustomWindow errorDialog(CustomWindow::GeneralInfo, errorMessage.trimmed(), "Ошибка ввода", this);
                 errorDialog.exec();
@@ -221,7 +222,6 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
                 if (dbManager->updateUsername(newName)) {
                     changesMade = true;
                 } else {
-                    qDebug()<<"Не удалось обновить имя пользователя";
                     CustomWindow errorDialog(CustomWindow::GeneralInfo, "Не удалось обновить имя пользователя.", "Ошибка обновления", this); // Возможно, CustomWindow::Error
                     errorDialog.exec();
                     updateSuccess = false;
@@ -229,11 +229,9 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             }
 
             if (!newPassword.isEmpty() && updateSuccess) {
-                qDebug()<<"Upgrade password";
                 if (dbManager->updatePassword(newPassword)) {
                     changesMade = true;
                 } else {
-                    qDebug()<< "Не удалось обновить пароль";
                     CustomWindow errorDialog(CustomWindow::GeneralInfo, "Не удалось обновить пароль.", "Ошибка обновления", this);
                     errorDialog.exec();
                     updateSuccess = false;
@@ -247,7 +245,6 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             } else if (!changesMade && updateSuccess) {
                 CustomWindow infoDialog(CustomWindow::GeneralInfo, "Изменений не обнаружено.", "Информация", this);
                 infoDialog.exec();
-                QDialog::accept();
             }
 
         });

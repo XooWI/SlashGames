@@ -1,14 +1,10 @@
 #ifndef BALANCEWINDOW_H
 #define BALANCEWINDOW_H
 
-#include <QDialog>
-#include <QMap>
-#include <QRegularExpression>
 #include <QIntValidator>
 #include <QUrl>
 #include <QButtonGroup>
 #include <QFile>
-#include <QTextStream>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QTimer>
@@ -17,6 +13,7 @@
 
 #include "Style/customstyle.h"
 #include "Windows/Custom/customwindow.h"
+#include "Windows/Main/mainwindow.h"
 
 
 namespace Ui {
@@ -25,7 +22,7 @@ class BalanceWindow;
 
 struct BinInfo {
     QString bin;
-    QString issuer;
+    QString nameBank;
 };
 
 struct PhoneCarrierInfo {
@@ -42,14 +39,17 @@ public:
     ~BalanceWindow();
 
 private slots:
-    void on_copyAddressButton_clicked();
     void on_cardMethodButton_toggled(bool checked);
     void on_phoneMethodButton_toggled(bool checked);
     void on_cryptoMethodButton_toggled(bool checked);
+
     void on_inputField_textChanged(const QString &text);
+    void on_amountLineEdit_textChanged(const QString &text);
+
     void on_withdrawButton_clicked();
+    void on_copyAddressButton_clicked();
     void on_qrCodeButton_clicked();
-    void on_amountLineEdit_textChanged(const QString &text); // Слот для суммы
+
 
 private:
     Ui::BalanceWindow *ui;
@@ -61,13 +61,6 @@ private:
     QMap<QString, PhoneCarrierInfo> phoneCarrierData;
     void loadPhoneCarrierData();
 
-    // Переменные для хранения стилей по умолчанию
-    QString defaultCardMaskPlaceholder = "0000 0000 0000 0000";
-    QString defaultPhoneMaskPlaceholder = "+7 (000) 000-00-00";
-
-    const QString CryptoPath = "https://github.com/MrAnonim114";
-    const QString CryptoAdressee = "0x742d35Cc6634C05329C3aE2bE4C6BfB8CD132Fsd";
-
     void processCardInput(const QString &text, int originalCursorPos);
     void processPhoneInput(const QString &text, int originalCursorPos);
     void processCryptoInput(const QString &text);
@@ -77,6 +70,17 @@ private:
 
     void updateBrandInfoLabel(const QString &cleanText);
     void updateCryptoAddressInfo(const QString &address);
+
+
+    // Вспомогательные методы для обработки ввода суммы
+    int calculateCleanCursorPosition(const QString &originalText, int originalPos, const QString &cleanText);
+
+    // Переменные для хранения стилей по умолчанию
+    QString defaultCardMaskPlaceholder = "0000 0000 0000 0000";
+    QString defaultPhoneMaskPlaceholder = "+7 (000) 000-00-00";
+
+    const QString CryptoPath = "https://github.com/MrAnonim114";
+    const QString CryptoAdressee = "0x742d35Cc6634C05329C3aE2bE4C6BfB8CD132Fsd";
 };
 
 #endif // BALANCEWINDOW_H

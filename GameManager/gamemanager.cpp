@@ -27,7 +27,6 @@ void GameManager::saveGame(const QString &name, const QString &iconPath, const Q
 
 void GameManager::refreshGamesLayout(int column)
 {
-    // Карта для хранения существующих кнопок пользовательских игр для возможного повторного использования
     QMap<int, QPushButton*> existingGameButtons;
 
     // Удаляем кнопку addGameButton
@@ -42,7 +41,7 @@ void GameManager::refreshGamesLayout(int column)
                 if (isUserGame) {
                     int gameIndex = button->property("gameIndex").toInt();
                     existingGameButtons.insert(gameIndex, button);
-                    gamesLayout->removeWidget(button); // Удаляем из макета, но не удаляем объект
+                    gamesLayout->removeWidget(button);
                 }
             }
         }

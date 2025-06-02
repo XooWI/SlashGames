@@ -15,12 +15,13 @@ BalanceWindow::BalanceWindow(QWidget *parent, DatabaseManagement *dbManager) :
     withdrawalMethodGroup->addButton(ui->cryptoMethodButton);
     withdrawalMethodGroup->setExclusive(true);
 
-    QIntValidator *amountValidator = new QIntValidator(0, 100000000, this);
+    QIntValidator *amountValidator = new QIntValidator(0, 1000000000, this);
     ui->amountLineEdit->setValidator(amountValidator);
     ui->cryptoAddressLabel->setText(CryptoAdressee);
 
     loadBinData();
     loadPhoneCarrierData();
+
 }
 
 BalanceWindow::~BalanceWindow()
@@ -43,8 +44,8 @@ void BalanceWindow::loadBinData()
         QStringList fields = line.split(',');
         if (fields.size() >= 2) {
             BinInfo info;
-            info.bin = fields[0].trimmed().replace("\"", "");
-            info.issuer = fields[1].trimmed().replace("\"", "");
+            info.bin = fields[0].trimmed();
+            info.nameBank = fields[1].trimmed();
             binData[info.bin] = info;
 
         }
@@ -77,7 +78,7 @@ void BalanceWindow::loadPhoneCarrierData()
 
 void BalanceWindow::on_copyAddressButton_clicked()
 {
-    QApplication::clipboard()->setText(ui->cryptoAddressLabel->text());
+    QApplication::clipboard()->setText(CryptoAdressee);
 
     ui->copyAddressButton->setText("✓ Скопировано");
     ui->copyAddressButton->setStyleSheet(CustomStyle::activeCopyAddressButton());
@@ -86,6 +87,23 @@ void BalanceWindow::on_copyAddressButton_clicked()
         ui->copyAddressButton->setText("Копировать");
         ui->copyAddressButton->setStyleSheet(CustomStyle::defaultCopyAddressButton());
     });
+}
+
+
+void BalanceWindow::on_inputField_textChanged(const QString &text)
+{
+    int originalCursorPos = ui->inputField->cursorPosition();
+    ui->inputField->blockSignals(true);
+
+    if (ui->cardMethodButton->isChecked()) {
+        processCardInput(text, originalCursorPos);
+    } else if (ui->phoneMethodButton->isChecked()) {
+        processPhoneInput(text, originalCursorPos);
+    } else if (ui->cryptoMethodButton->isChecked()) {
+        processCryptoInput(text);
+    }
+
+    ui->inputField->blockSignals(false);
 }
 
 void BalanceWindow::on_cardMethodButton_toggled(bool checked)
@@ -97,6 +115,7 @@ void BalanceWindow::on_cardMethodButton_toggled(bool checked)
         ui->commissionSizeLabel->setText("10%");
         ui->commissionSizeLabel->setStyleSheet("color: #FF5722;");
         ui->inputField->setPlaceholderText(defaultCardMaskPlaceholder);
+
     }
 }
 
@@ -126,81 +145,11 @@ void BalanceWindow::on_cryptoMethodButton_toggled(bool checked)
 }
 
 
-void BalanceWindow::on_inputField_textChanged(const QString &text)
-{
-    int originalCursorPos = ui->inputField->cursorPosition();
-    ui->inputField->blockSignals(true);
-
-    if (ui->cardMethodButton->isChecked()) {
-        processCardInput(text, originalCursorPos);
-    } else if (ui->phoneMethodButton->isChecked()) {
-        processPhoneInput(text, originalCursorPos);
-    } else if (ui->cryptoMethodButton->isChecked()) {
-        processCryptoInput(text);
-    }
-
-    ui->inputField->blockSignals(false);
-}
-
-void BalanceWindow::on_amountLineEdit_textChanged(const QString &text)
-{
-    QString currentText = text;
-    QString cleanText = currentText.replace(QRegularExpression("[^0-9]"), "");
-    if (cleanText.length() >= 1 && cleanText.startsWith('0')) {
-        cleanText.remove(0, 1);
-    }
-
-    int originalCursorPos = ui->amountLineEdit->cursorPosition();
-    int cleanCursorPos = 0;
-    int digitsCounted = 0;
-    for (int i = 0; i < originalCursorPos && i < text.length(); ++i) {
-        if (text.at(i).isDigit()) {
-            digitsCounted++;
-        }
-        if (digitsCounted == cleanText.length()) {
-            cleanCursorPos = cleanText.length();
-            break;
-        }
-        cleanCursorPos = digitsCounted;
-    }
-
-
-    QString formattedText;
-    int numDigits = cleanText.length();
-    for (int i = 0; i < numDigits; ++i) {
-        formattedText += cleanText.at(i);
-        if ((numDigits - 1 - i) % 3 == 0 && (numDigits - 1 - i) != 0) {
-            formattedText += " ";
-        }
-    }
-
-    ui->amountLineEdit->blockSignals(true);
-    ui->amountLineEdit->setText(formattedText);
-
-    int newCursorPos = 0;
-    int formattedDigitsCounted = 0;
-    for (int i = 0; i < formattedText.length(); ++i) {
-        if (formattedText.at(i).isDigit()) {
-            formattedDigitsCounted++;
-        }
-        if (formattedDigitsCounted == cleanCursorPos) {
-            newCursorPos = i + 1;
-            break;
-        }
-    }
-    if (cleanCursorPos == cleanText.length()) {
-        newCursorPos = formattedText.length();
-    }
-
-
-    ui->amountLineEdit->setCursorPosition(newCursorPos);
-    ui->amountLineEdit->blockSignals(false);
-}
 
 void BalanceWindow::processCardInput(const QString &text, int originalCursorPos)
 {
-    QString currentText = text;
-    QString cleanText = currentText.replace(QRegularExpression("[^0-9]"), "");
+    QString cleanText = text;
+    cleanText.remove(QRegularExpression("[^0-9]"));
     if (cleanText.length() > 16) {
         cleanText = cleanText.left(16);
     }
@@ -219,40 +168,52 @@ void BalanceWindow::processCardInput(const QString &text, int originalCursorPos)
 
     ui->inputField->setText(formattedText);
     ui->inputField->setCursorPosition(qMin(newCursorPos, formattedText.length()));
-    ui->inputField->setPlaceholderText(cleanText.isEmpty() ? defaultCardMaskPlaceholder : "");
     updateBrandInfoLabel(cleanText);
-
 }
 
 void BalanceWindow::processPhoneInput(const QString &text, int originalCursorPos)
 {
-    QString currentText = text;
-    QString cleanText = currentText.replace(QRegularExpression("[^0-9]"), "");
-    if (cleanText.startsWith('8')) {
+    QString cleanText = text;
+    cleanText.remove(QRegularExpression("[^0-9]"));
+
+    if (!cleanText.isEmpty() && cleanText[0] == '8') {
         cleanText[0] = '7';
     }
-    if (cleanText.length() > 11) {
-        cleanText = cleanText.left(11);
+
+    if (cleanText == "9" && text.length() == 1) {
+        ui->inputField->setText("+7 (9");
+        ui->inputField->setCursorPosition(5);
+        return;
     }
+
+    cleanText = cleanText.left(11);
 
     int cleanTextCursorPos = calculateCleanTextCursorPos(text, cleanText, originalCursorPos);
 
     QString formattedText;
-        if (!cleanText.isEmpty()) {
-            formattedText += "+7";
-            if (cleanText.length() > 1) { formattedText += " ("; formattedText += cleanText.midRef(1, qMin(3, cleanText.length() - 1)); }
-            if (cleanText.length() > 4) { formattedText += ") "; formattedText += cleanText.midRef(4, qMin(3, cleanText.length() - 4)); }
-            if (cleanText.length() > 7) { formattedText += "-"; formattedText += cleanText.midRef(7, qMin(2, cleanText.length() - 7)); }
-            if (cleanText.length() > 9) { formattedText += "-"; formattedText += cleanText.midRef(9, qMin(2, cleanText.length() - 9)); }
+    if (!cleanText.isEmpty()) {
+        formattedText = "+7";
+
+        if (cleanText.length() > 1) {
+            formattedText += " (" + cleanText.mid(1, 3);
         }
+        if (cleanText.length() > 4) {
+            formattedText += ") " + cleanText.mid(4, 3);
+        }
+        if (cleanText.length() > 7) {
+            formattedText += "-" + cleanText.mid(7, 2);
+        }
+        if (cleanText.length() > 9) {
+            formattedText += "-" + cleanText.mid(9, 2);
+        }
+    }
 
     int newCursorPos = mapCleanTextCursorPosToFormattedText(formattedText, cleanTextCursorPos);
 
     ui->inputField->setText(formattedText);
     ui->inputField->setCursorPosition(qMin(newCursorPos, formattedText.length()));
-    ui->inputField->setPlaceholderText(cleanText.isEmpty() ? defaultPhoneMaskPlaceholder : "");
-    updateBrandInfoLabel(cleanText);
 
+    updateBrandInfoLabel(cleanText);
 }
 
 void BalanceWindow::processCryptoInput(const QString &text)
@@ -264,7 +225,6 @@ void BalanceWindow::processCryptoInput(const QString &text)
     updateCryptoAddressInfo(address);
 
 }
-
 
 
 int BalanceWindow::calculateCleanTextCursorPos(const QString &currentText, const QString &cleanText, int originalCursorPos)
@@ -305,11 +265,9 @@ void BalanceWindow::updateBrandInfoLabel(const QString &cleanText)
             if (binData.contains(bin)) {
                 BinInfo info = binData[bin];
                 if (bin.startsWith("22")) {
-                     ui->brandInfoLabel->setText(QString("МИР %1").arg(info.issuer));
-                } else {
-                     ui->brandInfoLabel->setText(info.issuer);
+                    ui->brandInfoLabel->setText(QString("МИР %1").arg(info.nameBank));
+                    ui->brandInfoLabel->setStyleSheet("color: #4CAF50; ");
                 }
-                ui->brandInfoLabel->setStyleSheet("color: #4CAF50; ");
             } else {
                 ui->brandInfoLabel->setText("Банк не определен");
                 ui->brandInfoLabel->setStyleSheet("color: #FF5722; ");
@@ -370,29 +328,38 @@ void BalanceWindow::updateCryptoAddressInfo(const QString &address)
 
 void BalanceWindow::on_withdrawButton_clicked()
 {
-    const QString formattedRecipient = ui->inputField->text().trimmed();
+    const QString formattedRecipient = ui->inputField->text();
     QString cleanRecipient = formattedRecipient;
     cleanRecipient.remove(QRegularExpression("[^0-9a-fA-F]"));
 
-    const QString amountText = ui->amountLineEdit->text().trimmed().replace(" ", "");
-    bool amountOk;
-    const int amount = amountText.toInt(&amountOk);
+    const QString amountText = ui->amountLineEdit->text().remove(QRegularExpression("[^0-9]"));
+    const int amount = amountText.toInt();
 
     if (formattedRecipient.isEmpty()) {
         QMessageBox::warning(this, "Ошибка вывода", "Пожалуйста, введите данные для вывода.");
         return;
     }
-    if (!amountOk || amount <= 0) {
+    if (amount < 100) {
+        QMessageBox::warning(this, "Ошибка вывода", "Минимальная сумма вывода - 100$");
+        return;
+    }
+
+    if (amount <= 0) {
         QMessageBox::warning(this, "Ошибка вывода", "Пожалуйста, введите корректную сумму вывода.");
+        return;
+    }
+
+    if (dbManager->getBalance() < amount){
+        QMessageBox::warning(this, "Ошибка вывода", "Недостаточно средств!");
         return;
     }
 
     bool isValidInput = false;
     double commissionRate = 0.0;
     QString validationErrorMessage = "";
-    QString operatorInfo = ui->brandInfoLabel->text().trimmed();
-    QString recipientLabel = "Получатель";
-    QString operatorBankPSTitle = "Оператор/Банк/ПС";
+    QString operatorInfo = ui->brandInfoLabel->text();
+    QString recipientLabel;
+    QString operatorBankPSTitle;
 
     if (ui->cardMethodButton->isChecked()) {
         isValidInput = cleanRecipient.length() == 16;
@@ -400,37 +367,23 @@ void BalanceWindow::on_withdrawButton_clicked()
         commissionRate = 0.10;
         recipientLabel = "Номер карты";
         operatorBankPSTitle = "Банк";
-        if (operatorInfo.isEmpty() || operatorInfo.contains("Банк не определен")) {
-            operatorInfo = "Неизвестный банк";
-        }
+
     } else if (ui->phoneMethodButton->isChecked()) {
         QString validationCleanRecipient = cleanRecipient;
         if (validationCleanRecipient.startsWith('8')) {
             validationCleanRecipient[0] = '7';
         }
         isValidInput = validationCleanRecipient.length() == 11 && validationCleanRecipient.startsWith('7');
-        validationErrorMessage = "Номер телефона должен содержать 11 цифр и начинаться с 7.";
+        validationErrorMessage = "Номер телефона должен содержать 11 цифр и начинаться с 7";
         commissionRate = 0.05;
         recipientLabel = "Номер телефона";
         operatorBankPSTitle = "Оператор";
-        if (operatorInfo.isEmpty() || operatorInfo.contains("Оператор не определен", Qt::CaseInsensitive)) {
-            operatorInfo = "Неизвестный оператор";
-        } else if (operatorInfo.startsWith("Оператор: ")) {
-            operatorInfo = operatorInfo.mid(10);
-        }
+
     } else if (ui->cryptoMethodButton->isChecked()) {
-        if (formattedRecipient.startsWith("0x") || formattedRecipient.startsWith("1") || formattedRecipient.startsWith("3") || formattedRecipient.startsWith("bc1") || formattedRecipient.startsWith("T") || formattedRecipient.startsWith("r")) {
-            isValidInput = true;
-        } else {
-            validationErrorMessage = "Неверный формат криптокошелька. Адрес должен начинаться с 0x, 1, 3, bc1, T или r.";
-            isValidInput = false;
-        }
+        isValidInput = true;
         commissionRate = 0.00;
         recipientLabel = "Адрес кошелька";
         operatorBankPSTitle = "Тип кошелька";
-        if (operatorInfo.isEmpty() || operatorInfo.contains("Неизвестный тип")) {
-            operatorInfo = "Криптокошелек";
-        }
     }
 
     if (!isValidInput) {
@@ -438,11 +391,11 @@ void BalanceWindow::on_withdrawButton_clicked()
         return;
     }
 
-    const double commissionAmount = static_cast<double>(amount) * commissionRate;
+    const double commissionAmount = qRound(amount * commissionRate);
     const double totalAmount = amount + commissionAmount;
 
     if (dbManager->getBalance() < totalAmount){
-        QMessageBox::warning(this, "Недостаточно средств", validationErrorMessage);
+        QMessageBox::warning(this, "Ошибка вывода", "Недостаточно средств для оплаты комиссии!");
         return;
     }
 
@@ -466,7 +419,14 @@ void BalanceWindow::on_withdrawButton_clicked()
                 displayAmount, QString::number(commissionRate * 100, 'f', 0),
                 displayCommissionAmount, displayTotalAmount,
                 recipientLabel, operatorBankPSTitle);
-        dbManager->updateBalanceLocal(totalAmount);
+        if (dbManager->getBalance() >= totalAmount){
+            MainWindow *mainWin = qobject_cast<MainWindow *>(parent());
+            mainWin->updateBalance(-totalAmount);
+        } else{
+            QMessageBox::warning(this, "Ошибка вывода", "Недостаточно средств!");
+            return;
+        }
+
         CustomWindow receiptDialog(CustomWindow::GeneralInfo, receiptHtml, "Чек об операции", this);
         receiptDialog.exec();
 
@@ -475,6 +435,49 @@ void BalanceWindow::on_withdrawButton_clicked()
         ui->brandInfoLabel->clear();
     }
 }
+
+void BalanceWindow::on_amountLineEdit_textChanged(const QString &text)
+{
+    const int cursorPos = ui->amountLineEdit->cursorPosition();
+
+    QString cleanText = text;
+    cleanText.remove(QRegularExpression("[^0-9]"));
+
+    if (cleanText.length() > 1) {
+        cleanText.remove(QRegularExpression("^0+"));
+    }
+
+    QLocale locale(QLocale::Russian);
+    QString formatted = locale.toString(cleanText.toInt());
+
+    ui->amountLineEdit->setText(formatted);
+
+    int newPos = calculateCleanCursorPosition(text, cursorPos, formatted);
+    ui->amountLineEdit->setCursorPosition(newPos);
+
+}
+
+int BalanceWindow::calculateCleanCursorPosition(const QString &oldText,
+                                           int oldPos,
+                                           const QString &newText)
+{
+    int digitsBefore = 0;
+    for (int i = 0; i < oldPos; ++i) {
+        if (oldText[i].isDigit()) digitsBefore++;
+    }
+
+    int newPos = 0;
+    int digitsCounted = 0;
+    for (; newPos < newText.length(); ++newPos) {
+        if (newText[newPos].isDigit()) {
+            digitsCounted++;
+            if (digitsCounted > digitsBefore) break;
+        }
+    }
+
+    return newPos;
+}
+
 
 void BalanceWindow::on_qrCodeButton_clicked()
 {

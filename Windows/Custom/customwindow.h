@@ -44,11 +44,11 @@ private slots:
 
 
 private:
+    Ui::CustomWindow *ui;
+    QWidget *parent;
+    DatabaseManagement *dbManager;
     void setupWindow(WindowType type, const QString& mainText, const QString& windowTitle);
 
-    Ui::CustomWindow *ui;
-    QWidget *parent = nullptr;
-    DatabaseManagement *dbManager=nullptr;
 };
 
 #endif // CUSTOMWINDOW_H

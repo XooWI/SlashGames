@@ -21,7 +21,7 @@ class GameManager : public QObject
 public:
     GameManager(QSettings *settings, QGridLayout *gamesLayout, QPushButton *addGameButton, QObject *parent = nullptr);
 
-    void refreshGamesLayout(int column = 2); // Обновления макета игр
+    void refreshGamesLayout(int column = 2);
     void saveGame(const QString &name, const QString &iconPath, const QString &executablePath);
 
 private slots:

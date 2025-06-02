@@ -16,6 +16,12 @@ FAQWindow::FAQWindow(QWidget *parent) :
 }
 
 
+FAQWindow::~FAQWindow()
+{
+    delete ui;
+}
+
+
 void FAQWindow::on_telegramSocial_clicked()
 {
     QDesktopServices::openUrl(QUrl(telegramSocialPath));
@@ -28,8 +34,4 @@ void FAQWindow::on_githubSocial_clicked()
 }
 
 
-FAQWindow::~FAQWindow()
-{
-    delete ui;
-}
 

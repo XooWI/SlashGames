@@ -43,8 +43,8 @@ private slots:
 private:
     Ui::GameInputDialog *ui;
 
-    const int MIN_WIDTH_ICON = 0; // 1000
-    const int MIN_HEIGHT_ICON = 0; // 300
+    const int MIN_WIDTH_ICON = 100;
+    const int MIN_HEIGHT_ICON = 100;
 
 };
 

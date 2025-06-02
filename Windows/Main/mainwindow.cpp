@@ -236,25 +236,25 @@ void MainWindow::enableBonusButton()
 
 void MainWindow::on_getBonusButton_clicked()
 {
-    loadBalance();
-    balance += BONUS_AMOUNT;
-    saveBalance();
-    showBalanceChange(BONUS_AMOUNT);
+    updateBalance(BONUS_AMOUNT);
 
     QDateTime currentBonusTime = QDateTime::currentDateTime();
 
     if (dbManager->checkToken()) {
-        if (dbManager->saveLastBonusTime(currentBonusTime)) {
-            qDebug() << "on_getBonusButton_clicked: Bonus time saved to DB.";
-        } else {
-            qDebug() << "on_getBonusButton_clicked: Failed to save bonus time to DB.";
-        }
+        dbManager->saveLastBonusTime(currentBonusTime);
     } else {
         settings->setValue("lastBonusTime", currentBonusTime);
-        qDebug() << "on_getBonusButton_clicked: Bonus time saved to settings.";
     }
 
     startBonusReload(BONUS_RELOAD);
+}
+
+void MainWindow::updateBalance(const int &amount)
+{
+    loadBalance();
+    balance += amount;
+    saveBalance();
+    showBalanceChange(amount);
 }
 
 // Кнопки и меню профиль

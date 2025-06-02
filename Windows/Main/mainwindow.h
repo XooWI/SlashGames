@@ -35,6 +35,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateBalance(const int &amount);
+
 private slots:
     void checkAndUpdateAccountState();
 
