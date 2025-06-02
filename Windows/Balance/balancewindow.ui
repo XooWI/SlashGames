@@ -133,7 +133,7 @@ color: #333333;
 border: 1px solid #E0E0E0;</string>
         </property>
         <property name="text">
-         <string>0x12174343747473387hdjhdry7uhurhftt5566656b</string>
+         <string>0x742d35Cc6634C05329C3aE2bE4C6BfB8CD132Fsd</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::TextSelectableByMouse</set>

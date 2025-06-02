@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
         tokenCheckTimer(new QTimer(this)),
         settings(new QSettings(QSettings::IniFormat,  QSettings::UserScope, "SlashGames", "Settings", this)),
         // Настройки хранятся в C:\Users\<NAME_USER>\AppData\Roaming\SlashGames\Menu.ini
-        // Перенести в системный реестр settings(new QSettings("SlashGames", "Menu", this))
+        //settings(new QSettings("SlashGames", "Menu", this)),
 
         dbManager(new DatabaseManagement(settings)),
         toolMenu(new QMenu(this))
@@ -76,9 +76,11 @@ void MainWindow::logoutAccount()
 {
     settings->setValue("ID", "");
     settings->setValue("balance", 0);
+    settings->setValue("lastBonusTime", QDateTime());
     ui->usernameLabel->setText("Гость");
     loadBalance();
     updateAccountButtonState();
+    checkBonusAvailability();
     if (tokenCheckTimer->isActive()) {
         tokenCheckTimer->stop();
     }
@@ -94,14 +96,7 @@ void MainWindow::loadBalance()
     ui->balanceLabel->setText(QLocale(QLocale::English).toString(balance).replace(",", " ") + "💲");
 }
 
-int MainWindow::getBalance()
-{
-    if (dbManager->checkToken()){
-        settings->setValue("balance", dbManager->getBalance());
-    } else{ui->usernameLabel->setText("Гость");}
-    balance = settings->value("balance", 0).toInt();
-    return balance;
-}
+
 
 void MainWindow::loadTheme()
 {
@@ -164,9 +159,20 @@ void MainWindow::showBalanceChange(int amount)
 
 void MainWindow::checkBonusAvailability()
 {
-    QDateTime lastBonusTime = settings->value("lastBonusTime").toDateTime();
+    QDateTime lastBonusTime;
+
+    if (dbManager->checkToken()) {
+        // Пользователь авторизован, получаем время бонуса из БД
+        lastBonusTime = dbManager->getLastBonusTime();
+        qDebug() << "checkBonusAvailability: User is logged in. Loading bonus time from DB.";
+    } else {
+        // Пользователь не авторизован, получаем время бонуса из QSettings
+        lastBonusTime = settings->value("lastBonusTime").toDateTime();
+        qDebug() << "checkBonusAvailability: User is NOT logged in. Loading bonus time from settings.";
+    }
 
     if (lastBonusTime.isValid()) {
+
         // Вычисляем, сколько секунд прошло с момента последнего получения бонуса
         int secondsPassed = lastBonusTime.secsTo(QDateTime::currentDateTime());
 
@@ -239,11 +245,21 @@ void MainWindow::on_getBonusButton_clicked()
     saveBalance();
     showBalanceChange(BONUS_AMOUNT);
 
-    settings->setValue("lastBonusTime", QDateTime::currentDateTime());
+    QDateTime currentBonusTime = QDateTime::currentDateTime();
+
+    if (dbManager->checkToken()) {
+        if (dbManager->saveLastBonusTime(currentBonusTime)) {
+            qDebug() << "on_getBonusButton_clicked: Bonus time saved to DB.";
+        } else {
+            qDebug() << "on_getBonusButton_clicked: Failed to save bonus time to DB.";
+        }
+    } else {
+        settings->setValue("lastBonusTime", currentBonusTime);
+        qDebug() << "on_getBonusButton_clicked: Bonus time saved to settings.";
+    }
+
     startBonusReload(BONUS_RELOAD);
 }
-
-
 
 // Кнопки и меню профиль
 void MainWindow::showMenuProfileInfo_clicked()
@@ -265,6 +281,7 @@ void MainWindow::menuEditProfile_clicked()
 {
     CustomWindow EditProfile(CustomWindow::EditProfile,"", "", this, dbManager);
     EditProfile.exec();
+    updateAccountButtonState();
 }
 
 void MainWindow::menuExitProfile_clicked()
@@ -298,8 +315,8 @@ void MainWindow::on_slotsButton_clicked()
 void MainWindow::handleLoginSuccessful()
 {
     updateAccountButtonState();
-
     loadBalance();
+
     QDateTime expiryTime = dbManager->getTokenExpiryTime();
         if (expiryTime.isValid()) {
             QDateTime currentTime = QDateTime::currentDateTime();
@@ -314,6 +331,7 @@ void MainWindow::handleLoginSuccessful()
         } else {
             logoutAccount();
         }
+    checkBonusAvailability();
     CustomWindow GeneralInfo(CustomWindow::GeneralInfo, "Вы авторизованы!", dbManager->getUsername(), this);
     GeneralInfo.exec();
 }
@@ -393,7 +411,7 @@ void MainWindow::on_themeButton_clicked()
 
 void MainWindow::on_balanceLabel_clicked()
 {
-    BalanceWindow balancewindow(this);
+    BalanceWindow balancewindow(this, dbManager);
     balancewindow.exec();
 }
 

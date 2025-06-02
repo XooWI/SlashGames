@@ -2,9 +2,10 @@
 #include "ui_balancewindow.h"
 
 
-BalanceWindow::BalanceWindow(QWidget *parent) :
+BalanceWindow::BalanceWindow(QWidget *parent, DatabaseManagement *dbManager) :
     QDialog(parent),
-    ui(new Ui::BalanceWindow)
+    ui(new Ui::BalanceWindow),
+    dbManager(dbManager)
 {
     ui->setupUi(this);
 
@@ -440,6 +441,11 @@ void BalanceWindow::on_withdrawButton_clicked()
     const double commissionAmount = static_cast<double>(amount) * commissionRate;
     const double totalAmount = amount + commissionAmount;
 
+    if (dbManager->getBalance() < totalAmount){
+        QMessageBox::warning(this, "Недостаточно средств", validationErrorMessage);
+        return;
+    }
+
     QString displayAmount = QString::number(amount);
     QString displayCommissionAmount = QString::number(commissionAmount, 'f', 2);
     QString displayTotalAmount = QString::number(totalAmount, 'f', 2);
@@ -460,7 +466,7 @@ void BalanceWindow::on_withdrawButton_clicked()
                 displayAmount, QString::number(commissionRate * 100, 'f', 0),
                 displayCommissionAmount, displayTotalAmount,
                 recipientLabel, operatorBankPSTitle);
-
+        dbManager->updateBalanceLocal(totalAmount);
         CustomWindow receiptDialog(CustomWindow::GeneralInfo, receiptHtml, "Чек об операции", this);
         receiptDialog.exec();
 

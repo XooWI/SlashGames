@@ -29,7 +29,7 @@
    <string>SlashGames</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../resources/resources.qrc">
+   <iconset>
     <normaloff>:/icons/universal/SlashGames.png</normaloff>:/icons/universal/SlashGames.png</iconset>
   </property>
   <property name="styleSheet">
@@ -133,7 +133,7 @@
           <property name="styleSheet">
            <string notr="true">#rouletteButton {
 	background-color: #4CAF50;
-    background-image: url(:/1images/default/roulette.png);
+    background-image: url(:/images/default/roulette.png);
     background-position: center;     
     border-radius: 25px;
 	color: white; 
@@ -143,11 +143,11 @@
 }
 
 #rouletteButton:hover { 
-    background-image: url(:/1images/hover/roulette.png);   
+    background-image: url(:/images/hover/roulette.png);   
 }
 
 #rouletteButton:pressed { 
-    background-image: url(:/1images/hover/roulette.png);  
+    background-image: url(:/images/hover/roulette.png);  
  }</string>
           </property>
           <property name="text">
@@ -178,7 +178,7 @@
           <property name="styleSheet">
            <string notr="true">#slotsButton {
 	background-color: #4CAF50;
-    background-image: url(:/1images/default/slots.png);
+    background-image: url(:/images/default/slots.png);
     background-position: center;     
     border-radius: 25px;
 	color: white; 
@@ -188,11 +188,11 @@
 }
 
 #slotsButton:hover { 
-    background-image: url(:/1images/hover/slots.png);   
+    background-image: url(:/images/hover/slots.png);   
 }
 
 #slotsButton:pressed { 
-    background-image: url(:/1images/hover/slots.png);  
+    background-image: url(:/images/hover/slots.png);  
  }</string>
           </property>
           <property name="text">
@@ -450,7 +450,7 @@ border-color: #666666;
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/resources.qrc">
+         <iconset>
           <normaloff>:/icons/light_mode/button_profile.png</normaloff>:/icons/light_mode/button_profile.png</iconset>
         </property>
         <property name="iconSize">
@@ -509,7 +509,7 @@ border-color: #666666;
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/resources.qrc">
+         <iconset>
           <normaloff>:/icons/light_mode/button_faq.png</normaloff>:/icons/light_mode/button_faq.png</iconset>
         </property>
         <property name="iconSize">
@@ -567,7 +567,7 @@ border-color: #666666;
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/resources.qrc">
+         <iconset>
           <normaloff>:/icons/light_mode/button_toggle_theme.png</normaloff>:/icons/light_mode/button_toggle_theme.png</iconset>
         </property>
         <property name="iconSize">
@@ -611,8 +611,6 @@ border-color: #666666;
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="../../resources/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -34,7 +34,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    int getBalance();
 
 private slots:
     void checkAndUpdateAccountState();

@@ -1,6 +1,5 @@
 #ifndef ANIMFUNC_H
 #define ANIMFUNC_H
-//#include <QMainWindow>
 #include <math.h>
 #include <qrandom.h>
 #include <QDebug>

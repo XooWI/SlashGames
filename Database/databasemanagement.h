@@ -35,11 +35,15 @@ public:
     QDateTime getTokenExpiryTime();
 
     bool updateBalance(int &balance);
-    bool updateUsername(QString &username);
-    bool updatePassword(QString &password);
+    void updateBalanceLocal(int amount);
+    bool updateUsername(const QString &username);
+    bool updatePassword(const QString &password);
     int password_strength(QString &password);
 
     QByteArray hash(const QString &data);
+
+    bool saveLastBonusTime(const QDateTime &dateTime);
+    QDateTime getLastBonusTime();
 
 private:
     QSettings *settings;
@@ -59,7 +63,7 @@ private:
     // Ключ для шифрования локальных данных
     const QByteArray LOCAL_ENCRYPTION_KEY = "LocalSecretEncryptionKey";
 
-    // Ключ для шифрования данных в БД (имя, баланс)
+    // Ключ для шифрования данных в БД (имя, баланс, даты)
     const QByteArray DB_ENCRYPTION_KEY = "DatabaseSecretEncryptionKey";
 };
 

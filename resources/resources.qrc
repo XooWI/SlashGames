@@ -49,11 +49,6 @@
     <qresource prefix="">
         <file>images/hover/slots.png</file>
         <file>images/hover/roulette.png</file>
-
-        <file>images/hover/button.png</file>
-        <file>images/hover/slot.png</file> 
-        <file>images/hover/background.png</file>       
-
     </qresource>
 
     <qresource prefix="">
@@ -61,4 +56,9 @@
         <file>phone-code-data.csv</file>
     </qresource>
 
+    <qresource prefix="">
+        <file>images/slots/button.png</file>
+        <file>images/slots/slot.png</file>
+        <file>images/slots/background.png</file>
+    </qresource>
 </RCC> 

@@ -207,7 +207,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
                 return;
             }
 
-            if ((dbManager->checkPassword(oldPassword))) {
+            if (!(dbManager->checkPassword(oldPassword))) {
                 ui->oldPasswordLineEdit->setStyleSheet("border: 1px solid red;");
                 CustomWindow errorDialog(CustomWindow::GeneralInfo, "Неверный старый пароль.", "Ошибка авторизации", this);
                 errorDialog.exec();
@@ -247,7 +247,7 @@ void CustomWindow::setupWindow(WindowType type, const QString& mainText, const Q
             } else if (!changesMade && updateSuccess) {
                 CustomWindow infoDialog(CustomWindow::GeneralInfo, "Изменений не обнаружено.", "Информация", this);
                 infoDialog.exec();
-                QDialog::reject();
+                QDialog::accept();
             }
 
         });

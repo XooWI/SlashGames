@@ -23,13 +23,11 @@ namespace Ui {
 class BalanceWindow;
 }
 
-// Структура для хранения информации о BIN
 struct BinInfo {
     QString bin;
     QString issuer;
 };
 
-// New struct for phone carrier info
 struct PhoneCarrierInfo {
     QString code;
     QString brand;
@@ -40,7 +38,7 @@ class BalanceWindow : public QDialog
     Q_OBJECT
 
 public:
-    BalanceWindow(QWidget *parent = nullptr);
+    BalanceWindow(QWidget *parent = nullptr, DatabaseManagement *dbManager= nullptr);
     ~BalanceWindow();
 
 private slots:
@@ -55,6 +53,8 @@ private slots:
 
 private:
     Ui::BalanceWindow *ui;
+    DatabaseManagement *dbManager;
+
     QMap<QString, BinInfo> binData;
     void loadBinData();
 
@@ -66,7 +66,7 @@ private:
     QString defaultPhoneMaskPlaceholder = "+7 (000) 000-00-00";
 
     const QString CryptoPath = "https://github.com/MrAnonim114";
-    const QString CryptoAdressee = "0x12174343747473387hdjhdry7uhurhftt5566656b";
+    const QString CryptoAdressee = "0x742d35Cc6634C05329C3aE2bE4C6BfB8CD132Fsd";
 
     void processCardInput(const QString &text, int originalCursorPos);
     void processPhoneInput(const QString &text, int originalCursorPos);

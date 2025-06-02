@@ -32,7 +32,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">image: url(:/images/hover/slot.png);</string>
+     <string notr="true">image: url(:/images/slots/slot.png);</string>
     </property>
    </widget>
    <widget class="QFrame" name="slotW_3">
@@ -45,13 +45,13 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">image: url(:/images/hover/slot.png);</string>
+     <string notr="true">image: url(:/images/slots/slot.png);</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>-10</x>
+      <x>20</x>
       <y>120</y>
       <width>321</width>
       <height>241</height>
@@ -68,7 +68,7 @@
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">image:url(:/images/hover/background.png)</string>
+     <string notr="true">image:url(:/images/slots/background.png)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -94,16 +94,16 @@
     <property name="styleSheet">
      <string notr="true">QPushButton {
 background-color: transparent;
-image: url(:/images/hover/button.png);
+image: url(:/images/slots/button.png);
 }
 QPushButton:pressed {
 background-color: transparent;
-color: white;   
+color: white;    
 border: 2px solid transparent;
 }
 QPushButton:hover{
 background-color: transparent;
-image: url(:/images/hover/button.png);
+image: url(:/images/slots/button.png);
 }
 </string>
     </property>
@@ -139,7 +139,7 @@ image: url(:/images/hover/button.png);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">image: url(:/images/hover/slot.png);</string>
+     <string notr="true">image: url(:/images/slots/slot.png);</string>
     </property>
    </widget>
    <widget class="QLabel" name="balance">
@@ -210,6 +210,9 @@ color: rgb(255, 170, 0);</string>
     <property name="scaledContents">
      <bool>false</bool>
     </property>
+    <property name="hidden" stdset="0">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QLabel" name="youWin">
     <property name="geometry">
@@ -232,6 +235,9 @@ color: rgb(255, 170, 0);</string>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
+    </property>
+    <property name="hidden" stdset="0">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QSlider" name="horizontalSlider">
